@@ -12,4 +12,11 @@
     <artifactId>alsace-exchange-service</artifactId>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>com.alsace</groupId>
+            <artifactId>alsace-exchange-common</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

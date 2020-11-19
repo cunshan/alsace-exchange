@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AlsaceExchangeApplication {
+public class AlsaceExchangeGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AlsaceExchangeApplication.class, args);
+        SpringApplication.run(AlsaceExchangeGatewayApplication.class, args);
     }
 
 }

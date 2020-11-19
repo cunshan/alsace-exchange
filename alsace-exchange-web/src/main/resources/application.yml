@@ -1,0 +1,14 @@
+#============
+# logging配置
+#============
+logging:
+  level:
+    root: info
+  file:
+    max-history: 7
+    max-size: 10MB
+    name: ${spring.application.name}
+
+spring:
+  application:
+    name:
