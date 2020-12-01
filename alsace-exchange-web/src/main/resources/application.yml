@@ -9,6 +9,11 @@ logging:
     max-size: 10MB
     name: ${spring.application.name}
 
+server:
+  port: 8080
+
 spring:
   application:
-    name:
+    name: alsace-exchange-web
+  profiles:
+    active: dev

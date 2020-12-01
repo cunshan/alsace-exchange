@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    hikari:
+      connection-test-query: select 1 from dual
+    url: jdbc:mysql://127.0.0.1:3307/alsace?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
+    password: root
+    username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
