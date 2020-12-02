@@ -1,7 +1,14 @@
 package com.alsace.exchange.common.exception;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class AlsaceException extends RuntimeException{
     private static final long serialVersionUID = -9149947871782927397L;
+
+    @Getter
+    @Setter
+    private String errorCode;
 
     public AlsaceException() {
         super();
