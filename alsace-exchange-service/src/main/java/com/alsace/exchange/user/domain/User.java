@@ -1,6 +1,6 @@
 package com.alsace.exchange.user.domain;
 
-import com.alsace.exchange.common.base.BaseDomain;
+import com.alsace.exchange.common.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Accessors(chain = true)
 @Entity
 @Table(name = "sys_user")
-public class User extends BaseDomain {
+public class User extends BaseEntity {
 
     private static final long serialVersionUID = 5385740476210184698L;
 

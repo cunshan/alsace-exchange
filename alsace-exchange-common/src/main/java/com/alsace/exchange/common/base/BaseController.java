@@ -24,14 +24,15 @@ public class BaseController {
      * 成功结果
      */
     protected static <T> AlsaceResult<T> success(String msg, T data) {
-        return new AlsaceResult<T>().setData(data).setMsg(msg);
+        return new AlsaceResult<T>().setSuccess(true).setData(data).setMsg(msg);
     }
+
 
     /**
      * 成功结果
      */
-    protected static <T> AlsaceResult<T> success(String msg) {
-        return success(msg, null);
+    protected static <T> AlsaceResult<T> success(T data) {
+        return success("",data);
     }
 
 }

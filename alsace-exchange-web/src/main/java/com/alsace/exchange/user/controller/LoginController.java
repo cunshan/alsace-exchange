@@ -15,19 +15,21 @@ import javax.annotation.Resource;
 @RestController
 public class LoginController extends BaseController {
 
-    @Resource
-    private UserService userService;
+  @Resource
+  private UserService userService;
 
-    @PostMapping("/login")
-    public AlsaceResult<String> login(@RequestBody User param) {
-        User userParam = new User().setLoginAccount(param.getLoginAccount());
-        User user = userService.findOne(userParam);
-        Assert.state(user != null, "用户不存在！");
-        Assert.state(!user.getLocked(), "用户已被锁定！");
-        String password = DigestUtils.md5Hex(param.getPassword());
-        Assert.state(!password.equals(user.getPassword()),"密码错误！");
-        //密码匹配  登录成功
-        //TODO 记录登录日志
-        return success("登录成功！");
-    }
+  @PostMapping("/login")
+  public AlsaceResult<User> login(@RequestBody User param) {
+    User userParam = new User().setLoginAccount(param.getLoginAccount());
+    User user = userService.findOne(userParam);
+    Assert.state(user != null, "用户不存在！");
+    Assert.state(!user.getLocked(), "用户已被锁定！");
+    String password = DigestUtils.md5Hex(param.getPassword() + param.getLoginAccount());
+    Assert.state(password.equals(user.getPassword()), "密码错误！");
+    //密码匹配  登录成功
+    //TODO 记录登录日志
+
+    user.setPassword(null);
+    return success("登录成功",user);
+  }
 }

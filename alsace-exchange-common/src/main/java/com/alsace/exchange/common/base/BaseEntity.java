@@ -12,7 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 @MappedSuperclass
-public class BaseDomain implements Serializable {
+public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -4251104853104709042L;
     /**
@@ -35,12 +35,12 @@ public class BaseDomain implements Serializable {
      * 更新人
      */
     @Column(columnDefinition = "varchar(32) comment '更新人'")
-    private String updatedBy;
+    private String modifiedBy;
     /**
      * 更新时间
      */
     @Column(columnDefinition = "datetime comment '更新时间'")
-    private Date updatedDate;
+    private Date modifiedDate;
     /**
      * 备注
      */
