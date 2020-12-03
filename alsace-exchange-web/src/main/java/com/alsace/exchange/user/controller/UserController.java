@@ -2,6 +2,8 @@ package com.alsace.exchange.user.controller;
 
 import com.alsace.exchange.common.base.AlsaceResult;
 import com.alsace.exchange.common.base.BaseController;
+import com.alsace.exchange.common.base.PageParam;
+import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.user.domain.User;
 import com.alsace.exchange.user.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -24,6 +26,13 @@ public class UserController extends BaseController {
     param.setPassword(DigestUtils.md5Hex(param.getPassword().trim() + param.getLoginAccount()));
     User user = userService.save(param);
     return success(user);
+  }
+
+
+  @PostMapping("/page")
+  public AlsaceResult<PageResult<User>> page(@RequestBody PageParam<User> param){
+    PageResult<User> userPage = userService.findPage(param);
+    return success(userPage);
   }
 
 

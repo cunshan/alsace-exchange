@@ -1,8 +1,5 @@
 package com.alsace.exchange.common.base;
 
-import com.alsace.exchange.common.annontation.AutoFill;
-import com.alsace.exchange.common.enums.AutoFillType;
-
 import java.util.List;
 
 public interface BaseService<T, K> {
@@ -26,4 +23,9 @@ public interface BaseService<T, K> {
    * 批量保存
    */
   List<T> save(List<T> param);
+
+  /**
+   * 精确匹配，获取分页查询
+   */
+  PageResult<T> findPage(PageParam<T> param);
 }
