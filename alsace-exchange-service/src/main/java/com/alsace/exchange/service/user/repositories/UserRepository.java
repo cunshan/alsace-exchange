@@ -1,6 +1,6 @@
-package com.alsace.exchange.user.repositories;
+package com.alsace.exchange.service.user.repositories;
 
-import com.alsace.exchange.user.domain.User;
+import com.alsace.exchange.service.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

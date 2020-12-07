@@ -1,11 +1,11 @@
-package com.alsace.exchange.user.controller;
+package com.alsace.exchange.web.user.controller;
 
 import com.alsace.exchange.common.base.AlsaceResult;
 import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
-import com.alsace.exchange.user.domain.User;
-import com.alsace.exchange.user.service.UserService;
+import com.alsace.exchange.service.user.domain.User;
+import com.alsace.exchange.service.user.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +30,7 @@ public class UserController extends BaseController {
 
 
   @PostMapping("/page")
-  public AlsaceResult<PageResult<User>> page(@RequestBody PageParam<User> param){
+  public AlsaceResult<PageResult<User>> page(@RequestBody PageParam<User> param) {
     PageResult<User> userPage = userService.findPage(param);
     return success(userPage);
   }

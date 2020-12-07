@@ -1,4 +1,4 @@
-package com.alsace.exchange.user.domain;
+package com.alsace.exchange.service.user.domain;
 
 import com.alsace.exchange.common.base.BaseEntity;
 import lombok.Data;

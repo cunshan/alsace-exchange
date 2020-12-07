@@ -1,4 +1,4 @@
-package com.alsace.exchange.config;
+package com.alsace.exchange.web.config.exception;
 
 import com.alsace.exchange.common.base.AlsaceResult;
 import com.alsace.exchange.common.exception.AlsaceException;
@@ -21,6 +21,16 @@ public class ControllerExceptionHandler {
   public AlsaceResult<String> bizException(AlsaceException ex) {
     log.error(Throwables.getStackTraceAsString(ex));
     return new AlsaceResult<String>().setSuccess(false).setMsg(ex.getMessage()).setErrorCode(ex.getErrorCode());
+  }
+
+  /**
+   * 业务异常处理
+   */
+  @ExceptionHandler(JwtException.class)
+  @ResponseBody
+  public AlsaceResult<String> jwtException(JwtException ex) {
+    log.error(Throwables.getStackTraceAsString(ex));
+    return new AlsaceResult<String>().setSuccess(false).setMsg(ex.getMessage()).setErrorCode("");
   }
 
   /**

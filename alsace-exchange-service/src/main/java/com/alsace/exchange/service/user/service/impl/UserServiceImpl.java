@@ -1,13 +1,13 @@
-package com.alsace.exchange.user.service.impl;
+package com.alsace.exchange.service.user.service.impl;
 
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.PageHelper;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.enums.AutoFillType;
-import com.alsace.exchange.user.domain.User;
-import com.alsace.exchange.user.repositories.UserRepository;
-import com.alsace.exchange.user.service.UserService;
+import com.alsace.exchange.service.user.domain.User;
+import com.alsace.exchange.service.user.repositories.UserRepository;
+import com.alsace.exchange.service.user.service.UserService;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;

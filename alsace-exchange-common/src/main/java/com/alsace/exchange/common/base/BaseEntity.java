@@ -2,6 +2,7 @@ package com.alsace.exchange.common.base;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @MappedSuperclass
+@Accessors(chain = true)
 public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -4251104853104709042L;
