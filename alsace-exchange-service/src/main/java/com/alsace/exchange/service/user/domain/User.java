@@ -9,13 +9,14 @@ import lombok.experimental.Accessors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "sys_user")
+@Table(name = "sys_user",uniqueConstraints = {@UniqueConstraint(name = "uk_user_login_account",columnNames = {"login_account"})})
 public class User extends BaseEntity {
 
     private static final long serialVersionUID = 5385740476210184698L;
