@@ -5,6 +5,8 @@ import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.service.user.domain.User;
 import com.alsace.exchange.service.user.service.UserService;
 import com.alsace.exchange.web.utils.JwtUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.BearerToken;
@@ -15,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+@Api(tags = "用户")
 @RestController
 public class LoginController extends BaseController {
 
   @Resource
   private UserService userService;
 
+  @ApiOperation(value = "用户登录",notes = "登录请求操作")
   @PostMapping("/login")
   public AlsaceResult<String> login(@RequestBody User param) {
     User userParam = new User().setLoginAccount(param.getLoginAccount());

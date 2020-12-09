@@ -31,3 +31,8 @@ spring:
 
 cacheManager:
   principalIdFieldName: loginAccount
+
+springfox:
+  documentation:
+    swagger-ui:
+      base-url:

@@ -39,6 +39,7 @@ public class ShiroConfig {
   public ShiroFilterChainDefinition shiroFilterChainDefinition() {
     DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
     chainDefinition.addPathDefinition("/login", "anon");
+    chainDefinition.addPathDefinition("/swagger-ui/**", "anon");
     chainDefinition.addPathDefinition("/user/save", "jwt");
     return chainDefinition;
   }
