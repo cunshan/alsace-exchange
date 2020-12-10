@@ -5,6 +5,7 @@ import com.alsace.exchange.service.user.service.UserService;
 import com.alsace.exchange.web.common.WebConstants;
 import com.alsace.exchange.web.config.exception.JwtException;
 import com.alsace.exchange.web.utils.JwtUtils;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -53,7 +54,12 @@ public class JwtRealm extends AuthorizingRealm {
       throw new JwtException("用户已经被锁定！");
     }
     //校验token是否过期
-    if(!JwtUtils.verify(token.getToken(),user.getLoginAccount(),user.getUserName(),user.getPassword())){
+    try{
+      if(!JwtUtils.verify(token.getToken(),user.getLoginAccount(),user.getUserName(),user.getPassword())){
+        throw new JwtException(WebConstants.JWT_ERROR_MSG);
+      }
+    }catch (TokenExpiredException ex){
+      //TODO 原token过期，刷新操作 后面完善
       throw new JwtException(WebConstants.JWT_ERROR_MSG);
     }
     return new SimpleAuthenticationInfo(token, token.getCredentials(), getName());

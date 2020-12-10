@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class JwtUtils {
    * @param secret 用户的密码
    * @return 是否正确
    */
-  public static boolean verify(String token, String loginAccount, String userName,String secret) {
+  public static boolean verify(String token, String loginAccount, String userName, String secret) {
     try {
       //根据密码生成JWT效验器
       Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -37,6 +38,8 @@ public class JwtUtils {
       //效验TOKEN
       DecodedJWT jwt = verifier.verify(token);
       return true;
+    } catch (TokenExpiredException expiredException) {
+      throw expiredException;
     } catch (Exception exception) {
       log.error(Throwables.getStackTraceAsString(exception));
       return false;
@@ -73,6 +76,7 @@ public class JwtUtils {
       return null;
     }
   }
+
   /**
    * 生成签名
    *
@@ -80,13 +84,13 @@ public class JwtUtils {
    * @param secret       用户的密码
    * @return 加密的token
    */
-  public static String sign(String loginAccount,String userName, String secret, int expireMinute) {
+  public static String sign(String loginAccount, String userName, String secret, int expireMinute) {
     Date date = new Date(System.currentTimeMillis() + expireMinute * 60000L);
     Algorithm algorithm = Algorithm.HMAC256(secret);
     // 附带loginAccount信息
     return JWT.create()
         .withClaim(LOGIN_ACCOUNT, loginAccount)
-        .withClaim(USER_NAME,userName)
+        .withClaim(USER_NAME, userName)
         .withExpiresAt(date)
         .sign(algorithm);
 
