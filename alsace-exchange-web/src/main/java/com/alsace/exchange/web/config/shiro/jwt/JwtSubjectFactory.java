@@ -1,4 +1,4 @@
-package com.alsace.exchange.web.config.shiro;
+package com.alsace.exchange.web.config.shiro.jwt;
 
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.SubjectContext;

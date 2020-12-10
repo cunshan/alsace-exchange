@@ -1,24 +1,35 @@
-package com.alsace.exchange.web.config.shiro;
+package com.alsace.exchange.web.config.shiro.jwt;
 
 import com.alsace.exchange.common.base.AlsaceResult;
 import com.alsace.exchange.common.utils.JsonUtils;
 import com.alsace.exchange.web.common.WebConstants;
+import com.alsace.exchange.web.config.redis.JsonRedisTemplate;
+import com.alsace.exchange.web.utils.JwtUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.BearerToken;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.cache.CacheManagerAware;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.BearerHttpAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class JwtFilter extends BearerHttpAuthenticationFilter {
+
+  @Resource
+  private JsonRedisTemplate jsonRedisTemplate;
 
 //  /**
 //   * 对跨域提供支持
@@ -55,5 +66,17 @@ public class JwtFilter extends BearerHttpAuthenticationFilter {
     return false;
   }
 
+  @Override
+  protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
+    //在登录成功之后，如果redis里有缓存，刷新缓存中的token时间
+    JwtToken bearerToken = (JwtToken) token;
+    jsonRedisTemplate.expire(WebConstants.SHIRO_CACHE_PREFIX + bearerToken.getPrincipal(), WebConstants.JWT_TOKEN_TIMEOUT, TimeUnit.MINUTES);
+    return super.onLoginSuccess(token, subject, request, response);
+  }
+
+  @Override
+  protected AuthenticationToken createBearerToken(String token, ServletRequest request) {
+    return new JwtToken(token);
+  }
 
 }

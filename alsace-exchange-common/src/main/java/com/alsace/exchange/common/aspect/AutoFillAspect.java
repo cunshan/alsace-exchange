@@ -2,6 +2,7 @@ package com.alsace.exchange.common.aspect;
 
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.BaseEntity;
+import com.alsace.exchange.common.base.LoginInfoProvider;
 import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.utils.IdUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,9 @@ import java.util.List;
 @Component
 @Slf4j
 public class AutoFillAspect {
+
+  @Resource
+  private LoginInfoProvider loginInfoProvider;
 
   @Pointcut("@annotation(com.alsace.exchange.common.annontation.AutoFill)")
   public void autoFill() {
@@ -31,7 +36,7 @@ public class AutoFillAspect {
     MethodSignature signature = (MethodSignature) joinPoint.getSignature();
     Object[] args = joinPoint.getArgs();
     AutoFill autoFill = signature.getMethod().getDeclaredAnnotation(AutoFill.class);
-    String loginAccount = "";
+    String loginAccount = loginInfoProvider.loginAccount();
     Arrays.stream(args).forEach(arg -> {
       if (arg instanceof BaseEntity) {
         //单个参数

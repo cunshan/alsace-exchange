@@ -1,4 +1,4 @@
-package com.alsace.exchange.web.config.shiro;
+package com.alsace.exchange.web.config.shiro.jwt;
 
 import com.alsace.exchange.service.user.domain.User;
 import com.alsace.exchange.service.user.service.UserService;
@@ -9,16 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-@Component
 @Slf4j
 public class JwtRealm extends AuthorizingRealm {
 
@@ -27,7 +24,7 @@ public class JwtRealm extends AuthorizingRealm {
 
   @Override
   public boolean supports(AuthenticationToken token) {
-    return token instanceof BearerToken;
+    return token instanceof JwtToken;
   }
 
   /**
@@ -43,10 +40,9 @@ public class JwtRealm extends AuthorizingRealm {
    */
   @Override
   protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-    BearerToken token = (BearerToken) authenticationToken;
-    String loginAccount = JwtUtils.getLoginAccount(token.getToken());
+    JwtToken token = (JwtToken) authenticationToken;
     User userParam = new User();
-    userParam.setLoginAccount(loginAccount).setDeleted(false);
+    userParam.setLoginAccount(token.getLoginAccount()).setDeleted(false);
     User user = userService.findOne(userParam);
     //获取用户为空
     if (user == null) {
@@ -57,10 +53,10 @@ public class JwtRealm extends AuthorizingRealm {
       throw new JwtException("用户已经被锁定！");
     }
     //校验token是否过期
-    if(!JwtUtils.verify(token.getToken(),user.getLoginAccount(),user.getPassword())){
+    if(!JwtUtils.verify(token.getToken(),user.getLoginAccount(),user.getUserName(),user.getPassword())){
       throw new JwtException(WebConstants.JWT_ERROR_MSG);
     }
-    return new SimpleAuthenticationInfo(user, token.getCredentials(), getName());
+    return new SimpleAuthenticationInfo(token, token.getCredentials(), getName());
   }
 
 

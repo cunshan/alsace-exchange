@@ -8,12 +8,16 @@ logging:
     max-history: 7
     max-size: 10MB
     name: ${spring.application.name}
-
+#=============
+# 服务端口等熟悉设置
+#=============
 server:
   port: 8080
   servlet:
     context-path: /exchange/api/v1
-
+#==============
+# spring设置
+#==============
 spring:
   application:
     name: alsace-exchange-web
@@ -28,11 +32,3 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
-
-cacheManager:
-  principalIdFieldName: loginAccount
-
-springfox:
-  documentation:
-    swagger-ui:
-      base-url:

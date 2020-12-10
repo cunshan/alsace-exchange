@@ -1,21 +1,19 @@
 package com.alsace.exchange.web.config.shiro;
 
+import com.alsace.exchange.web.config.redis.JsonRedisTemplate;
+import com.alsace.exchange.web.config.shiro.cache.RedisCacheManager;
+import com.alsace.exchange.web.config.shiro.jwt.JwtFilter;
+import com.alsace.exchange.web.config.shiro.jwt.JwtRealm;
+import com.alsace.exchange.web.config.shiro.jwt.JwtSubjectFactory;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.mgt.SubjectFactory;
-import org.apache.shiro.session.mgt.SessionManager;
-import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.crazycake.shiro.RedisCacheManager;
-import org.crazycake.shiro.RedisManager;
-import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,9 +23,6 @@ import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
-
-  private String host = "127.0.0.1:6379";
-  private String password = "";
 
   @Bean
   public SubjectFactory subjectFactory() {
@@ -45,41 +40,23 @@ public class ShiroConfig {
   }
 
   @Bean
-  public RedisManager redisManager() {
-    RedisManager redisManager = new RedisManager();
-    redisManager.setHost(host);
-//    redisManager.setPassword(password);
-    return redisManager;
+  public CacheManager cacheManager(JsonRedisTemplate redisTemplate){
+    return new RedisCacheManager(redisTemplate);
   }
 
   @Bean
-  public SessionDAO redisSessionDAO(RedisManager redisManager){
-    RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
-    redisSessionDAO.setRedisManager(redisManager);
-    return redisSessionDAO;
+  public JwtRealm jwtRealm(){
+    JwtRealm jwtRealm = new JwtRealm();
+    jwtRealm.setAuthenticationCachingEnabled(true);
+    jwtRealm.setAuthorizationCachingEnabled(true);
+    jwtRealm.setCachingEnabled(true);
+    return jwtRealm;
   }
 
   @Bean
-  public SessionManager sessionManager(SessionDAO redisSessionDAO){
-    DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-    sessionManager.setSessionDAO(redisSessionDAO);
-    return sessionManager;
-  }
-
-  @Bean
-  public CacheManager cacheManager(RedisManager redisManager){
-    RedisCacheManager redisCacheManager = new RedisCacheManager();
-    redisCacheManager.setRedisManager(redisManager);
-
-    return redisCacheManager;
-  }
-
-
-  @Bean
-  public SessionsSecurityManager securityManager(SessionManager sessionManager, CacheManager cacheManager, JwtRealm jwtRealm){
+  public SessionsSecurityManager securityManager(CacheManager cacheManager, JwtRealm jwtRealm){
     DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 //    securityManager.setSessionManager(sessionManager);
-    securityManager.setCacheManager(cacheManager);
 // 关闭 ShiroDAO 功能
     DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
     DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
@@ -89,7 +66,13 @@ public class ShiroConfig {
     securityManager.setSubjectDAO(subjectDAO);
     securityManager.setRealm(jwtRealm);
     securityManager.setSubjectFactory(subjectFactory());
+    securityManager.setCacheManager(cacheManager);
     return securityManager;
+  }
+
+  @Bean
+  public JwtFilter jwtFilter(){
+    return new JwtFilter();
   }
 
   @Bean
@@ -104,7 +87,7 @@ public class ShiroConfig {
 
     //增加自定义filter
     Map<String, Filter> filterMap = new LinkedHashMap<>();
-    filterMap.put("jwt", new JwtFilter());
+    filterMap.put("jwt", jwtFilter());
     filterFactoryBean.setFilters(filterMap);
 
     return filterFactoryBean;

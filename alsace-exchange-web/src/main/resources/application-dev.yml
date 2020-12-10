@@ -1,4 +1,7 @@
 spring:
+  #============
+  # 数据源配置
+  #============
   datasource:
     url: jdbc:mysql://127.0.0.1:3307/alsace?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
     password: root
@@ -8,6 +11,16 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: none
+  #==========
+  # redis配置
+  #==========
+  redis:
+    host: 127.0.0.1
+#    password:
+    port: 6379
+#================
+# 日志配置
+#================
 logging:
   level:
     org.hibernate.type.descriptor.sql.BasicBinder: trace

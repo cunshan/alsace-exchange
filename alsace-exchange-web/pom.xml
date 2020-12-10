@@ -13,6 +13,10 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
         <!-- swagger2 start -->
         <dependency>
             <groupId>io.springfox</groupId>
@@ -23,10 +27,6 @@
             <artifactId>springfox-boot-starter</artifactId>
         </dependency>
         <!-- swagger2 end -->
-        <dependency>
-            <groupId>org.crazycake</groupId>
-            <artifactId>shiro-redis</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
