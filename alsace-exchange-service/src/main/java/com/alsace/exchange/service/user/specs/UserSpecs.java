@@ -1,4 +1,4 @@
-package com.alsace.exchange.service.user.repositories;
+package com.alsace.exchange.service.user.specs;
 
 import com.alsace.exchange.service.user.domain.User;
 import org.springframework.data.jpa.domain.Specification;

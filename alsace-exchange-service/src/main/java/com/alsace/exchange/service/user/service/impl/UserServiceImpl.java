@@ -1,33 +1,26 @@
 package com.alsace.exchange.service.user.service.impl;
 
 import com.alsace.exchange.common.annontation.AutoFill;
-import com.alsace.exchange.common.base.Constants;
+import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
 import com.alsace.exchange.common.base.PageHelper;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
+import com.alsace.exchange.common.constants.Constants;
 import com.alsace.exchange.common.enums.AutoFillType;
-import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.service.user.domain.User;
 import com.alsace.exchange.service.user.repositories.UserRepository;
-import com.alsace.exchange.service.user.repositories.UserSpecs;
 import com.alsace.exchange.service.user.service.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends AbstractBaseServiceImpl<User, Long> implements UserService {
 
   @Resource
   private UserRepository userRepository;
@@ -41,31 +34,45 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User getOneById(Long id) {
-    return userRepository.getOne(id);
+    Assert.notNull(id, Constants.ID_NOT_NULL_ERROR);
+    return userRepository.findById(id).orElse(null);
   }
 
   @Override
   @AutoFill(AutoFillType.CREATE)
-  @Transactional(rollbackFor = Exception.class)
+  @Transactional
   public User save(User param) {
     User userParam = new User();
     userParam.setLoginAccount(param.getLoginAccount()).setDeleted(false);
     long userCount = userRepository.count(Example.of(userParam));
-    if (userCount > 0) {
-      throw new AlsaceException(String.format("用户名%s已经存在！", param.getLoginAccount()));
-    }
+    Assert.state(userCount > 0, String.format("用户名%s已经存在！", param.getLoginAccount()));
     param.setLocked(false);
     return userRepository.saveAndFlush(param);
   }
 
   @Override
-  public List<User> save(List<User> param) {
-    throw new UnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+  @AutoFill(AutoFillType.UPDATE)
+  @Transactional
+  public User update(User param) {
+    User dbUser = this.getOneById(param.getId());
+    Assert.state(dbUser != null, Constants.UPDATE_NOT_EXISTS_ERROR);
+    BeanUtils.copyProperties(param, dbUser);
+    return userRepository.saveAndFlush(dbUser);
   }
 
   @Override
   public PageResult<User> findPage(PageParam<User> param) {
     Page<User> userPage = userRepository.findAll(Example.of(param.getParam()), PageHelper.page(param));
     return new PageResult<>(userPage);
+  }
+
+  @Override
+  @Transactional
+  public boolean delete(Long id) {
+    User dbUser = this.getOneById(id);
+    Assert.state(dbUser != null, Constants.DELETE_NOT_EXISTS_ERROR);
+    dbUser.setDeleted(true);
+    userRepository.saveAndFlush(dbUser);
+    return true;
   }
 }

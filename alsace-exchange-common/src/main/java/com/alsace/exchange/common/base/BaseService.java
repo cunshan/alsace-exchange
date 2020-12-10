@@ -22,10 +22,21 @@ public interface BaseService<T, K> {
   /**
    * 批量保存
    */
-  List<T> save(List<T> param);
+  List<T> saveBatch(List<T> param);
 
   /**
    * 精确匹配，获取分页查询
    */
   PageResult<T> findPage(PageParam<T> param);
+
+  /**
+   * 更新
+   */
+  T update(T param);
+
+  /**
+   * 删除
+   */
+  boolean delete(K id);
+
 }

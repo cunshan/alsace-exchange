@@ -11,7 +11,6 @@ import lombok.experimental.Accessors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
