@@ -20,18 +20,21 @@ public class RedisCache implements Cache<Object, Object> {
 
   @Override
   public Object get(Object key) throws CacheException {
-    return redisTemplate.opsForValue().get(WebConstants.SHIRO_CACHE_PREFIX + key.toString());
+    if(key == null){
+      return null;
+    }
+    return redisTemplate.opsForValue().get(WebConstants.SHIRO_CACHE_PREFIX + key);
   }
 
   @Override
   public Object put(Object key, Object value) throws CacheException {
-    redisTemplate.opsForValue().set(WebConstants.SHIRO_CACHE_PREFIX + key.toString(), value,60L, TimeUnit.MINUTES);
+    redisTemplate.opsForValue().set(WebConstants.SHIRO_CACHE_PREFIX + key, value,60L, TimeUnit.MINUTES);
     return value;
   }
 
   @Override
   public Object remove(Object key) throws CacheException {
-    redisTemplate.delete(WebConstants.SHIRO_CACHE_PREFIX + key.toString());
+    redisTemplate.delete(WebConstants.SHIRO_CACHE_PREFIX + key);
     return null;
   }
 

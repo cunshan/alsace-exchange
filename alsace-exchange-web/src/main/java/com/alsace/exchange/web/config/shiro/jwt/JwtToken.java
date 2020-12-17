@@ -38,7 +38,7 @@ public class JwtToken implements AuthenticationToken {
    */
   @Override
   public Object getPrincipal() {
-    return loginAccount;
+    return token;
   }
 
   @Override

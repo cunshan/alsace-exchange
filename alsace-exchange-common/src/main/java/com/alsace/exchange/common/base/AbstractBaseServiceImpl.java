@@ -1,42 +1,71 @@
 package com.alsace.exchange.common.base;
 
+import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.constants.Constants;
+import com.alsace.exchange.common.enums.AutoFillType;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
-public class AbstractBaseServiceImpl<T,K> implements BaseService<T,K> {
+public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseService<T,Long> {
+
+  protected JpaRepository<T,Long> jpaRepository;
+
+  protected JpaSpecificationExecutor<T> specificationExecutor;
+
+
   @Override
   public T findOne(T t) {
-    throw new UnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+    Example<T> example = Example.of(t);
+    return jpaRepository.findOne(example).orElse(null);
   }
 
   @Override
-  public T getOneById(K id) {
-    throw new UnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+  public T getOneById(Long id) {
+    Assert.notNull(id, Constants.ID_NOT_NULL_ERROR);
+    return jpaRepository.findById(id).orElse(null);
   }
 
   @Override
+  @AutoFill(AutoFillType.CREATE)
+  @Transactional
   public T save(T param) {
-    throw new UnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+    return jpaRepository.saveAndFlush(param);
   }
 
   @Override
   public List<T> saveBatch(List<T> param) {
-    throw new UnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+    return jpaRepository.saveAll(param);
+  }
+
+  @Override
+  @AutoFill(AutoFillType.UPDATE)
+  @Transactional
+  public T update(T param) {
+    T dbUser = this.getOneById(param.getId());
+    Assert.state(dbUser != null, Constants.UPDATE_NOT_EXISTS_ERROR);
+    param.setId(dbUser.getId());
+    return jpaRepository.saveAndFlush(param);
   }
 
   @Override
   public PageResult<T> findPage(PageParam<T> param) {
-    throw new UnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+    Page<T> userPage = jpaRepository.findAll(Example.of(param.getParam()), PageHelper.page(param));
+    return new PageResult<>(userPage);
   }
 
   @Override
-  public T update(T param) {
-    throw new UnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
-  }
-
-  @Override
-  public boolean delete(K id) {
-    throw new UnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+  @Transactional
+  public boolean delete(Long id) {
+    T dbUser = this.getOneById(id);
+    Assert.state(dbUser != null, Constants.DELETE_NOT_EXISTS_ERROR);
+    dbUser.setDeleted(true);
+    jpaRepository.saveAndFlush(dbUser);
+    return true;
   }
 }

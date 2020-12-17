@@ -7,6 +7,7 @@ import com.alsace.exchange.web.config.exception.JwtException;
 import com.alsace.exchange.web.utils.JwtUtils;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -42,6 +43,9 @@ public class JwtRealm extends AuthorizingRealm {
   @Override
   protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
     JwtToken token = (JwtToken) authenticationToken;
+    if (StringUtils.isEmpty(token.getLoginAccount())) {
+      throw new JwtException("非法TOKEN！");
+    }
     User userParam = new User();
     userParam.setLoginAccount(token.getLoginAccount()).setDeleted(false);
     User user = userService.findOne(userParam);
