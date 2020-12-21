@@ -4,8 +4,9 @@ import com.alsace.exchange.common.base.AlsaceResult;
 import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
+import com.alsace.exchange.service.user.domain.Role;
 import com.alsace.exchange.service.user.domain.User;
-import com.alsace.exchange.service.user.service.UserService;
+import com.alsace.exchange.service.user.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -17,46 +18,39 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-@Api(tags = "用户",value = "user")
+@Api(tags = "角色",value = "role")
 @RestController
-@RequestMapping("/user")
-public class UserController extends BaseController {
-
+@RequestMapping("/role")
+public class RoleController extends BaseController {
+  
   @Resource
-  private UserService userService;
+  private RoleService roleService;
 
-  @ApiOperation("用户保存")
+  @ApiOperation("角色保存")
   @PostMapping("/save")
-  public AlsaceResult<User> save(@RequestBody User param) {
-    param.setPassword(DigestUtils.md5Hex(param.getPassword().trim() + param.getLoginAccount()));
-    User domain = userService.save(param);
-    return success(domain);
+  public AlsaceResult<Role> save(@RequestBody Role param) {
+    return success(roleService.save(param));
   }
 
-  @ApiOperation("分页查询")
+  @ApiOperation("角色分页查询")
   @PostMapping("/page")
-  public AlsaceResult<PageResult<User>> page(@RequestBody PageParam<User> param) {
-    PageResult<User> page = userService.findPage(param);
+  public AlsaceResult<PageResult<Role>> page(@RequestBody PageParam<Role> param) {
+    PageResult<Role> page = roleService.findPage(param);
     return success(page);
   }
 
-  @ApiOperation("用户更新")
+  @ApiOperation("角色更新")
   @PostMapping("/update")
-  public AlsaceResult<User> update(@RequestBody User param) {
-    param.setPassword(null);
-    param.setLoginAccount(null);
-    User domain = userService.update(param);
+  public AlsaceResult<Role> update(@RequestBody Role param) {
+    Role domain = roleService.update(param);
     return success(domain);
   }
 
-  @ApiOperation("用户删除")
+  @ApiOperation("角色删除")
   @PostMapping("/delete/{id}")
   public AlsaceResult<String> update(@PathVariable Long id) {
-    userService.delete(id);
+    roleService.delete(id);
     return success("删除成功",null);
   }
-
-
-
 
 }
