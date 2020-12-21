@@ -13,12 +13,15 @@ import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.web.filter.mgt.DefaultFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -33,9 +36,18 @@ public class ShiroConfig {
   @Bean
   public ShiroFilterChainDefinition shiroFilterChainDefinition() {
     DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
-    chainDefinition.addPathDefinition("/login", "anon");
-    chainDefinition.addPathDefinition("/swagger-ui/**", "anon");
-    chainDefinition.addPathDefinition("/user/save", "jwt");
+    chainDefinition.addPathDefinition("/login", "jwt[permissive]");
+
+    // SWAGGER2过滤【START】
+    chainDefinition.addPathDefinition("/swagger-ui/**", "anon,jwt[permissive]");
+    chainDefinition.addPathDefinition("/swagger-ui.html", "anon,jwt[permissive]");
+    chainDefinition.addPathDefinition("/swagger-resources", "anon,jwt[permissive]");
+    chainDefinition.addPathDefinition("/swagger-resources/**", "anon,jwt[permissive]");
+    chainDefinition.addPathDefinition("/webjars/springfox-swagger-ui/**", "anon,jwt[permissive]");
+    chainDefinition.addPathDefinition("/v2/api-docs","anon,jwt[permissive]");
+    // SWAGGER2过滤【END】
+
+    chainDefinition.addPathDefinition("/**", "jwt");
     return chainDefinition;
   }
 
@@ -76,12 +88,20 @@ public class ShiroConfig {
   }
 
   @Bean
+  public List<String> globalFilters(){
+    List<String> filters = new ArrayList<>();
+    filters.add(DefaultFilter.logout.name());
+    filters.add(DefaultFilter.anon.name());
+    filters.add(DefaultFilter.invalidRequest.name());
+    return filters;
+  }
+
+  @Bean
   public ShiroFilterFactoryBean shiroFilterFactoryBean(SessionsSecurityManager securityManager,
                                                        ShiroFilterChainDefinition shiroFilterChainDefinition) {
     ShiroFilterFactoryBean filterFactoryBean = new ShiroFilterFactoryBean();
 
     filterFactoryBean.setLoginUrl("/login");
-
     filterFactoryBean.setSecurityManager(securityManager);
     filterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition.getFilterChainMap());
 
