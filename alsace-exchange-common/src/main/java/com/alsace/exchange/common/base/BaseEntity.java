@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -15,6 +16,7 @@ import java.util.Date;
 @Setter
 @MappedSuperclass
 @Accessors(chain = true)
+@DynamicUpdate
 public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -4251104853104709042L;

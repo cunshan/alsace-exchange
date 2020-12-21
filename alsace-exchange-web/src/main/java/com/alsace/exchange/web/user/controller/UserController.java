@@ -39,5 +39,13 @@ public class UserController extends BaseController {
     return success(userPage);
   }
 
+  @ApiOperation("用户更新")
+  @PostMapping("/update")
+  public AlsaceResult<User> update(@RequestBody User param) {
+    param.setPassword(null);
+    param.setLoginAccount(null);
+    User user = userService.update(param);
+    return success(user);
+  }
 
 }

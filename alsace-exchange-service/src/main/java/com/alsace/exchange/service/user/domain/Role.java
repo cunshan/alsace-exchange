@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +20,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "sys_role")
 @ApiModel
+@DynamicUpdate
 public class Role extends BaseEntity {
 
   @ApiModelProperty("角色编码")

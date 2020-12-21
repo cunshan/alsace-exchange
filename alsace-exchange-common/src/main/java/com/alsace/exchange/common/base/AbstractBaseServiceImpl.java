@@ -3,6 +3,7 @@ package com.alsace.exchange.common.base;
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.constants.Constants;
 import com.alsace.exchange.common.enums.AutoFillType;
+import com.alsace.exchange.common.utils.AlsaceBeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -49,8 +50,8 @@ public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseServic
   public T update(T param) {
     T dbUser = this.getOneById(param.getId());
     Assert.state(dbUser != null, Constants.UPDATE_NOT_EXISTS_ERROR);
-    param.setId(dbUser.getId());
-    return jpaRepository.saveAndFlush(param);
+    AlsaceBeanUtils.copyNotNullProperties(param,dbUser);
+    return jpaRepository.saveAndFlush(dbUser);
   }
 
   @Override

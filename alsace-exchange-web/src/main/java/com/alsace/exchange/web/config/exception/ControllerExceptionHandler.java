@@ -43,6 +43,16 @@ public class ControllerExceptionHandler {
     return new AlsaceResult<String>().setSuccess(false).setMsg(ex.getMessage());
   }
 
+  /**
+   * 参数异常处理
+   */
+  @ExceptionHandler(IllegalArgumentException.class)
+  @ResponseBody
+  public AlsaceResult<String> bizException(IllegalArgumentException ex) {
+    log.error(Throwables.getStackTraceAsString(ex));
+    return new AlsaceResult<String>().setSuccess(false).setMsg(ex.getMessage());
+  }
+
 
   /**
    * 未处理的异常处理
