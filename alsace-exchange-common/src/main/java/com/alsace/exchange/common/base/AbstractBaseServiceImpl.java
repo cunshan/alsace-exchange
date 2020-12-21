@@ -34,7 +34,7 @@ public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseServic
 
   @Override
   @AutoFill(AutoFillType.CREATE)
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public T save(T param) {
     return jpaRepository.saveAndFlush(param);
   }
@@ -46,7 +46,7 @@ public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseServic
 
   @Override
   @AutoFill(AutoFillType.UPDATE)
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public T update(T param) {
     T dbUser = this.getOneById(param.getId());
     Assert.state(dbUser != null, Constants.UPDATE_NOT_EXISTS_ERROR);
@@ -61,7 +61,7 @@ public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseServic
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public boolean delete(Long id) {
     T dbUser = this.getOneById(id);
     Assert.state(dbUser != null, Constants.DELETE_NOT_EXISTS_ERROR);
