@@ -55,13 +55,13 @@ public class UserController extends BaseController {
 
   @ApiOperation("用户删除")
   @PostMapping("/delete/{id}")
-  public AlsaceResult<String> update(@PathVariable Long id) {
+  public AlsaceResult<String> delete(@PathVariable Long id) {
     userService.delete(id);
     return success("删除成功",null);
   }
 
   @ApiOperation("修改用户角色")
-  @PostMapping("/add-role")
+  @PostMapping("/add-roles")
   public AlsaceResult<String> addUserRoles(@RequestBody UserRoleVo param){
     userService.addUserRoles(param.getLoginAccount(),param.getRoleList());
     return success("更新成功！",null);

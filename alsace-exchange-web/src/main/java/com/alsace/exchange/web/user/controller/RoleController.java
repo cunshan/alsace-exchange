@@ -7,6 +7,7 @@ import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.user.domain.Role;
 import com.alsace.exchange.service.user.domain.User;
 import com.alsace.exchange.service.user.service.RoleService;
+import com.alsace.exchange.web.user.vo.RoleMenuVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -48,9 +49,16 @@ public class RoleController extends BaseController {
 
   @ApiOperation("角色删除")
   @PostMapping("/delete/{id}")
-  public AlsaceResult<String> update(@PathVariable Long id) {
+  public AlsaceResult<String> delete(@PathVariable Long id) {
     roleService.delete(id);
     return success("删除成功",null);
+  }
+
+  @ApiOperation("角色添加菜单")
+  @PostMapping("/add-menus")
+  public AlsaceResult<String> addMenus(@RequestBody RoleMenuVo param){
+    roleService.addMenus(param.getRoleCode(),param.getMenuIdList());
+    return success("更新成功！",null);
   }
 
 }

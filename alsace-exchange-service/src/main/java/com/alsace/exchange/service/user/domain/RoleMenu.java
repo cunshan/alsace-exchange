@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
 @Entity
 @Table(name = "sys_role_menu")
@@ -24,6 +26,6 @@ public class RoleMenu extends BaseEntity {
   private String roleCode;
 
   @Column(columnDefinition = "bigint(20) not null comment '菜单ID'")
-  private String menuId;
+  private Long menuId;
 
 }
