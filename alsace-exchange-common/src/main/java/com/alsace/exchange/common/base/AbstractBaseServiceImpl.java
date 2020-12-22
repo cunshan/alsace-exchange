@@ -84,4 +84,12 @@ public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseServic
     jpaRepository.saveAndFlush(dbUser);
     return true;
   }
+
+  @Override
+  public List<T> findAll(T param) {
+    if(param == null){
+      return jpaRepository.findAll();
+    }
+    return jpaRepository.findAll(Example.of(param));
+  }
 }

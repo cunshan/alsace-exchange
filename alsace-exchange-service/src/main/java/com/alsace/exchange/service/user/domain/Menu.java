@@ -24,10 +24,6 @@ import javax.persistence.Table;
 public class Menu extends BaseEntity {
   private static final long serialVersionUID = 7365386415095687241L;
 
-  @ApiModelProperty(value = "菜单编码")
-  @Column(columnDefinition = "varchar(64) not null comment '菜单编码'")
-  private String menuCode;
-
   @ApiModelProperty(value = "菜单名称")
   @Column(columnDefinition = "varchar(255) not null comment '菜单名称'")
   private String menuName;

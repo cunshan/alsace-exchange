@@ -39,4 +39,8 @@ public interface BaseService<T, K> {
    */
   boolean delete(K id);
 
+  /**
+   * 获取所有记录
+   */
+  List<T> findAll(T param);
 }

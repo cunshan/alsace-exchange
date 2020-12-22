@@ -23,7 +23,7 @@ public class RoleMenu extends BaseEntity {
   @Column(columnDefinition = "varchar(64) not null comment '角色编码'")
   private String roleCode;
 
-  @Column(columnDefinition = "varchar(64) not null comment '菜单编码'")
-  private String menuCode;
+  @Column(columnDefinition = "bigint(20) not null comment '菜单ID'")
+  private String menuId;
 
 }
