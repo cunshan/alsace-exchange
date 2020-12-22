@@ -39,8 +39,8 @@ public class MenuController extends BaseController {
 
   @ApiOperation("菜单树形结构查询")
   @GetMapping("/tree")
-  public AlsaceResult<List<MenuTreeVo>> tree() {
-    return success(menuHandler.tree());
+  public AlsaceResult<List<MenuTreeVo>> tree(Long parentId) {
+    return success(menuHandler.tree(parentId));
   }
 
   @ApiOperation("菜单更新")
