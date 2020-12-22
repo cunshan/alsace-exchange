@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseService<T,Long> {
@@ -18,7 +19,21 @@ public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseServic
   protected JpaRepository<T,Long> jpaRepository;
 
   protected JpaSpecificationExecutor<T> specificationExecutor;
+  @Resource
+  protected LoginInfoProvider loginInfoProvider;
 
+  /**
+   * 获取当前登录人账号
+   */
+  protected String getLoginAccount(){
+    return loginInfoProvider.loginAccount();
+  }
+  /**
+   * 获取当前登录人姓名
+   */
+  protected String getUserName(){
+    return loginInfoProvider.userName();
+  }
 
   @Override
   public T findOne(T t) {

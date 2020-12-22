@@ -5,7 +5,9 @@ import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.user.domain.User;
+import com.alsace.exchange.service.user.domain.UserRole;
 import com.alsace.exchange.service.user.service.UserService;
+import com.alsace.exchange.web.user.vo.UserRoleVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Api(tags = "用户",value = "user")
 @RestController
@@ -56,6 +60,12 @@ public class UserController extends BaseController {
     return success("删除成功",null);
   }
 
+  @ApiOperation("修改用户角色")
+  @PostMapping("/add-role")
+  public AlsaceResult<String> addUserRoles(@RequestBody UserRoleVo param){
+    userService.addUserRoles(param.getLoginAccount(),param.getRoleList());
+    return success("更新成功！",null);
+  }
 
 
 
