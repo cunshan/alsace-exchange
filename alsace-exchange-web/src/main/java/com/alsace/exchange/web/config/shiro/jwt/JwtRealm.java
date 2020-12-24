@@ -1,7 +1,7 @@
 package com.alsace.exchange.web.config.shiro.jwt;
 
-import com.alsace.exchange.service.user.domain.User;
-import com.alsace.exchange.service.user.service.UserService;
+import com.alsace.exchange.service.sys.domain.User;
+import com.alsace.exchange.service.sys.service.UserService;
 import com.alsace.exchange.web.common.WebConstants;
 import com.alsace.exchange.web.config.exception.JwtException;
 import com.alsace.exchange.web.utils.JwtUtils;

@@ -1,6 +1,6 @@
 package com.alsace.exchange.service.base.repositories;
 
-import com.alsace.exchange.service.user.domain.Menu;
+import com.alsace.exchange.service.sys.domain.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
