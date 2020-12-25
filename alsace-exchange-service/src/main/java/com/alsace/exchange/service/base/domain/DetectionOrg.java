@@ -28,8 +28,8 @@ public class DetectionOrg extends BaseEntity {
   @Column(columnDefinition = "varchar(255) not null comment '机构名称'")
   private String orgName;
 
-  @ApiModelProperty(value = "机构唯一码")
-  @Column(columnDefinition = "varchar(128) not null comment '机构唯一码'")
+  @ApiModelProperty(value = "机构编码")
+  @Column(columnDefinition = "varchar(128) not null comment '机构编码'")
   private String orgCode;
 
 
@@ -42,7 +42,7 @@ public class DetectionOrg extends BaseEntity {
   private String orgAddress;
 
   @ApiModelProperty(value = "联系方式")
-  @Column(columnDefinition = "varchar(255) not null comment '联系方式'")
+  @Column(columnDefinition = "varchar(128) not null comment '联系方式'")
   private String tel;
 
 }
