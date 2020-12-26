@@ -15,9 +15,11 @@ import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.apache.shiro.web.filter.mgt.DefaultFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
 import javax.servlet.Filter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -26,6 +28,9 @@ import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
+
+  @Resource
+  private JsonRedisTemplate jsonRedisTemplate;
 
   @Bean
   public SubjectFactory subjectFactory() {
@@ -52,8 +57,8 @@ public class ShiroConfig {
   }
 
   @Bean
-  public CacheManager cacheManager(JsonRedisTemplate redisTemplate){
-    return new RedisCacheManager(redisTemplate);
+  public CacheManager cacheManager(){
+    return new RedisCacheManager(jsonRedisTemplate);
   }
 
   @Bean
@@ -66,7 +71,7 @@ public class ShiroConfig {
   }
 
   @Bean
-  public SessionsSecurityManager securityManager(CacheManager cacheManager, JwtRealm jwtRealm){
+  public SessionsSecurityManager securityManager(){
     DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 //    securityManager.setSessionManager(sessionManager);
 // 关闭 ShiroDAO 功能
@@ -76,9 +81,9 @@ public class ShiroConfig {
     defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
     subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
     securityManager.setSubjectDAO(subjectDAO);
-    securityManager.setRealm(jwtRealm);
+    securityManager.setRealm(jwtRealm());
     securityManager.setSubjectFactory(subjectFactory());
-    securityManager.setCacheManager(cacheManager);
+    securityManager.setCacheManager(this.cacheManager());
     return securityManager;
   }
 
@@ -97,12 +102,11 @@ public class ShiroConfig {
   }
 
   @Bean
-  public ShiroFilterFactoryBean shiroFilterFactoryBean(SessionsSecurityManager securityManager,
-                                                       ShiroFilterChainDefinition shiroFilterChainDefinition) {
+  public ShiroFilterFactoryBean shiroFilterFactoryBean(ShiroFilterChainDefinition shiroFilterChainDefinition) {
     ShiroFilterFactoryBean filterFactoryBean = new ShiroFilterFactoryBean();
 
     filterFactoryBean.setLoginUrl("/login");
-    filterFactoryBean.setSecurityManager(securityManager);
+    filterFactoryBean.setSecurityManager(securityManager());
     filterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition.getFilterChainMap());
 
     //增加自定义filter
