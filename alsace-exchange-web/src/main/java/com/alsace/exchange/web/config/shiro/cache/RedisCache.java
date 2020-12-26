@@ -28,7 +28,7 @@ public class RedisCache implements Cache<Object, Object> {
 
   @Override
   public Object put(Object key, Object value) throws CacheException {
-    redisTemplate.opsForValue().set(WebConstants.SHIRO_CACHE_PREFIX + key, value,60L, TimeUnit.MINUTES);
+    redisTemplate.opsForValue().set(WebConstants.SHIRO_CACHE_PREFIX + key, value,WebConstants.JWT_TOKEN_TIMEOUT, TimeUnit.MINUTES);
     return value;
   }
 
