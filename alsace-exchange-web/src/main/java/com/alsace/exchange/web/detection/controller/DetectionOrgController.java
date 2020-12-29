@@ -1,11 +1,11 @@
-package com.alsace.exchange.web.base.controller;
+package com.alsace.exchange.web.detection.controller;
 
 import com.alsace.exchange.common.base.AlsaceResult;
 import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
-import com.alsace.exchange.service.base.domain.DetectionOrg;
-import com.alsace.exchange.service.base.service.DetectionOrgService;
+import com.alsace.exchange.service.detection.domain.DetectionOrg;
+import com.alsace.exchange.service.detection.service.DetectionOrgService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PathVariable;

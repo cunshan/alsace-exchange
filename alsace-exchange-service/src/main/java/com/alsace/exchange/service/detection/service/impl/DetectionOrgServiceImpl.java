@@ -1,9 +1,9 @@
-package com.alsace.exchange.service.base.service.impl;
+package com.alsace.exchange.service.detection.service.impl;
 
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
-import com.alsace.exchange.service.base.domain.DetectionOrg;
-import com.alsace.exchange.service.base.repositories.DetectionOrgRepositories;
-import com.alsace.exchange.service.base.service.DetectionOrgService;
+import com.alsace.exchange.service.detection.domain.DetectionOrg;
+import com.alsace.exchange.service.detection.repositories.DetectionOrgRepositories;
+import com.alsace.exchange.service.detection.service.DetectionOrgService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;

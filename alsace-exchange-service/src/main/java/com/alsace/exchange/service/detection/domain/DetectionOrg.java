@@ -1,4 +1,4 @@
-package com.alsace.exchange.service.base.domain;
+package com.alsace.exchange.service.detection.domain;
 
 import com.alsace.exchange.common.base.BaseEntity;
 import io.swagger.annotations.ApiModel;

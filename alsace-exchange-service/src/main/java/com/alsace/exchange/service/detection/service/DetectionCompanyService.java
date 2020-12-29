@@ -1,7 +1,7 @@
-package com.alsace.exchange.service.base.service;
+package com.alsace.exchange.service.detection.service;
 
 import com.alsace.exchange.common.base.BaseService;
-import com.alsace.exchange.service.base.domain.DetectionCompany;
+import com.alsace.exchange.service.detection.domain.DetectionCompany;
 
 public interface DetectionCompanyService extends BaseService<DetectionCompany,Long> {
 }

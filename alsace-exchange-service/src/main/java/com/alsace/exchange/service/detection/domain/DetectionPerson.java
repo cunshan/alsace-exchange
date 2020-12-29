@@ -1,4 +1,4 @@
-package com.alsace.exchange.service.base.domain;
+package com.alsace.exchange.service.detection.domain;
 
 import com.alsace.exchange.common.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -12,7 +12,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
