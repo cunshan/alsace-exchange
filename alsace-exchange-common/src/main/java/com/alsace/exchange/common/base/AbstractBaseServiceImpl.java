@@ -14,9 +14,9 @@ import org.springframework.util.Assert;
 import javax.annotation.Resource;
 import java.util.List;
 
-public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseService<T,Long> {
+public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseService<T, Long> {
 
-  protected JpaRepository<T,Long> jpaRepository;
+  protected JpaRepository<T, Long> jpaRepository;
 
   protected JpaSpecificationExecutor<T> specificationExecutor;
   @Resource
@@ -25,13 +25,14 @@ public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseServic
   /**
    * 获取当前登录人账号
    */
-  protected String getLoginAccount(){
+  protected String getLoginAccount() {
     return loginInfoProvider.loginAccount();
   }
+
   /**
    * 获取当前登录人姓名
    */
-  protected String getUserName(){
+  protected String getUserName() {
     return loginInfoProvider.userName();
   }
 
@@ -63,15 +64,21 @@ public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseServic
   @AutoFill(AutoFillType.UPDATE)
   @Transactional(rollbackFor = Exception.class)
   public T update(T param) {
+    Assert.notNull(param.getId(), Constants.ID_NOT_NULL_ERROR);
     T dbUser = this.getOneById(param.getId());
     Assert.state(dbUser != null, Constants.UPDATE_NOT_EXISTS_ERROR);
-    AlsaceBeanUtils.copyNotNullProperties(param,dbUser);
+    AlsaceBeanUtils.copyNotNullProperties(param, dbUser);
     return jpaRepository.saveAndFlush(dbUser);
   }
 
   @Override
   public PageResult<T> findPage(PageParam<T> param) {
-    Page<T> userPage = jpaRepository.findAll(Example.of(param.getParam()), PageHelper.page(param));
+    Page<T> userPage;
+    if (param.getParam() == null) {
+      userPage = jpaRepository.findAll(PageHelper.page(param));
+    } else {
+      userPage = jpaRepository.findAll(Example.of(param.getParam()), PageHelper.page(param));
+    }
     return new PageResult<>(userPage);
   }
 
@@ -87,7 +94,7 @@ public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseServic
 
   @Override
   public List<T> findAll(T param) {
-    if(param == null){
+    if (param == null) {
       return jpaRepository.findAll();
     }
     return jpaRepository.findAll(Example.of(param));
