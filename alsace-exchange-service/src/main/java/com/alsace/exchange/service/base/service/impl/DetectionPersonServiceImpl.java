@@ -4,9 +4,10 @@ import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
 import com.alsace.exchange.service.base.domain.DetectionPerson;
 import com.alsace.exchange.service.base.repositories.DetectionPersonRepositories;
 import com.alsace.exchange.service.base.service.DetectionPersonService;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 @Service
@@ -15,10 +16,14 @@ public class DetectionPersonServiceImpl extends AbstractBaseServiceImpl<Detectio
   @Resource
   private DetectionPersonRepositories detectionPersonRepositories;
 
-  @PostConstruct
-  public void init(){
-    super.jpaRepository = detectionPersonRepositories;
-    super.specificationExecutor = detectionPersonRepositories;
+
+  @Override
+  protected JpaRepository<DetectionPerson, Long> getJpaRepository() {
+    return this.detectionPersonRepositories;
   }
 
+  @Override
+  protected JpaSpecificationExecutor<DetectionPerson> getJpaSpecificationExecutor() {
+    return this.detectionPersonRepositories;
+  }
 }

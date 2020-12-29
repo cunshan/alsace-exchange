@@ -11,16 +11,28 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.List;
 
-public class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseService<T, Long> {
+public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseService<T, Long> {
 
   protected JpaRepository<T, Long> jpaRepository;
 
   protected JpaSpecificationExecutor<T> specificationExecutor;
   @Resource
   protected LoginInfoProvider loginInfoProvider;
+
+
+  @PostConstruct
+  public void init(){
+    this.jpaRepository = getJpaRepository();
+    this.specificationExecutor = getJpaSpecificationExecutor();
+  }
+
+  protected abstract JpaRepository<T, Long> getJpaRepository();
+
+  protected abstract JpaSpecificationExecutor<T> getJpaSpecificationExecutor();
 
   /**
    * 获取当前登录人账号

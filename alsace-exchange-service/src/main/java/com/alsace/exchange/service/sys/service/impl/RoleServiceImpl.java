@@ -9,10 +9,11 @@ import com.alsace.exchange.service.sys.repositories.RoleMenuRepository;
 import com.alsace.exchange.service.sys.repositories.RoleRepository;
 import com.alsace.exchange.service.sys.service.RoleService;
 import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,11 +28,14 @@ public class RoleServiceImpl extends AbstractBaseServiceImpl<Role> implements Ro
   @Resource
   private RoleMenuRepository roleMenuRepository;
 
+  @Override
+  protected JpaRepository<Role, Long> getJpaRepository() {
+    return this.roleRepository;
+  }
 
-  @PostConstruct
-  protected void init() {
-    super.jpaRepository = roleRepository;
-    super.specificationExecutor = roleRepository;
+  @Override
+  protected JpaSpecificationExecutor<Role> getJpaSpecificationExecutor() {
+    return this.roleRepository;
   }
 
   @Override
@@ -55,4 +59,5 @@ public class RoleServiceImpl extends AbstractBaseServiceImpl<Role> implements Ro
     roleMenuRepository.saveAll(roleMenuList);
     return true;
   }
+
 }

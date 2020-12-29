@@ -10,11 +10,12 @@ import com.alsace.exchange.service.sys.repositories.UserRepository;
 import com.alsace.exchange.service.sys.repositories.UserRoleRepository;
 import com.alsace.exchange.service.sys.service.UserService;
 import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,10 +30,15 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
   @Resource
   private UserRoleRepository userRoleRepository;
 
-  @PostConstruct
-  protected void init() {
-    super.jpaRepository = userRepository;
-    super.specificationExecutor = userRepository;
+
+  @Override
+  protected JpaRepository<User, Long> getJpaRepository() {
+    return this.userRepository;
+  }
+
+  @Override
+  protected JpaSpecificationExecutor<User> getJpaSpecificationExecutor() {
+    return this.userRepository;
   }
 
   @Override
