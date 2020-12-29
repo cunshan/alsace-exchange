@@ -1,9 +1,9 @@
 package com.alsace.exchange.web.sys.biz;
 
+import com.alsace.exchange.common.base.TreeVo;
 import com.alsace.exchange.common.utils.JsonUtils;
 import com.alsace.exchange.service.sys.domain.Menu;
 import com.alsace.exchange.service.sys.service.MenuService;
-import com.alsace.exchange.web.sys.vo.MenuTreeVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -23,24 +23,24 @@ public class MenuHandler {
   /**
    * 获取菜单树形结构
    */
-  public List<MenuTreeVo> tree(Long rootId) {
+  public List<TreeVo<Menu>> tree(Long rootId) {
     Menu menuParam = new Menu();
     menuParam.setDeleted(false);
     List<Menu> menuList = menuService.findAll(menuParam);
     //有父节点的菜单
-    Map<Long, List<MenuTreeVo>> childrenMap = new HashMap<>();
+    Map<Long, List<TreeVo<Menu>>> childrenMap = new HashMap<>();
     //菜单根节点
-    List<MenuTreeVo> rootList = new ArrayList<>();
+    List<TreeVo<Menu>> rootList = new ArrayList<>();
     menuList.forEach(menu -> {
       if (menu.getParentId() == null) {
         if (rootId == null) {
-          rootList.add(new MenuTreeVo(menu));
+          rootList.add(new TreeVo<>(menu));
         } else if (rootId.compareTo(menu.getId()) == 0) {
-          rootList.add(new MenuTreeVo(menu));
+          rootList.add(new TreeVo<>(menu));
         }
       } else {
-        List<MenuTreeVo> temp = childrenMap.getOrDefault(menu.getParentId(), new ArrayList<>());
-        temp.add(new MenuTreeVo(menu));
+        List<TreeVo<Menu>> temp = childrenMap.getOrDefault(menu.getParentId(), new ArrayList<>());
+        temp.add(new TreeVo<>(menu));
         childrenMap.putIfAbsent(menu.getParentId(), temp);
       }
     });
@@ -53,8 +53,8 @@ public class MenuHandler {
   /**
    * 添加子节点
    */
-  private void addChildren(MenuTreeVo root, Map<Long, List<MenuTreeVo>> childrenMap) {
-    root.setChildren(childrenMap.get(root.getMenu().getId()));
+  private void addChildren(TreeVo<Menu> root, Map<Long, List<TreeVo<Menu>>> childrenMap) {
+    root.setChildren(childrenMap.get(root.getValue().getId()));
     if (root.getChildren() == null) {
       return;
     }

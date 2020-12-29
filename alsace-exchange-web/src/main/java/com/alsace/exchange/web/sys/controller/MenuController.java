@@ -2,10 +2,10 @@ package com.alsace.exchange.web.sys.controller;
 
 import com.alsace.exchange.common.base.AlsaceResult;
 import com.alsace.exchange.common.base.BaseController;
+import com.alsace.exchange.common.base.TreeVo;
 import com.alsace.exchange.service.sys.domain.Menu;
 import com.alsace.exchange.service.sys.service.MenuService;
 import com.alsace.exchange.web.sys.biz.MenuHandler;
-import com.alsace.exchange.web.sys.vo.MenuTreeVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,8 +35,8 @@ public class MenuController extends BaseController {
   }
 
   @ApiOperation("菜单树形结构查询")
-  @GetMapping("/tree")
-  public AlsaceResult<List<MenuTreeVo>> tree(Long parentId) {
+  @GetMapping("/tree/{parentId}")
+  public AlsaceResult<List<TreeVo<Menu>>> tree(@PathVariable Long parentId) {
     return success(menuHandler.tree(parentId));
   }
 

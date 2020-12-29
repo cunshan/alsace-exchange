@@ -4,8 +4,10 @@ import com.alsace.exchange.common.base.AlsaceResult;
 import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
+import com.alsace.exchange.common.base.TreeVo;
 import com.alsace.exchange.service.detection.domain.DetectionOrg;
 import com.alsace.exchange.service.detection.service.DetectionOrgService;
+import com.alsace.exchange.web.detection.biz.DetectionOrgHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.TreeMap;
 
 @Api(tags = "检测机构",value = "detectionOrg")
 @RestController
@@ -23,6 +27,8 @@ public class DetectionOrgController extends BaseController {
 
   @Resource
   private DetectionOrgService detectionOrgService;
+  @Resource
+  private DetectionOrgHandler detectionOrgHandler;
 
 
   @ApiOperation("检测机构保存")
@@ -50,6 +56,12 @@ public class DetectionOrgController extends BaseController {
   public AlsaceResult<String> delete(@PathVariable Long id) {
     detectionOrgService.delete(id);
     return success("删除成功",null);
+  }
+
+  @ApiOperation("检测机构树结构查询")
+  @PostMapping("/tree/{parentCode}")
+  public AlsaceResult<List<TreeVo<DetectionOrg>>> tree(@PathVariable String parentCode) {
+    return success(detectionOrgHandler.tree(parentCode));
   }
 
 }
