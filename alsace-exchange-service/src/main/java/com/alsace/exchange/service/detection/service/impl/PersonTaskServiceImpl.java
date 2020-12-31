@@ -2,7 +2,7 @@ package com.alsace.exchange.service.detection.service.impl;
 
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
 import com.alsace.exchange.service.detection.domain.PersonTask;
-import com.alsace.exchange.service.detection.repositories.PersonTaskRepositories;
+import com.alsace.exchange.service.detection.repositories.PersonTaskRepository;
 import com.alsace.exchange.service.detection.service.PersonTaskService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -14,16 +14,16 @@ import javax.annotation.Resource;
 public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> implements PersonTaskService {
 
   @Resource
-  private PersonTaskRepositories personTaskRepositories;
+  private PersonTaskRepository personTaskRepository;
 
 
   @Override
   protected JpaRepository<PersonTask, Long> getJpaRepository() {
-    return this.personTaskRepositories;
+    return this.personTaskRepository;
   }
 
   @Override
   protected JpaSpecificationExecutor<PersonTask> getJpaSpecificationExecutor() {
-    return this.personTaskRepositories;
+    return this.personTaskRepository;
   }
 }
