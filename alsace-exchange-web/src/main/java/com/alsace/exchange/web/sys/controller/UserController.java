@@ -4,12 +4,14 @@ import com.alsace.exchange.common.base.AlsaceResult;
 import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
+import com.alsace.exchange.common.validate.groups.Create;
 import com.alsace.exchange.service.sys.domain.User;
 import com.alsace.exchange.service.sys.service.UserService;
 import com.alsace.exchange.web.sys.vo.UserRoleVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +30,7 @@ public class UserController extends BaseController {
 
   @ApiOperation("用户保存")
   @PostMapping("/save")
-  public AlsaceResult<User> save(@RequestBody User param) {
+  public AlsaceResult<User> save(@RequestBody @Validated(Create.class) User param) {
     param.setPassword(DigestUtils.md5Hex(param.getPassword().trim() + param.getLoginAccount()));
     User domain = userService.save(param);
     return success(domain);

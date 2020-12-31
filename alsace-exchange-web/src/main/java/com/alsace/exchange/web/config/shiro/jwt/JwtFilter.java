@@ -2,8 +2,8 @@ package com.alsace.exchange.web.config.shiro.jwt;
 
 import com.alsace.exchange.common.base.AlsaceResult;
 import com.alsace.exchange.common.utils.JsonUtils;
+import com.alsace.exchange.service.config.redis.JsonRedisTemplate;
 import com.alsace.exchange.web.common.WebConstants;
-import com.alsace.exchange.web.config.redis.JsonRedisTemplate;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationToken;

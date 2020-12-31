@@ -1,6 +1,6 @@
 package com.alsace.exchange.web.config.shiro;
 
-import com.alsace.exchange.web.config.redis.JsonRedisTemplate;
+import com.alsace.exchange.service.config.redis.JsonRedisTemplate;
 import com.alsace.exchange.web.config.shiro.cache.RedisCacheManager;
 import com.alsace.exchange.web.config.shiro.jwt.JwtFilter;
 import com.alsace.exchange.web.config.shiro.jwt.JwtRealm;
@@ -15,7 +15,6 @@ import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.apache.shiro.web.filter.mgt.DefaultFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

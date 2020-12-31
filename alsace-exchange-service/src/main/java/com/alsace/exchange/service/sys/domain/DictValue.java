@@ -23,6 +23,7 @@ import javax.persistence.Table;
 @DynamicUpdate
 public class DictValue extends BaseEntity {
 
+  private static final long serialVersionUID = -6289769790229826482L;
   @ApiModelProperty(value = "数据字典值")
   @Column(columnDefinition = "varchar(128) not null comment '数据字典值'")
   private String valueCode;

@@ -20,10 +20,10 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "biz_person_task_location")
+@Table(name = "biz_person_task_org")
 @ApiModel
 @DynamicUpdate
-public class PersonTaskLocation extends BaseEntity {
+public class PersonTaskOrg extends BaseEntity {
 
   private static final long serialVersionUID = 2837596444087626503L;
 
@@ -31,14 +31,14 @@ public class PersonTaskLocation extends BaseEntity {
   @Column(columnDefinition = "varchar(128) not null comment '任务编码'")
   private String taskCode;
 
-  @ApiModelProperty(value = "地点编码")
-  @Column(columnDefinition = "varchar(64) not null comment '地点编码'")
-  @NotEmpty(groups = {Create.class}, message = "地点编码为空！")
-  private String locationCode;
+  @ApiModelProperty(value = "机构名称")
+  @Column(columnDefinition = "varchar(255) not null comment '机构名称'")
+  @NotEmpty(groups = {Create.class}, message = "机构名称为空！")
+  private String orgName;
 
-  @ApiModelProperty(value = "地点名称")
-  @Column(columnDefinition = "varchar(128) not null comment '地点名称'")
-  @NotEmpty(groups = {Create.class}, message = "地点名称为空！")
-  private String locationName;
+  @ApiModelProperty(value = "机构编码")
+  @Column(columnDefinition = "varchar(128) not null comment '机构编码'")
+  @NotEmpty(groups = {Create.class}, message = "机构编码为空！")
+  private String orgCode;
 
 }

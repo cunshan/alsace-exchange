@@ -57,6 +57,8 @@ public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements B
   }
 
   @Override
+  @AutoFill(AutoFillType.CREATE)
+  @Transactional(rollbackFor = Exception.class)
   public List<T> saveBatch(List<T> param) {
     return getJpaRepository().saveAll(param);
   }

@@ -1,4 +1,4 @@
-package com.alsace.exchange.web.config.redis;
+package com.alsace.exchange.service.config.redis;
 
 import com.alsace.exchange.common.utils.JsonUtils;
 import org.springframework.data.redis.serializer.RedisSerializer;

@@ -1,4 +1,4 @@
-package com.alsace.exchange.web.config.redis;
+package com.alsace.exchange.service.config.redis;
 
 import org.springframework.data.redis.connection.DefaultStringRedisConnection;
 import org.springframework.data.redis.connection.RedisConnection;

@@ -22,6 +22,7 @@ import javax.persistence.Table;
 @ApiModel
 public class RoleMenu extends BaseEntity {
 
+  private static final long serialVersionUID = 2564266512440068343L;
   @Column(columnDefinition = "varchar(64) not null comment '角色编码'")
   private String roleCode;
 
