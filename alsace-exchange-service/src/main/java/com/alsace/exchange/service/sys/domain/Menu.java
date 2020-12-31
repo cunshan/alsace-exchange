@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
@@ -29,7 +29,7 @@ public class Menu extends BaseEntity {
 
   @ApiModelProperty(value = "菜单名称")
   @Column(columnDefinition = "varchar(255) not null comment '菜单名称'")
-  @NotEmpty(groups = {Create.class},message = "菜单名称为空！")
+  @NotBlank(groups = {Create.class},message = "菜单名称为空！")
   private String menuName;
 
   @ApiModelProperty(value = "父菜单ID")
@@ -59,7 +59,7 @@ public class Menu extends BaseEntity {
 
   @ApiModelProperty(value = "菜单类型（D目录 M菜单 B按钮）")
   @Column(columnDefinition = "varchar(32) not null comment '菜单类型（D目录 M菜单 B按钮）'")
-  @NotEmpty(groups = {Create.class},message = "菜单类型为空！")
+  @NotBlank(groups = {Create.class},message = "菜单类型为空！")
   private String menuType;
 
   @ApiModelProperty(value = "菜单状态（0显示 1隐藏）")

@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -28,12 +28,12 @@ public class Role extends BaseEntity {
   private static final long serialVersionUID = 1408143763293194610L;
   @ApiModelProperty("角色编码")
   @Column(columnDefinition = "varchar(64) not null comment '角色编码'")
-  @NotEmpty(groups = {Create.class},message = "角色编码为空！")
+  @NotBlank(groups = {Create.class},message = "角色编码为空！")
   private String roleCode;
 
   @ApiModelProperty("角色名称")
   @Column(columnDefinition = "varchar(255) not null comment '角色名称'")
-  @NotEmpty(groups = {Create.class},message = "角色名称为空！")
+  @NotBlank(groups = {Create.class},message = "角色名称为空！")
   private String roleName;
 
 

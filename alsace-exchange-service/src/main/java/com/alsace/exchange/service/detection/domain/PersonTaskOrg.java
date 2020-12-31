@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -33,12 +33,12 @@ public class PersonTaskOrg extends BaseEntity {
 
   @ApiModelProperty(value = "机构名称")
   @Column(columnDefinition = "varchar(255) not null comment '机构名称'")
-  @NotEmpty(groups = {Create.class}, message = "机构名称为空！")
+  @NotBlank(groups = {Create.class}, message = "机构名称为空！")
   private String orgName;
 
   @ApiModelProperty(value = "机构编码")
   @Column(columnDefinition = "varchar(128) not null comment '机构编码'")
-  @NotEmpty(groups = {Create.class}, message = "机构编码为空！")
+  @NotBlank(groups = {Create.class}, message = "机构编码为空！")
   private String orgCode;
 
 }

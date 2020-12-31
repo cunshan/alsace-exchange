@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
@@ -34,12 +34,12 @@ public class PersonTaskOperator extends BaseEntity {
 
   @ApiModelProperty(value = "任务地点ID")
   @Column(columnDefinition = "bigint(20) not null comment '任务地点ID'")
-  @NotEmpty(groups = {Create.class}, message = "任务地点为空！")
+  @NotBlank(groups = {Create.class}, message = "任务地点为空！")
   private Long locationId;
 
   @ApiModelProperty(value = "姓名")
   @Column(columnDefinition = "varchar(128) not null comment '姓名'")
-  @NotEmpty(groups = {Create.class}, message = "姓名为空！")
+  @NotBlank(groups = {Create.class}, message = "姓名为空！")
   private String personName;
 
   @ApiModelProperty(value = "性别")
@@ -61,7 +61,7 @@ public class PersonTaskOperator extends BaseEntity {
 
   @ApiModelProperty(value = "身份证号")
   @Column(columnDefinition = "varchar(64) comment '身份证号'")
-  @NotEmpty(groups = {Create.class}, message = "身份证号为空！")
+  @NotBlank(groups = {Create.class}, message = "身份证号为空！")
   private String idCardNo;
 
   @ApiModelProperty(value = "地区")
@@ -74,17 +74,17 @@ public class PersonTaskOperator extends BaseEntity {
 
   @ApiModelProperty(value = "电话")
   @Column(columnDefinition = "varchar(128) comment '电话'")
-  @NotEmpty(groups = {Create.class}, message = "电话为空！")
+  @NotBlank(groups = {Create.class}, message = "电话为空！")
   private String tel;
 
   @ApiModelProperty(value = "企业名称")
   @Column(columnDefinition = "varchar(128) comment '企业名称'")
-  @NotEmpty(groups = {Create.class}, message = "企业名称为空！")
+  @NotBlank(groups = {Create.class}, message = "企业名称为空！")
   private String companyName;
 
   @ApiModelProperty(value = "企业编码")
   @Column(columnDefinition = "varchar(128) comment '企业编码'")
-  @NotEmpty(groups = {Create.class}, message = "企业编码为空！")
+  @NotBlank(groups = {Create.class}, message = "企业编码为空！")
   private String companyCode;
 
   @ApiModelProperty(value = "在职状态")

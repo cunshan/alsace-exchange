@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -31,17 +31,17 @@ public class PersonTask extends BaseEntity {
 
   @ApiModelProperty(value = "任务编码")
   @Column(columnDefinition = "varchar(128) not null comment '任务编码'")
-  @NotEmpty(groups = {Create.class}, message = "任务编码为空!")
+  @NotBlank(groups = {Create.class}, message = "任务编码为空!")
   private String taskCode;
 
   @ApiModelProperty(value = "任务描述")
   @Column(columnDefinition = "varchar(255) not null comment '任务描述'")
-  @NotEmpty(groups = {Create.class}, message = "任务描述为空!")
+  @NotBlank(groups = {Create.class}, message = "任务描述为空!")
   private String taskDesc;
 
   @ApiModelProperty(value = "任务状态 10：已创建 20：待下发 30：已下发 40：待开始 50：进行中 60：已完成 70：取消")
   @Column(columnDefinition = "int(2) not null comment '任务状态 10：已创建 20：待下发 30：已下发 40：待开始 50：进行中 60：已完成 70：取消'")
-  @NotEmpty(groups = {Create.class}, message = "任务编码为空!")
+  @NotBlank(groups = {Create.class}, message = "任务编码为空!")
   private Integer taskStatus;
 
   @ApiModelProperty(value = "任务开始时间")
@@ -61,12 +61,12 @@ public class PersonTask extends BaseEntity {
 
   @ApiModelProperty(value = "检测项目")
   @Column(columnDefinition = "varchar(64) not null comment '检测项目'")
-  @NotEmpty(groups = {Create.class}, message = "检测项目为空！")
+  @NotBlank(groups = {Create.class}, message = "检测项目为空！")
   private String detectionMethod;
 
   @ApiModelProperty(value = "混管设置")
   @Column(columnDefinition = "varchar(255) not null comment '混管设置'")
-  @NotEmpty(groups = {Create.class}, message = "混管设置为空！")
+  @NotBlank(groups = {Create.class}, message = "混管设置为空！")
   private String mixedMode;
 
 }

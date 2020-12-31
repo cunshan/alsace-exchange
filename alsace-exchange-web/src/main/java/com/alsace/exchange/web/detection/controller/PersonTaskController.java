@@ -6,6 +6,8 @@ import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.service.PersonTaskService;
+import com.alsace.exchange.web.detection.vo.PersonTaskDetailVo;
+import com.alsace.exchange.web.detection.vo.PersonTaskOperatorVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,6 +53,19 @@ public class PersonTaskController extends BaseController {
   public AlsaceResult<String> delete(@PathVariable Long id) {
     personTaskService.delete(id);
     return success("删除成功",null);
+  }
+
+  @ApiOperation("人员检测任务添加检测人员")
+  @PostMapping("/add-operators")
+  public AlsaceResult<String> addOperators(@RequestBody PersonTaskOperatorVo paramVo){
+    personTaskService.addOperators(paramVo.getTaskCode(),paramVo.getOperatorList());
+    return success("添加成功！");
+  }
+
+  @ApiOperation("人员检测任务添加被检测人员")
+  @PostMapping("/add-details")
+  public AlsaceResult<String> addDetails(@RequestBody PersonTaskDetailVo paramVo){
+    return success("添加成功！");
   }
   
 }

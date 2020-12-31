@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -32,21 +32,21 @@ public class User extends BaseEntity {
      */
     @ApiModelProperty("登录名")
     @Column(columnDefinition = "varchar(32) not null comment '登录名'")
-    @NotEmpty(groups = {Create.class}, message = "登录名为空！")
+    @NotBlank(groups = {Create.class}, message = "登录名为空！")
     private String loginAccount;
     /**
      * 用户姓名
      */
     @ApiModelProperty("用户姓名")
     @Column(columnDefinition = "varchar(32) not null comment '用户姓名'")
-    @NotEmpty(groups = {Create.class}, message = "用户姓名为空！")
+    @NotBlank(groups = {Create.class}, message = "用户姓名为空！")
     private String userName;
     /**
      * 密码
      */
     @ApiModelProperty("密码")
     @Column(columnDefinition = "varchar(64) not null comment '密码'")
-    @NotEmpty(groups = {Create.class}, message = "密码为空！")
+    @NotBlank(groups = {Create.class}, message = "密码为空！")
     private String password;
     /**
      * 昵称
@@ -59,7 +59,7 @@ public class User extends BaseEntity {
      */
     @ApiModelProperty("电话号码")
     @Column(columnDefinition = "varchar(64) comment '电话号码'")
-    @NotEmpty(groups = {Create.class}, message = "电话号码为空！")
+    @NotBlank(groups = {Create.class}, message = "电话号码为空！")
     private String tel;
     /**
      * 邮件地址

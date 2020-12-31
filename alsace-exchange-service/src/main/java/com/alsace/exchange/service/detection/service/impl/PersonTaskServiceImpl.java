@@ -1,12 +1,16 @@
 package com.alsace.exchange.service.detection.service.impl;
 
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
+import com.alsace.exchange.common.exception.AlsaceException;
+import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
+import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
 import com.alsace.exchange.service.detection.emums.TaskStatus;
 import com.alsace.exchange.service.detection.repositories.PersonTaskRepository;
 import com.alsace.exchange.service.detection.service.PersonTaskLocationService;
+import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
 import com.alsace.exchange.service.detection.service.PersonTaskOrgService;
 import com.alsace.exchange.service.detection.service.PersonTaskService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
@@ -18,6 +22,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -29,6 +34,8 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   private PersonTaskOrgService personTaskOrgService;
   @Resource
   private PersonTaskLocationService personTaskLocationService;
+  @Resource
+  private PersonTaskOperatorService personTaskOperatorService;
 
   @Resource
   private OrderNoGenerator orderNoGenerator;
@@ -46,20 +53,39 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   @Override
   @Transactional(rollbackFor = {Exception.class})
   public PersonTask save(PersonTask task, List<PersonTaskOrg> orgList, List<PersonTaskLocation> locationList) {
-    Assert.notNull(task,"任务信息为空！");
-    Assert.notEmpty(orgList,"检测机构为空！");
+    Assert.notNull(task, "任务信息为空！");
+    Assert.notEmpty(orgList, "检测机构为空！");
     String taskCode = orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_CODE);
     //保存任务对应检测机构
-    orgList.forEach(org->org.setTaskCode(taskCode));
+    orgList.forEach(org -> org.setTaskCode(taskCode));
     personTaskOrgService.saveBatch(orgList);
     //保存任务对应地点
-    if(!CollectionUtils.isEmpty(locationList)){
-      locationList.forEach(location->location.setTaskCode(taskCode));
+    if (!CollectionUtils.isEmpty(locationList)) {
+      locationList.forEach(location -> location.setTaskCode(taskCode));
       personTaskLocationService.saveBatch(locationList);
     }
     //保存任务
     task.setTaskCode(taskCode);
     task.setTaskStatus(TaskStatus.INIT.status());
     return this.save(task);
+  }
+
+  @Override
+  @Transactional(rollbackFor = {Exception.class})
+  public void addOperators(String taskCode, List<PersonTaskOperator> operatorList) {
+    //校验任务状态
+    PersonTask taskParam = new PersonTask();
+    taskParam.setTaskCode(taskCode).setDeleted(false);
+    PersonTask task = this.findOne(taskParam);
+    Assert.state(task != null, "检测任务不存在！");
+    Assert.state(TaskStatus.INIT.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添加检测人员！[%s]", task.getTaskStatus()));
+    //保存检测人员
+    operatorList.forEach(operator-> operator.setTaskCode(taskCode));
+    personTaskOperatorService.saveBatch(operatorList);
+    //更改任务状态为待下发
+    task.setTaskStatus(TaskStatus.ASSIGNING.status());
+    task.setModifiedBy(getLoginAccount());
+    task.setModifiedDate(new Date());
+    personTaskRepository.saveAndFlush(task);
   }
 }
