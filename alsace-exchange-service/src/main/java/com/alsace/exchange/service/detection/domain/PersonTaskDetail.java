@@ -18,12 +18,25 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "cd_detection_person")
+@Table(name = "biz_person_task_detail")
 @ApiModel
 @DynamicUpdate
-public class DetectionPerson extends BaseEntity {
+public class PersonTaskDetail extends BaseEntity {
 
-  private static final long serialVersionUID = -7619807693487945561L;
+  private static final long serialVersionUID = 2837596444087626503L;
+
+  @ApiModelProperty(value = "明细编码")
+  @Column(columnDefinition = "varchar(128) not null comment '明细编码'")
+  private String detailCode;
+
+  @ApiModelProperty(value = "任务编码")
+  @Column(columnDefinition = "varchar(128) not null comment '任务编码'")
+  private String taskCode;
+
+  @ApiModelProperty(value = "任务地点ID")
+  @Column(columnDefinition = "bigint(20) not null comment '任务地点ID'")
+  private Long locationId;
+
   @ApiModelProperty(value = "姓名")
   @Column(columnDefinition = "varchar(128) not null comment '姓名'")
   private String personName;
@@ -79,5 +92,21 @@ public class DetectionPerson extends BaseEntity {
   @ApiModelProperty(value = "归属市")
   @Column(columnDefinition = "varchar(128) comment '归属市'")
   private String city;
+
+  @ApiModelProperty(value = "核酸采样管编码")
+  @Column(columnDefinition = "varchar(128) comment '核酸采样管编码'")
+  private String nucleicAcidNo;
+
+  @ApiModelProperty(value = "核酸是否阳性")
+  @Column(columnDefinition = "tinyint(1) comment '核酸是否阳性'")
+  private Boolean nucleicAcidPositive;
+
+  @ApiModelProperty(value = "抗体采样管编码")
+  @Column(columnDefinition = "varchar(128) comment '抗体采样管编码'")
+  private String antibodyNo;
+
+  @ApiModelProperty(value = "抗体是否阳性")
+  @Column(columnDefinition = "tinyint(1) comment '抗体是否阳性'")
+  private Boolean antibodyPositive;
 
 }

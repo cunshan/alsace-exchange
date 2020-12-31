@@ -18,11 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.TreeMap;
 
 @Api(tags = "检测机构",value = "detectionOrg")
 @RestController
-@RequestMapping("/detection")
+@RequestMapping("/detection/org")
 public class DetectionOrgController extends BaseController {
 
   @Resource

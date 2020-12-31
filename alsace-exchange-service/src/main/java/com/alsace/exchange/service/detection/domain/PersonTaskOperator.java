@@ -18,12 +18,21 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "cd_detection_person")
+@Table(name = "biz_person_task_operator")
 @ApiModel
 @DynamicUpdate
-public class DetectionPerson extends BaseEntity {
+public class PersonTaskOperator extends BaseEntity {
 
-  private static final long serialVersionUID = -7619807693487945561L;
+  private static final long serialVersionUID = 2837596444087626503L;
+
+  @ApiModelProperty(value = "任务编码")
+  @Column(columnDefinition = "varchar(128) not null comment '任务编码'")
+  private String taskCode;
+
+  @ApiModelProperty(value = "任务地点ID")
+  @Column(columnDefinition = "bigint(20) not null comment '任务地点ID'")
+  private Long locationId;
+
   @ApiModelProperty(value = "姓名")
   @Column(columnDefinition = "varchar(128) not null comment '姓名'")
   private String personName;
