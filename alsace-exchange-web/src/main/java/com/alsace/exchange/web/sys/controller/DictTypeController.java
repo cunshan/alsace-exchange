@@ -5,11 +5,9 @@ import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.sys.domain.DictType;
-import com.alsace.exchange.service.sys.domain.DictValue;
 import com.alsace.exchange.service.sys.service.DictTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,9 +46,9 @@ public class DictTypeController extends BaseController {
   }
 
   @ApiOperation("数据字典删除")
-  @PostMapping("/delete/{id}")
-  public AlsaceResult<String> delete(@PathVariable Long id) {
-    dictTypeService.delete(id);
+  @PostMapping("/delete")
+  public AlsaceResult<String> delete(@RequestBody List<Long> idList) {
+    dictTypeService.delete(idList);
     return success("删除成功",null);
   }
 

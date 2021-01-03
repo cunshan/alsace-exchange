@@ -12,13 +12,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Api(tags = "用户",value = "user")
 @RestController
@@ -53,9 +53,9 @@ public class UserController extends BaseController {
   }
 
   @ApiOperation("用户删除")
-  @PostMapping("/delete/{id}")
-  public AlsaceResult<String> delete(@PathVariable Long id) {
-    userService.delete(id);
+  @PostMapping("/delete")
+  public AlsaceResult<String> delete(@RequestBody List<Long> idList) {
+    userService.delete(idList);
     return success("删除成功",null);
   }
 

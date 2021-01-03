@@ -36,8 +36,9 @@ public interface BaseService<T, K> {
 
   /**
    * 删除
+   * @param id
    */
-  boolean delete(K id);
+  boolean delete(List<Long> id);
 
   /**
    * 获取所有记录

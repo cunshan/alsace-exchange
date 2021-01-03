@@ -40,7 +40,7 @@ public class ShiroConfig {
   @Bean
   public ShiroFilterChainDefinition shiroFilterChainDefinition() {
     DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
-    chainDefinition.addPathDefinition("/login", "jwt[permissive]");
+    chainDefinition.addPathDefinition("/login", "anon,jwt[allowed]");
 
     // SWAGGER2过滤【START】
     chainDefinition.addPathDefinition("/swagger-ui/**", "anon,jwt[permissive]");

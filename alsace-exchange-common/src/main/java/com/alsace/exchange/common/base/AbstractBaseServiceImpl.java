@@ -3,6 +3,7 @@ package com.alsace.exchange.common.base;
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.constants.Constants;
 import com.alsace.exchange.common.enums.AutoFillType;
+import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.AlsaceBeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseService<T, Long> {
@@ -76,22 +78,26 @@ public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements B
 
   @Override
   public PageResult<T> findPage(PageParam<T> param) {
-    Page<T> userPage;
-    if (param.getParam() == null) {
-      userPage = getJpaRepository().findAll(PageHelper.page(param));
-    } else {
-      userPage = getJpaRepository().findAll(Example.of(param.getParam()), PageHelper.page(param));
+    if(param.getParam()==null){
+      throw new AlsaceException("参数对象为空！");
     }
+    param.getParam().setDeleted(false);
+    Page<T> userPage = getJpaRepository().findAll(Example.of(param.getParam()), PageHelper.page(param));
     return new PageResult<>(userPage);
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public boolean delete(Long id) {
-    T dbUser = this.getOneById(id);
-    Assert.state(dbUser != null, Constants.DELETE_NOT_EXISTS_ERROR);
-    dbUser.setDeleted(true);
-    getJpaRepository().saveAndFlush(dbUser);
+  public boolean delete(List<Long> idList) {
+    Assert.notEmpty(idList,"ID列表为空！");
+    List<T> domainList = new ArrayList<>(idList.size());
+    idList.forEach(id->{
+      T dbUser = this.getOneById(id);
+      Assert.state(dbUser != null, Constants.DELETE_NOT_EXISTS_ERROR);
+      dbUser.setDeleted(true);
+      domainList.add(dbUser);
+    });
+    getJpaRepository().saveAll(domainList);
     return true;
   }
 

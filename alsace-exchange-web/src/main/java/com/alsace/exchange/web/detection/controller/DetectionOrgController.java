@@ -51,9 +51,9 @@ public class DetectionOrgController extends BaseController {
   }
 
   @ApiOperation("检测机构删除")
-  @PostMapping("/delete/{id}")
-  public AlsaceResult<String> delete(@PathVariable Long id) {
-    detectionOrgService.delete(id);
+  @PostMapping("/delete")
+  public AlsaceResult<String> delete(@RequestBody List<Long> idList) {
+    detectionOrgService.delete(idList);
     return success("删除成功",null);
   }
 

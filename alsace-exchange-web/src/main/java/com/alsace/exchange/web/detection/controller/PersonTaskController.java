@@ -11,13 +11,13 @@ import com.alsace.exchange.web.detection.vo.PersonTaskOperatorVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Api(tags = "人员检测任务",value = "personTask")
 @RestController
@@ -49,9 +49,9 @@ public class PersonTaskController extends BaseController {
   }
 
   @ApiOperation("人员检测任务删除")
-  @PostMapping("/delete/{id}")
-  public AlsaceResult<String> delete(@PathVariable Long id) {
-    personTaskService.delete(id);
+  @PostMapping("/delete")
+  public AlsaceResult<String> delete(@RequestBody List<Long> idList) {
+    personTaskService.delete(idList);
     return success("删除成功",null);
   }
 

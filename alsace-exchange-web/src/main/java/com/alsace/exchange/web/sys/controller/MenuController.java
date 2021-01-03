@@ -48,9 +48,9 @@ public class MenuController extends BaseController {
   }
 
   @ApiOperation("菜单删除")
-  @PostMapping("/delete/{id}")
-  public AlsaceResult<String> delete(@PathVariable Long id) {
-    menuService.delete(id);
+  @PostMapping("/delete")
+  public AlsaceResult<String> delete(@RequestBody List<Long> idList) {
+    menuService.delete(idList);
     return success("删除成功",null);
   }
 

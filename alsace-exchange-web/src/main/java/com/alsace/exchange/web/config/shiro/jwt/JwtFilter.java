@@ -24,8 +24,6 @@ public class JwtFilter extends BearerHttpAuthenticationFilter {
   @Resource
   private JsonRedisTemplate jsonRedisTemplate;
 
-
-
   @Override
   protected boolean sendChallenge(ServletRequest request, ServletResponse response) {
     HttpServletResponse httpResponse = WebUtils.toHttp(response);

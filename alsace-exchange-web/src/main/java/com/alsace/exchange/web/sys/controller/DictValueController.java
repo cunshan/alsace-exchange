@@ -48,9 +48,9 @@ public class DictValueController extends BaseController {
   }
 
   @ApiOperation("数据字典值删除")
-  @PostMapping("/delete/{id}")
-  public AlsaceResult<String> delete(@PathVariable Long id) {
-    dictValueService.delete(id);
+  @PostMapping("/delete")
+  public AlsaceResult<String> delete(@RequestBody List<Long> idList) {
+    dictValueService.delete(idList);
     return success("删除成功",null);
   }
 
