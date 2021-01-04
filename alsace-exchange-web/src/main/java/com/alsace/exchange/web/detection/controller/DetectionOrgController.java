@@ -63,4 +63,10 @@ public class DetectionOrgController extends BaseController {
     return success(detectionOrgHandler.tree(parentCode));
   }
 
+  @ApiOperation("所有检测机构树结构查询")
+  @PostMapping("/tree")
+  public AlsaceResult<List<TreeVo<DetectionOrg>>> treeAll() {
+    return success(detectionOrgHandler.tree(null));
+  }
+
 }

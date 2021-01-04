@@ -35,9 +35,15 @@ public class MenuController extends BaseController {
   }
 
   @ApiOperation("菜单树形结构查询")
-  @GetMapping("/tree/{parentId}")
+  @PostMapping("/tree/{parentId}")
   public AlsaceResult<List<TreeVo<Menu>>> tree(@PathVariable Long parentId) {
     return success(menuHandler.tree(parentId));
+  }
+
+  @ApiOperation("所有菜单树形结构查询")
+  @PostMapping("/tree")
+  public AlsaceResult<List<TreeVo<Menu>>> treeAll() {
+    return success(menuHandler.tree(null));
   }
 
   @ApiOperation("菜单更新")
@@ -55,7 +61,7 @@ public class MenuController extends BaseController {
   }
 
   @ApiOperation("根据角色编码获取菜单")
-  @GetMapping("/query-by-role/{roleCode}")
+  @PostMapping("/query-by-role/{roleCode}")
   public AlsaceResult<List<TreeVo<Menu>>> queryByRole(@PathVariable String roleCode) {
     return success(menuHandler.queryByRole(roleCode));
   }
