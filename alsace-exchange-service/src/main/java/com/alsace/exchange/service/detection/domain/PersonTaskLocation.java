@@ -31,11 +31,6 @@ public class PersonTaskLocation extends BaseEntity {
   @Column(columnDefinition = "varchar(128) not null comment '任务编码'")
   private String taskCode;
 
-  @ApiModelProperty(value = "地点编码")
-  @Column(columnDefinition = "varchar(64) not null comment '地点编码'")
-  @NotBlank(groups = {Create.class}, message = "地点编码为空！")
-  private String locationCode;
-
   @ApiModelProperty(value = "地点名称")
   @Column(columnDefinition = "varchar(128) not null comment '地点名称'")
   @NotBlank(groups = {Create.class}, message = "地点名称为空！")
