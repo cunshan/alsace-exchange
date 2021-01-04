@@ -100,7 +100,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     taskParam.setTaskCode(taskCode).setDeleted(false);
     PersonTask task = this.findOne(taskParam);
     Assert.state(task != null, "检测任务不存在！");
-    Assert.state(TaskStatus.INIT.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添加检测人员！[%s]", task.getTaskStatus()));
+    Assert.state(TaskStatus.INIT.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添被加检测人员！[%s]", task.getTaskStatus()));
     //保存检测人员
     detailList.forEach(operator-> operator.setTaskCode(taskCode));
     personTaskDetailService.saveBatch(detailList);
