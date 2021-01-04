@@ -4,6 +4,7 @@ import com.alsace.exchange.common.base.BaseService;
 import com.alsace.exchange.common.validate.groups.Create;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
+import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
@@ -34,4 +35,11 @@ public interface PersonTaskService extends BaseService<PersonTask,Long> {
    * @param detailList 被检测人员
    */
   void addDetails(String taskCode, List<PersonTaskDetail> detailList);
+
+  /**
+   * 开始检测任务
+   * @param taskCode 任务编码
+   * @return 开始的表单
+   */
+  PersonTaskForm startTask(String taskCode);
 }

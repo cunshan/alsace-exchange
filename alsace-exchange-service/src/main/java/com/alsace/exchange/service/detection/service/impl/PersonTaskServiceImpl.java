@@ -2,15 +2,17 @@ package com.alsace.exchange.service.detection.service.impl;
 
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
 import com.alsace.exchange.common.exception.AlsaceException;
-import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
+import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
+import com.alsace.exchange.service.detection.emums.TaskFormStatus;
 import com.alsace.exchange.service.detection.emums.TaskStatus;
 import com.alsace.exchange.service.detection.repositories.PersonTaskRepository;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
+import com.alsace.exchange.service.detection.service.PersonTaskFormService;
 import com.alsace.exchange.service.detection.service.PersonTaskLocationService;
 import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
 import com.alsace.exchange.service.detection.service.PersonTaskOrgService;
@@ -41,6 +43,8 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   private PersonTaskOperatorService personTaskOperatorService;
   @Resource
   private PersonTaskDetailService personTaskDetailService;
+  @Resource
+  private PersonTaskFormService personTaskFormService;
 
   @Resource
   private OrderNoGenerator orderNoGenerator;
@@ -80,6 +84,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   @Override
   @Transactional(rollbackFor = {Exception.class})
   public void addOperators(String taskCode, List<PersonTaskOperator> operatorList) {
+    //TODO 当前时间>=开始时间时，停止被检测人员名单的提交
     //校验任务状态
     PersonTask taskParam = new PersonTask();
     taskParam.setTaskCode(taskCode).setDeleted(false);
@@ -98,6 +103,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
 
   @Override
   public void addDetails(String taskCode, List<PersonTaskDetail> detailList) {
+    //TODO 时间到达“任务结束时间”之前，如果检测期间所级管理员可以对被检测人员名单进行编辑，但只限于针对未被检测的人员数据进行更改和添加删除操作。超过时间则无法编辑被检测人员名单。
     //校验任务状态
     PersonTask taskParam = new PersonTask();
     taskParam.setTaskCode(taskCode).setDeleted(false);
@@ -112,5 +118,33 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     task.setModifiedBy(getLoginAccount());
     task.setModifiedDate(new Date());
     personTaskRepository.saveAndFlush(task);
+  }
+
+  @Override
+  public PersonTaskForm startTask(String taskCode) {
+    Assert.hasLength(taskCode,"任务编码为空！");
+    PersonTask taskParam = new PersonTask();
+    taskParam.setTaskCode(taskCode).setDeleted(false);
+    PersonTask task = this.findOne(taskParam);
+    if(!TaskStatus.READY.status().equals(task.getTaskStatus())&&!TaskStatus.PROCESSING.status().equals(task.getTaskStatus())){
+      throw new AlsaceException(String.format("任务状态为%s，不能开始任务！",TaskStatus.getDesc(task.getTaskStatus())));
+    }
+    if(TaskStatus.READY.status().equals(task.getTaskStatus())){
+      //TODO 如果当前时间超过任务结束时间时，不可再次创建新表单
+      //如果是待开始的  修改任务状态
+      task.setTaskStatus(TaskStatus.PROCESSING.status());
+      this.personTaskRepository.saveAndFlush(task);
+    }
+    //是否有开始的表单 如果没有 创建并返回
+    PersonTaskForm formParam = new PersonTaskForm();
+    formParam.setTaskCode(taskCode)
+        .setFormStatus(TaskFormStatus.PROCESSING.status())
+        .setCreatedBy(loginInfoProvider.loginAccount()).setDeleted(false);
+    PersonTaskForm form = personTaskFormService.findOne(formParam);
+    if(form == null){
+      formParam.setFormCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_FORM_CODE));
+      return personTaskFormService.save(formParam);
+    }
+    return form;
   }
 }

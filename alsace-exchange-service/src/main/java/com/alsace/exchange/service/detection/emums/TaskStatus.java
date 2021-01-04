@@ -29,4 +29,15 @@ public enum TaskStatus {
     this.desc = desc;
   }
 
+  public static String getDesc(Integer taskStatus) {
+    String desc = "";
+    for (int i = 0; i < values().length; i++) {
+      TaskStatus status = values()[i];
+      if (status.status.equals(taskStatus)) {
+        desc = status.desc();
+        break;
+      }
+    }
+    return desc;
+  }
 }
