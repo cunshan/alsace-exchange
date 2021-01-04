@@ -4,11 +4,13 @@ import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.detection.domain.PersonTask;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
 import com.alsace.exchange.service.detection.emums.TaskStatus;
 import com.alsace.exchange.service.detection.repositories.PersonTaskRepository;
+import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.detection.service.PersonTaskLocationService;
 import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
 import com.alsace.exchange.service.detection.service.PersonTaskOrgService;
@@ -36,6 +38,8 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   private PersonTaskLocationService personTaskLocationService;
   @Resource
   private PersonTaskOperatorService personTaskOperatorService;
+  @Resource
+  private PersonTaskDetailService personTaskDetailService;
 
   @Resource
   private OrderNoGenerator orderNoGenerator;
@@ -78,10 +82,28 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     taskParam.setTaskCode(taskCode).setDeleted(false);
     PersonTask task = this.findOne(taskParam);
     Assert.state(task != null, "检测任务不存在！");
-    Assert.state(TaskStatus.INIT.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添加检测人员！[%s]", task.getTaskStatus()));
+    Assert.state(TaskStatus.ASSIGNED.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添加检测人员！[%s]", task.getTaskStatus()));
     //保存检测人员
     operatorList.forEach(operator-> operator.setTaskCode(taskCode));
     personTaskOperatorService.saveBatch(operatorList);
+    //更改任务状态为待下发
+    task.setTaskStatus(TaskStatus.READY.status());
+    task.setModifiedBy(getLoginAccount());
+    task.setModifiedDate(new Date());
+    personTaskRepository.saveAndFlush(task);
+  }
+
+  @Override
+  public void addDetails(String taskCode, List<PersonTaskDetail> detailList) {
+    //校验任务状态
+    PersonTask taskParam = new PersonTask();
+    taskParam.setTaskCode(taskCode).setDeleted(false);
+    PersonTask task = this.findOne(taskParam);
+    Assert.state(task != null, "检测任务不存在！");
+    Assert.state(TaskStatus.INIT.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添加检测人员！[%s]", task.getTaskStatus()));
+    //保存检测人员
+    detailList.forEach(operator-> operator.setTaskCode(taskCode));
+    personTaskDetailService.saveBatch(detailList);
     //更改任务状态为待下发
     task.setTaskStatus(TaskStatus.ASSIGNING.status());
     task.setModifiedBy(getLoginAccount());

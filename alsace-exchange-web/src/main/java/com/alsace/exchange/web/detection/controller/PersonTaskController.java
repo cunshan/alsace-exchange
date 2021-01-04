@@ -65,6 +65,7 @@ public class PersonTaskController extends BaseController {
   @ApiOperation("人员检测任务添加被检测人员")
   @PostMapping("/add-details")
   public AlsaceResult<String> addDetails(@RequestBody PersonTaskDetailVo paramVo){
+    personTaskService.addDetails(paramVo.getTaskCode(),paramVo.getDetailList());
     return success("添加成功！");
   }
   

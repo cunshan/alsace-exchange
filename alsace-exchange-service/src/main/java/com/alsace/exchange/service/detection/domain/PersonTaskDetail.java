@@ -38,6 +38,7 @@ public class PersonTaskDetail extends BaseEntity {
 
   @ApiModelProperty(value = "任务地点ID")
   @Column(columnDefinition = "bigint(20) not null comment '任务地点ID'")
+  @NotBlank(groups = {Create.class}, message = "任务地点ID为空！")
   private Long locationId;
 
   @ApiModelProperty(value = "姓名")

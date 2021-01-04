@@ -3,6 +3,7 @@ package com.alsace.exchange.service.detection.service;
 import com.alsace.exchange.common.base.BaseService;
 import com.alsace.exchange.common.validate.groups.Create;
 import com.alsace.exchange.service.detection.domain.PersonTask;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
@@ -26,4 +27,11 @@ public interface PersonTaskService extends BaseService<PersonTask,Long> {
    * @param operatorList 检测人员
    */
   void addOperators(String taskCode, List<PersonTaskOperator> operatorList);
+
+  /**
+   * 检测任务添加被检测人员
+   * @param taskCode 检测任务号
+   * @param detailList 被检测人员
+   */
+  void addDetails(String taskCode, List<PersonTaskDetail> detailList);
 }
