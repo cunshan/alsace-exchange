@@ -24,6 +24,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -64,10 +65,12 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     orgList.forEach(org -> org.setTaskCode(taskCode));
     personTaskOrgService.saveBatch(orgList);
     //保存任务对应地点
-    if (!CollectionUtils.isEmpty(locationList)) {
-      locationList.forEach(location -> location.setTaskCode(taskCode));
-      personTaskLocationService.saveBatch(locationList);
+    if (CollectionUtils.isEmpty(locationList)) {
+      locationList = new ArrayList<>();
+      locationList.add(new PersonTaskLocation().setLocationName("无地点要求"));
     }
+    locationList.forEach(location -> location.setTaskCode(taskCode));
+    personTaskLocationService.saveBatch(locationList);
     //保存任务
     task.setTaskCode(taskCode);
     task.setTaskStatus(TaskStatus.INIT.status());
@@ -84,7 +87,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     Assert.state(task != null, "检测任务不存在！");
     Assert.state(TaskStatus.ASSIGNED.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添加检测人员！[%s]", task.getTaskStatus()));
     //保存检测人员
-    operatorList.forEach(operator-> operator.setTaskCode(taskCode));
+    operatorList.forEach(operator -> operator.setTaskCode(taskCode));
     personTaskOperatorService.saveBatch(operatorList);
     //更改任务状态为待下发
     task.setTaskStatus(TaskStatus.READY.status());
@@ -102,7 +105,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     Assert.state(task != null, "检测任务不存在！");
     Assert.state(TaskStatus.INIT.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添被加检测人员！[%s]", task.getTaskStatus()));
     //保存检测人员
-    detailList.forEach(operator-> operator.setTaskCode(taskCode));
+    detailList.forEach(operator -> operator.setTaskCode(taskCode));
     personTaskDetailService.saveBatch(detailList);
     //更改任务状态为待下发
     task.setTaskStatus(TaskStatus.ASSIGNING.status());
