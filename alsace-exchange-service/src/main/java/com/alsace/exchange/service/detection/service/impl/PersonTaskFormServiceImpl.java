@@ -14,16 +14,16 @@ import javax.annotation.Resource;
 public class PersonTaskFormServiceImpl extends AbstractBaseServiceImpl<PersonTaskForm> implements PersonTaskFormService {
 
   @Resource
-  private PersonTaskFormRepository personTaskDetailRepository;
+  private PersonTaskFormRepository personTaskFormRepository;
 
 
   @Override
   protected JpaRepository<PersonTaskForm, Long> getJpaRepository() {
-    return this.personTaskDetailRepository;
+    return this.personTaskFormRepository;
   }
 
   @Override
   protected JpaSpecificationExecutor<PersonTaskForm> getJpaSpecificationExecutor() {
-    return this.personTaskDetailRepository;
+    return this.personTaskFormRepository;
   }
 }
