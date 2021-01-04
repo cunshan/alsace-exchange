@@ -61,5 +61,25 @@ public class MenuHandler {
     root.getChildren().forEach(menu -> addChildren(menu, childrenMap));
   }
 
-
+  /**
+   * 根据角色码获取菜单树
+   */
+  public List<TreeVo<Menu>> queryByRole(String roleCode) {
+    List<Menu> menuList = menuService.findByRoleCode(roleCode);
+    //有父节点的菜单
+    Map<Long, List<TreeVo<Menu>>> childrenMap = new HashMap<>();
+    //菜单根节点
+    List<TreeVo<Menu>> rootList = new ArrayList<>();
+    menuList.forEach(menu -> {
+      if (menu.getParentId() == null) {
+          rootList.add(new TreeVo<>(menu));
+      } else {
+        List<TreeVo<Menu>> temp = childrenMap.getOrDefault(menu.getParentId(), new ArrayList<>());
+        temp.add(new TreeVo<>(menu));
+        childrenMap.putIfAbsent(menu.getParentId(), temp);
+      }
+    });
+    rootList.forEach(menu -> addChildren(menu, childrenMap));
+    return rootList;
+  }
 }

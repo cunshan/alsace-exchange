@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu,Long>, JpaSpecificationExecutor<Menu> {
 
-  @Query(value = "select t.* from Menu t where t.parent_id is null and t.deleted = '0' ",nativeQuery = true)
-  List<Menu> findAllRoot();
+  @Query(value = "select t.* from sys_menu t,sys_role_menu m where m.menu_id=t.id and t.deleted = '0' and m.role_code = ?1", nativeQuery = true)
+  List<Menu> findByRoleCode(String roleCode);
 }

@@ -54,4 +54,10 @@ public class MenuController extends BaseController {
     return success("删除成功",null);
   }
 
+  @ApiOperation("根据角色编码获取菜单")
+  @GetMapping("/query-by-role/{roleCode}")
+  public AlsaceResult<List<TreeVo<Menu>>> queryByRole(@PathVariable String roleCode) {
+    return success(menuHandler.queryByRole(roleCode));
+  }
+
 }

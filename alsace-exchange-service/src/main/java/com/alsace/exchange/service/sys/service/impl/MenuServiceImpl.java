@@ -9,12 +9,14 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class MenuServiceImpl extends AbstractBaseServiceImpl<Menu> implements MenuService {
 
   @Resource
   private MenuRepository menuRepository;
+
 
 
   @Override
@@ -25,5 +27,10 @@ public class MenuServiceImpl extends AbstractBaseServiceImpl<Menu> implements Me
   @Override
   protected JpaSpecificationExecutor<Menu> getJpaSpecificationExecutor() {
     return this.menuRepository;
+  }
+
+  @Override
+  public List<Menu> findByRoleCode(String roleCode) {
+    return this.menuRepository.findByRoleCode(roleCode);
   }
 }
