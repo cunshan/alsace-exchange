@@ -12,6 +12,9 @@ spring:
     hibernate:
       ddl-auto: none
     database: mysql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL55Dialect
   #==========
   # redis配置
   #==========
@@ -25,3 +28,4 @@ spring:
 logging:
   level:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
+
