@@ -9,6 +9,7 @@ import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
+import com.alsace.exchange.service.detection.emums.TaskDetectionType;
 import com.alsace.exchange.service.detection.emums.TaskFormStatus;
 import com.alsace.exchange.service.detection.emums.TaskStatus;
 import com.alsace.exchange.service.detection.repositories.PersonTaskRepository;
@@ -30,6 +31,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Queue;
 
 @Service
 public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> implements PersonTaskService {
@@ -125,14 +127,14 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
 
   @Override
   public PersonTaskForm startTask(String taskCode) {
-    Assert.hasLength(taskCode,"任务编码为空！");
+    Assert.hasLength(taskCode, "任务编码为空！");
     PersonTask taskParam = new PersonTask();
     taskParam.setTaskCode(taskCode).setDeleted(false);
     PersonTask task = this.findOne(taskParam);
-    if(!TaskStatus.READY.status().equals(task.getTaskStatus())&&!TaskStatus.PROCESSING.status().equals(task.getTaskStatus())){
-      throw new AlsaceException(String.format("任务状态为%s，不能开始任务！",TaskStatus.getDesc(task.getTaskStatus())));
+    if (!TaskStatus.READY.status().equals(task.getTaskStatus()) && !TaskStatus.PROCESSING.status().equals(task.getTaskStatus())) {
+      throw new AlsaceException(String.format("任务状态为%s，不能开始任务！", TaskStatus.getDesc(task.getTaskStatus())));
     }
-    if(TaskStatus.READY.status().equals(task.getTaskStatus())){
+    if (TaskStatus.READY.status().equals(task.getTaskStatus())) {
       //TODO 如果当前时间超过任务结束时间时，不可再次创建新表单
       //如果是待开始的  修改任务状态
       task.setTaskStatus(TaskStatus.PROCESSING.status());
@@ -144,10 +146,43 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
         .setFormStatus(TaskFormStatus.PROCESSING.status())
         .setCreatedBy(loginInfoProvider.loginAccount()).setDeleted(false);
     PersonTaskForm form = personTaskFormService.findOne(formParam);
-    if(form == null){
+    if (form == null) {
       formParam.setFormCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_FORM_CODE));
       return personTaskFormService.save(formParam);
     }
     return form;
+  }
+
+  @Override
+  public void submit(PersonTaskDetail param) {
+    Assert.hasLength(param.getTaskCode(), "任务编码为空！");
+    //查询出任务
+    PersonTask queryTask = new PersonTask();
+    queryTask.setTaskCode(param.getTaskCode())
+        .setDeleted(false);
+    PersonTask task = this.findOne(queryTask);
+    if (task == null) {
+      throw new AlsaceException("任务不存在！");
+    }
+    boolean checkDetail = TaskDetectionType.NOT_ALL.status().equals(task.getTaskStatus());
+    if (checkDetail) {
+      //校验提交的被检测人信息是否是在检测范围内
+      PersonTaskDetail detailQuery = new PersonTaskDetail();
+      detailQuery.setTaskCode(param.getTaskCode()).setIdCardNo(param.getIdCardNo()).setDeleted(false);
+      PersonTaskDetail dbDetail = personTaskDetailService.findOne(detailQuery);
+      if (dbDetail == null) {
+        throw new AlsaceException(String.format("身份证号：%s 不在当前任务检测范围之内！", param.getIdCardNo()));
+      }
+      if (TaskDetailStatus.SUBMITTED.status().equals(dbDetail.getDetailStatus())) {
+        throw new AlsaceException("当前检测信息已提交！");
+      }
+      //更新明细
+      param.setId(dbDetail.getId());
+      param.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
+      personTaskDetailService.update(param);
+      return;
+    }
+    param.setDetailStatus(TaskDetailStatus.INIT.status());
+    personTaskDetailService.save(param);
   }
 }

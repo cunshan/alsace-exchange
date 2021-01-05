@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Queue;
 
 @Api(tags = "人员检测任务明细",value = "personTaskDetail")
 @RestController
@@ -31,6 +32,8 @@ public class PersonTaskDetailController extends BaseController {
 
   @Resource
   private PersonTaskDetailService personTaskDetailService;
+  @Resource
+  private PersonTaskService personTaskService;
 
 
   @ApiOperation("人员检测任务明细分页查询")
@@ -65,5 +68,11 @@ public class PersonTaskDetailController extends BaseController {
     return success(detail);
   }
 
+  @ApiOperation("提交检测明细")
+  @PostMapping("/submit")
+  public AlsaceResult<String> submit(@RequestBody PersonTaskDetail param){
+    personTaskService.submit(param);
+    return success("提交成功",null);
+  }
 
 }

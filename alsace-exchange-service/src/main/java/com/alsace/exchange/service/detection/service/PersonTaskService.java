@@ -42,4 +42,9 @@ public interface PersonTaskService extends BaseService<PersonTask,Long> {
    * @return 开始的表单
    */
   PersonTaskForm startTask(String taskCode);
+
+  /**
+   * 提交个人任务检测明细
+   */
+  void submit(PersonTaskDetail param);
 }

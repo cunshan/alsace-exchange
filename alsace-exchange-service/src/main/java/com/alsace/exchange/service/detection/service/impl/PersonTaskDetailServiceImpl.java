@@ -16,7 +16,6 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   @Resource
   private PersonTaskDetailRepository personTaskDetailRepository;
 
-
   @Override
   protected JpaRepository<PersonTaskDetail, Long> getJpaRepository() {
     return this.personTaskDetailRepository;
@@ -26,4 +25,5 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   protected JpaSpecificationExecutor<PersonTaskDetail> getJpaSpecificationExecutor() {
     return this.personTaskDetailRepository;
   }
+
 }
