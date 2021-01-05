@@ -8,6 +8,7 @@ import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
+import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.emums.TaskFormStatus;
 import com.alsace.exchange.service.detection.emums.TaskStatus;
 import com.alsace.exchange.service.detection.repositories.PersonTaskRepository;
@@ -111,7 +112,9 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     Assert.state(task != null, "检测任务不存在！");
     Assert.state(TaskStatus.INIT.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添被加检测人员！[%s]", task.getTaskStatus()));
     //保存检测人员
-    detailList.forEach(operator -> operator.setTaskCode(taskCode));
+    detailList.forEach(detail -> detail.setTaskCode(taskCode)
+        .setDetailStatus(TaskDetailStatus.INIT.status())
+        .setDetailCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE)));
     personTaskDetailService.saveBatch(detailList);
     //更改任务状态为待下发
     task.setTaskStatus(TaskStatus.ASSIGNING.status());

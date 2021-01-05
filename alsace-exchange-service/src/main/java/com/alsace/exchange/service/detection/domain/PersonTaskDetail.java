@@ -120,4 +120,8 @@ public class PersonTaskDetail extends BaseEntity {
   @Column(columnDefinition = "tinyint(1) comment '抗体是否阳性'")
   private Boolean antibodyPositive;
 
+  @ApiModelProperty(value = "抗体是否阳性")
+  @Column(columnDefinition = "int(2) not null default 10 comment '抗体是否阳性'")
+  private Integer detailStatus;
+
 }

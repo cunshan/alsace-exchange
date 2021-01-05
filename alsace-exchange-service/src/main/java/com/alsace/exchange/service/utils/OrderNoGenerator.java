@@ -101,7 +101,11 @@ public class OrderNoGenerator {
         /**
          * 检测表单编号
          */
-        PERSON_TASK_FORM_CODE("F", "人员检测表单编码", 6, "yyMMdd");
+        PERSON_TASK_FORM_CODE("F", "人员检测表单编码", 6, "yyMMdd"),
+        /**
+         * 检测明细编号
+         */
+        PERSON_TASK_DETAIL_CODE("D", "人员检测明细编码", 6, "yyMMdd");
 
 
 
