@@ -23,7 +23,7 @@ import java.util.List;
 
 @Api(tags = "人员检测任务",value = "personTask")
 @RestController
-@RequestMapping("/person-task/")
+@RequestMapping("/person-task/task")
 public class PersonTaskController extends BaseController {
 
   @Resource
@@ -77,5 +77,4 @@ public class PersonTaskController extends BaseController {
     return success(personTaskService.startTask(taskCode));
   }
 
-  
 }
