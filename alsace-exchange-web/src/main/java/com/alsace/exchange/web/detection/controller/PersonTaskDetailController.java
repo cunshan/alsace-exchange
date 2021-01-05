@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Api(tags = "人员检测任务明细",value = "personTask")
+@Api(tags = "人员检测任务明细",value = "personTaskDetail")
 @RestController
 @RequestMapping("/person-task/detail")
 public class PersonTaskDetailController extends BaseController {

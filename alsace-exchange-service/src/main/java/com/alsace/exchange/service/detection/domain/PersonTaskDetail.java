@@ -32,21 +32,25 @@ public class PersonTaskDetail extends BaseEntity {
   @Column(columnDefinition = "varchar(128) not null comment '明细编码'")
   private String detailCode;
 
+  @ApiModelProperty(value = "表单编码")
+  @Column(columnDefinition = "varchar(128) comment '表单编码'")
+  private String formCode;
+
   @ApiModelProperty(value = "任务编码")
   @Column(columnDefinition = "varchar(128) not null comment '任务编码'")
   private String taskCode;
 
-  @ApiModelProperty(value = "任务地点ID")
+  @ApiModelProperty(value = "任务地点ID", required = true)
   @Column(columnDefinition = "bigint(20) not null comment '任务地点ID'")
   @NotBlank(groups = {Create.class}, message = "任务地点ID为空！")
   private Long locationId;
 
-  @ApiModelProperty(value = "姓名")
+  @ApiModelProperty(value = "姓名", required = true)
   @Column(columnDefinition = "varchar(128) not null comment '姓名'")
   @NotBlank(groups = {Create.class}, message = "姓名为空！")
   private String personName;
 
-  @ApiModelProperty(value = "性别")
+  @ApiModelProperty(value = "性别", required = true)
   @Column(columnDefinition = "int(1) comment '性别 0 男性  1女性'")
   @NotNull(groups = {Create.class}, message = "性别为空！")
   private Integer gender;
@@ -63,8 +67,8 @@ public class PersonTaskDetail extends BaseEntity {
   @Column(columnDefinition = "varchar(255) comment '住址'")
   private String address;
 
-  @ApiModelProperty(value = "身份证号")
-  @Column(columnDefinition = "varchar(64) comment '身份证号'")
+  @ApiModelProperty(value = "身份证号", required = true)
+  @Column(columnDefinition = "varchar(64) not null comment '身份证号'")
   @NotBlank(groups = {Create.class}, message = "身份证号为空！")
   private String idCardNo;
 
@@ -76,22 +80,22 @@ public class PersonTaskDetail extends BaseEntity {
   @Column(columnDefinition = "varchar(128) comment '岗位'")
   private String job;
 
-  @ApiModelProperty(value = "电话")
+  @ApiModelProperty(value = "电话", required = true)
   @Column(columnDefinition = "varchar(128) comment '电话'")
   @NotBlank(groups = {Create.class}, message = "电话为空！")
   private String tel;
 
-  @ApiModelProperty(value = "企业名称")
+  @ApiModelProperty(value = "企业名称", required = true)
   @Column(columnDefinition = "varchar(128) comment '企业名称'")
   @NotBlank(groups = {Create.class}, message = "企业名称为空！")
   private String companyName;
 
-  @ApiModelProperty(value = "企业编码")
+  @ApiModelProperty(value = "企业编码", required = true)
   @Column(columnDefinition = "varchar(128) comment '企业编码'")
   @NotBlank(groups = {Create.class}, message = "企业编码为空！")
   private String companyCode;
 
-  @ApiModelProperty(value = "在职状态")
+  @ApiModelProperty(value = "在职状态", required = true)
   @Column(columnDefinition = "tinyint(1) not null comment '在职状态'")
   @NotNull(groups = {Create.class}, message = "在职状态为空！")
   private Boolean working;

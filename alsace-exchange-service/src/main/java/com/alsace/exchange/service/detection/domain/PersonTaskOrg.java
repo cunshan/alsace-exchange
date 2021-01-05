@@ -31,12 +31,12 @@ public class PersonTaskOrg extends BaseEntity {
   @Column(columnDefinition = "varchar(128) not null comment '任务编码'")
   private String taskCode;
 
-  @ApiModelProperty(value = "机构名称")
+  @ApiModelProperty(value = "机构名称", required = true)
   @Column(columnDefinition = "varchar(255) not null comment '机构名称'")
   @NotBlank(groups = {Create.class}, message = "机构名称为空！")
   private String orgName;
 
-  @ApiModelProperty(value = "机构编码")
+  @ApiModelProperty(value = "机构编码", required = true)
   @Column(columnDefinition = "varchar(128) not null comment '机构编码'")
   @NotBlank(groups = {Create.class}, message = "机构编码为空！")
   private String orgCode;
