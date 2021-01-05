@@ -1,5 +1,6 @@
 package com.alsace.exchange.common.base;
 
+import com.github.pagehelper.PageInfo;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.data.domain.Page;
@@ -50,5 +51,13 @@ public class PageResult<T> implements Serializable {
     this.pageSize = page.getSize();
     this.records = page.getContent();
     this.totalPages = page.getTotalPages();
+  }
+
+  public PageResult(PageInfo<T> pageInfo){
+    this.totalCount = pageInfo.getTotal();
+    this.pageNum = pageInfo.getPageNum();
+    this.pageSize = pageInfo.getPageSize();
+    this.records = pageInfo.getList();
+    this.totalPages = pageInfo.getPages();
   }
 }

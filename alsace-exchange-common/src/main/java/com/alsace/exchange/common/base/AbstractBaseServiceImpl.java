@@ -82,7 +82,7 @@ public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements B
       throw new AlsaceException("参数对象为空！");
     }
     param.getParam().setDeleted(false);
-    Page<T> userPage = getJpaRepository().findAll(Example.of(param.getParam()), PageHelper.page(param));
+    Page<T> userPage = getJpaRepository().findAll(Example.of(param.getParam()), AlsacePageHelper.page(param));
     return new PageResult<>(userPage);
   }
 

@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 /**
  * 分页助手
  */
-public class PageHelper {
+public class AlsacePageHelper {
 
   /**
    * 获取分页对象
