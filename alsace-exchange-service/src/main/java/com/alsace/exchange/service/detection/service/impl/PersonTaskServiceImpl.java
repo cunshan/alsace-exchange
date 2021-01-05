@@ -182,7 +182,8 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
       personTaskDetailService.update(param);
       return;
     }
-    param.setDetailStatus(TaskDetailStatus.INIT.status());
+    //全民检测 直接添加检测明细
+    param.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
     personTaskDetailService.save(param);
   }
 }
