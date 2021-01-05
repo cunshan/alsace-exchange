@@ -1,20 +1,14 @@
 package com.alsace.exchange.service.detection.domain;
 
-import com.alsace.exchange.common.validate.groups.Create;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Accessors(chain = true)
-@AllArgsConstructor
 public class PersonTaskApp implements Serializable {
 
   private static final long serialVersionUID = -1183139041296312813L;

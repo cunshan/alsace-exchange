@@ -1,7 +1,6 @@
 package com.alsace.exchange.service.detection.service.impl;
 
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
-import com.alsace.exchange.common.base.PageHelper;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.exception.AlsaceException;
@@ -16,6 +15,7 @@ import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.emums.TaskDetectionType;
 import com.alsace.exchange.service.detection.emums.TaskFormStatus;
 import com.alsace.exchange.service.detection.emums.TaskStatus;
+import com.alsace.exchange.service.detection.mapper.PersonTaskMapper;
 import com.alsace.exchange.service.detection.repositories.PersonTaskRepository;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.detection.service.PersonTaskFormService;
@@ -24,6 +24,8 @@ import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
 import com.alsace.exchange.service.detection.service.PersonTaskOrgService;
 import com.alsace.exchange.service.detection.service.PersonTaskService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -43,6 +45,8 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
 
   @Resource
   private PersonTaskRepository personTaskRepository;
+  @Resource
+  private PersonTaskMapper personTaskMapper;
   @Resource
   private PersonTaskOrgService personTaskOrgService;
   @Resource
@@ -194,8 +198,10 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
 
   @Override
   public PageResult<PersonTaskApp> findPersonTaskApp(PageParam pageParam) {
-    //TODO APP任务列表查询
-    return null;
+    String loginAccount = getLoginAccount();
+    PageInfo<PersonTaskApp> pageInfo = PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize())
+        .doSelectPageInfo(() -> personTaskMapper.selectAppTaskList(loginAccount));
+    return new PageResult<>(pageInfo);
   }
 
 }
