@@ -1,8 +1,12 @@
 package com.alsace.exchange.service.detection.service.impl;
 
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
+import com.alsace.exchange.common.base.PageHelper;
+import com.alsace.exchange.common.base.PageParam;
+import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.service.detection.domain.PersonTask;
+import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
@@ -20,6 +24,8 @@ import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
 import com.alsace.exchange.service.detection.service.PersonTaskOrgService;
 import com.alsace.exchange.service.detection.service.PersonTaskService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
@@ -31,7 +37,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Queue;
 
 @Service
 public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> implements PersonTaskService {
@@ -154,7 +159,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   }
 
   @Override
-  public void submit(PersonTaskDetail param) {
+  public void submitDetail(PersonTaskDetail param) {
     Assert.hasLength(param.getTaskCode(), "任务编码为空！");
     //查询出任务
     PersonTask queryTask = new PersonTask();
@@ -186,4 +191,11 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     param.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
     personTaskDetailService.save(param);
   }
+
+  @Override
+  public PageResult<PersonTaskApp> findPersonTaskApp(PageParam pageParam) {
+    //TODO APP任务列表查询
+    return null;
+  }
+
 }

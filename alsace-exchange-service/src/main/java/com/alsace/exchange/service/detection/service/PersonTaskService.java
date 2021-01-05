@@ -1,8 +1,11 @@
 package com.alsace.exchange.service.detection.service;
 
 import com.alsace.exchange.common.base.BaseService;
+import com.alsace.exchange.common.base.PageParam;
+import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.validate.groups.Create;
 import com.alsace.exchange.service.detection.domain.PersonTask;
+import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
@@ -46,5 +49,10 @@ public interface PersonTaskService extends BaseService<PersonTask,Long> {
   /**
    * 提交个人任务检测明细
    */
-  void submit(PersonTaskDetail param);
+  void submitDetail(PersonTaskDetail param);
+
+  /**
+   * APP获取登录人任务
+   */
+  PageResult<PersonTaskApp> findPersonTaskApp(PageParam pageParam);
 }
