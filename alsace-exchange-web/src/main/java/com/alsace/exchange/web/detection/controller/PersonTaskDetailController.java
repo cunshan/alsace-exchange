@@ -10,11 +10,13 @@ import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.detection.service.PersonTaskService;
+import com.alsace.exchange.web.detection.vo.PersonTaskDetailPageVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskOperatorVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,6 +75,27 @@ public class PersonTaskDetailController extends BaseController {
   public AlsaceResult<String> submit(@RequestBody PersonTaskDetail param){
     personTaskService.submit(param);
     return success("提交成功",null);
+  }
+
+
+  @ApiOperation(value = "APP人员检测任务明细分页查询",tags = "APP")
+  @PostMapping("/app-page")
+  public AlsaceResult<PersonTaskDetailPageVo> appPage(@RequestBody PageParam<PersonTaskDetailPageVo> param) {
+    Assert.notNull(param.getParam(),"查询参数为空！");
+    PersonTaskDetailPageVo paramVo = param.getParam();
+    Assert.hasLength(paramVo.getTaskCode(),"任务编码不能为空！");
+    PageParam<PersonTaskDetail> detailPage = new PageParam<>();
+    detailPage.setPageNum(param.getPageNum()).setPageSize(param.getPageSize());
+    PersonTaskDetail queryParam = new PersonTaskDetail();
+    queryParam.setTaskCode(paramVo.getTaskCode());
+    queryParam.setFormCode(paramVo.getFormCode());
+    queryParam.setDeleted(false);
+    queryParam.setCreatedBy(super.loginInfoProvider.loginAccount());
+    detailPage.setParam(queryParam);
+    PageResult<PersonTaskDetail> page = personTaskDetailService.findPage(detailPage);
+    PersonTaskDetailPageVo resVo = new PersonTaskDetailPageVo();
+    resVo.setDetailList(page.getRecords()).setTaskCode(paramVo.getTaskCode()).setFormCode(paramVo.getFormCode());
+    return success(resVo);
   }
 
 }

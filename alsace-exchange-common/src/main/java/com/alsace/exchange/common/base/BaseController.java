@@ -1,10 +1,14 @@
 package com.alsace.exchange.common.base;
 
+import javax.annotation.Resource;
+
 /**
  * 基础cotroller
  */
 public class BaseController {
 
+    @Resource
+    protected LoginInfoProvider loginInfoProvider;
 
     /**
      * 错误结果

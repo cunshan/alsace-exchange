@@ -15,11 +15,11 @@ import java.util.List;
 public class PersonTaskOperatorVo implements Serializable {
   private static final long serialVersionUID = 3600410283067801255L;
 
-  @ApiModelProperty("检测任务号")
+  @ApiModelProperty(value = "检测任务号", required = true)
   @NotBlank(message = "任务号为空！")
   private String taskCode;
 
-  @ApiModelProperty("检测人员名单")
+  @ApiModelProperty(value = "检测人员名单", required = true)
   @NotEmpty(message = "检测人员名单为空！")
   private List<PersonTaskOperator> operatorList;
 
