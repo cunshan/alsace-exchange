@@ -39,7 +39,7 @@ public class PersonTaskFormServiceImpl extends AbstractBaseServiceImpl<PersonTas
     formCodeList.forEach(code -> {
       //查询出任务
       PersonTaskForm queryForm = new PersonTaskForm();
-      queryForm.setTaskCode(code)
+      queryForm.setFormCode(code)
           .setCreatedBy(getLoginAccount())
           .setDeleted(false);
       PersonTaskForm form = this.findOne(queryForm);
