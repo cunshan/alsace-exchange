@@ -69,4 +69,11 @@ public class PersonTaskController extends BaseController {
     return success("添加成功！");
   }
 
+  @ApiOperation("下发人员检测任务")
+  @PostMapping("/assign")
+  public AlsaceResult<String> assign(@RequestBody List<String> taskCodeList){
+    personTaskService.assign(taskCodeList);
+    return success("下发成功！");
+  }
+
 }

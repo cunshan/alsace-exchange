@@ -5,6 +5,7 @@ import com.alsace.exchange.common.constants.Constants;
 import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.AlsaceBeanUtils;
+import com.alsace.exchange.common.utils.IdUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,7 @@ import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements BaseService<T, Long> {
@@ -37,6 +39,22 @@ public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements B
    */
   protected String getUserName() {
     return loginInfoProvider.userName();
+  }
+
+
+  /**
+   * 设置创建用的ID、创建人、创建时间
+   * @param domain
+   */
+  protected void setCreateInfo(T domain){
+    domain.setCreatedBy(getLoginAccount()).setCreatedDate(new Date()).setId(IdUtils.id());
+  }
+
+  /**
+   * 设置修改人、修改时间
+   */
+  protected void setModifyInfo(T domain){
+    domain.setModifiedDate(new Date()).setModifiedBy(getLoginAccount());
   }
 
   @Override

@@ -1,8 +1,10 @@
 package com.alsace.exchange.service.detection.service.impl;
 
+import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
+import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskApp;
@@ -26,16 +28,16 @@ import com.alsace.exchange.service.detection.service.PersonTaskService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +75,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
 
   @Override
   @Transactional(rollbackFor = {Exception.class})
+  @AutoFill(AutoFillType.CREATE)
   public PersonTask save(PersonTask task, List<PersonTaskOrg> orgList, List<PersonTaskLocation> locationList) {
     Assert.notNull(task, "任务信息为空！");
     Assert.notEmpty(orgList, "检测机构为空！");
@@ -83,14 +86,14 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     //保存任务对应地点
     if (CollectionUtils.isEmpty(locationList)) {
       locationList = new ArrayList<>();
-      locationList.add(new PersonTaskLocation().setLocationName("无地点要求"));
     }
+    locationList.add(new PersonTaskLocation().setLocationName("无地点要求"));
     locationList.forEach(location -> location.setTaskCode(taskCode));
     personTaskLocationService.saveBatch(locationList);
     //保存任务
     task.setTaskCode(taskCode);
     task.setTaskStatus(TaskStatus.INIT.status());
-    return this.save(task);
+    return save(task);
   }
 
   @Override
@@ -114,6 +117,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public void addDetails(String taskCode, List<PersonTaskDetail> detailList) {
     //TODO 时间到达“任务结束时间”之前，如果检测期间所级管理员可以对被检测人员名单进行编辑，但只限于针对未被检测的人员数据进行更改和添加删除操作。超过时间则无法编辑被检测人员名单。
     //校验任务状态
@@ -121,17 +125,20 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     taskParam.setTaskCode(taskCode).setDeleted(false);
     PersonTask task = this.findOne(taskParam);
     Assert.state(task != null, "检测任务不存在！");
-    Assert.state(TaskStatus.INIT.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添被加检测人员！[%s]", task.getTaskStatus()));
+    Assert.state(TaskDetectionType.NOT_ALL.status().equals(task.getDetectionType()), "检测任务类型为全民检测，不能添加被检测人员！");
+    Assert.state(TaskStatus.COMPLETED.status()>task.getTaskStatus(), String.format("检测任务状态不允许添被加检测人员！[%s]", task.getTaskStatus()));
     //保存检测人员
     detailList.forEach(detail -> detail.setTaskCode(taskCode)
         .setDetailStatus(TaskDetailStatus.INIT.status())
         .setDetailCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE)));
     personTaskDetailService.saveBatch(detailList);
     //更改任务状态为待下发
-    task.setTaskStatus(TaskStatus.ASSIGNING.status());
-    task.setModifiedBy(getLoginAccount());
-    task.setModifiedDate(new Date());
-    personTaskRepository.saveAndFlush(task);
+    if(TaskStatus.INIT.status().equals(task.getTaskStatus())){
+      task.setTaskStatus(TaskStatus.ASSIGNING.status());
+      task.setModifiedBy(getLoginAccount());
+      task.setModifiedDate(new Date());
+      personTaskRepository.saveAndFlush(task);
+    }
   }
 
   @Override
@@ -165,6 +172,8 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   @Override
   public void submitDetail(PersonTaskDetail param) {
     Assert.hasLength(param.getTaskCode(), "任务编码为空！");
+    Assert.hasLength(param.getFormCode(), "表单编码为空！");
+    Assert.notNull(param.getLocationId(), "地点为空！");
     //查询出任务
     PersonTask queryTask = new PersonTask();
     queryTask.setTaskCode(param.getTaskCode())
@@ -173,7 +182,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     if (task == null) {
       throw new AlsaceException("任务不存在！");
     }
-    boolean checkDetail = TaskDetectionType.NOT_ALL.status().equals(task.getTaskStatus());
+    boolean checkDetail = TaskDetectionType.NOT_ALL.status().equals(task.getDetectionType());
     if (checkDetail) {
       //校验提交的被检测人信息是否是在检测范围内
       PersonTaskDetail detailQuery = new PersonTaskDetail();
@@ -192,6 +201,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
       return;
     }
     //全民检测 直接添加检测明细
+    param.setDetailCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE));
     param.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
     personTaskDetailService.save(param);
   }
@@ -202,6 +212,20 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     PageInfo<PersonTaskApp> pageInfo = PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize())
         .doSelectPageInfo(() -> personTaskMapper.selectAppTaskList(loginAccount));
     return new PageResult<>(pageInfo);
+  }
+
+  @Override
+  public void assign(@Validated @NotEmpty(message = "任务编码列表为空！") List<String> taskCodeList) {
+    List<PersonTask> taskList = personTaskRepository.findAll(
+        (root, query, builder) -> query.where(builder.in(root.get("taskCode")).value(taskCodeList), builder.equal(root.get("deleted"), false)).getRestriction());
+    taskList.forEach(task -> {
+      if (!TaskStatus.ASSIGNING.status().equals(task.getTaskStatus())) {
+        throw new AlsaceException(String.format("任务%s不是待下发状态！", task.getTaskCode()));
+      }
+      task.setTaskStatus(TaskStatus.ASSIGNED.status());
+      setModifyInfo(task);
+    });
+    this.personTaskRepository.saveAll(taskList);
   }
 
 }

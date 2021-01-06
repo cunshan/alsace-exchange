@@ -33,7 +33,7 @@ public class PersonTaskOperator extends BaseEntity {
   private String taskCode;
 
   @ApiModelProperty(value = "任务地点ID", required = true)
-  @Column(columnDefinition = "bigint(20) not null comment '任务地点ID'")
+  @Column(columnDefinition = "bigint(20) comment '任务地点ID'")
   @NotBlank(groups = {Create.class}, message = "任务地点为空！")
   private Long locationId;
 

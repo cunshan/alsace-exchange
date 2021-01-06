@@ -55,4 +55,9 @@ public interface PersonTaskService extends BaseService<PersonTask,Long> {
    * APP获取登录人任务
    */
   PageResult<PersonTaskApp> findPersonTaskApp(PageParam pageParam);
+
+  /**
+   * 下发人员检测任务
+   */
+  void assign(List<String> taskCodeList);
 }

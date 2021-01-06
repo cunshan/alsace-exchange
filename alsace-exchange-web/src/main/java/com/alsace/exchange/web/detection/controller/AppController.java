@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("/app")
@@ -87,8 +88,8 @@ public class AppController extends BaseController {
 
   @ApiOperation(value = "人员检测任务表单提交")
   @PostMapping("/person/form/submit")
-  public AlsaceResult<PersonTaskForm> submit(@RequestBody PersonTaskForm param) {
-    personTaskFormService.submitForm(param);
+  public AlsaceResult<PersonTaskForm> submit(@RequestBody List<String> formCodeList) {
+    personTaskFormService.submitForm(formCodeList);
     return success("提交成功", null);
   }
 
