@@ -12,6 +12,11 @@ public interface BaseService<T, K> {
   /**
    * 根据ID查询
    */
+  T getOneById(K id,boolean deleted);
+
+  /**
+   * 根据ID查询
+   */
   T getOneById(K id);
 
   /**

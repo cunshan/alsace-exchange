@@ -155,7 +155,6 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void addDetails(String taskCode, List<PersonTaskDetail> detailList) {
-    //TODO 时间到达“任务结束时间”之前，如果检测期间所级管理员可以对被检测人员名单进行编辑，但只限于针对未被检测的人员数据进行更改和添加删除操作。超过时间则无法编辑被检测人员名单。
     //校验任务状态
     PersonTask taskParam = new PersonTask();
     taskParam.setTaskCode(taskCode).setDeleted(false);
@@ -163,6 +162,10 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     Assert.state(task != null, "检测任务不存在！");
     Assert.state(TaskDetectionType.NOT_ALL.status().equals(task.getDetectionType()), "检测任务类型为全民检测，不能添加被检测人员！");
     Assert.state(TaskStatus.COMPLETED.status() > task.getTaskStatus(), String.format("检测任务状态不允许添被加检测人员！[%s]", task.getTaskStatus()));
+    //如果结束时间已经到了，不准修改
+    if(task.getEndDate().getTime()>new Date().getTime()){
+      throw new AlsaceException("任务已经结束，修改失败！");
+    }
     //保存检测人员
     detailList.forEach(detail -> detail.setTaskCode(taskCode)
         .setDetailStatus(TaskDetailStatus.INIT.status())

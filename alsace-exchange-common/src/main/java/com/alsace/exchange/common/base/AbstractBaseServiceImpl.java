@@ -44,16 +44,17 @@ public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements B
 
   /**
    * 设置创建用的ID、创建人、创建时间
+   *
    * @param domain
    */
-  protected void setCreateInfo(BaseEntity domain){
+  protected void setCreateInfo(BaseEntity domain) {
     domain.setCreatedBy(getLoginAccount()).setCreatedDate(new Date()).setId(IdUtils.id());
   }
 
   /**
    * 设置修改人、修改时间
    */
-  protected void setModifyInfo(BaseEntity domain){
+  protected void setModifyInfo(BaseEntity domain) {
     domain.setModifiedDate(new Date()).setModifiedBy(getLoginAccount());
   }
 
@@ -61,6 +62,12 @@ public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements B
   public T findOne(T t) {
     Example<T> example = Example.of(t);
     return getJpaRepository().findOne(example).orElse(null);
+  }
+
+  @Override
+  public T getOneById(Long id, boolean deleted) {
+    T domain = this.getOneById(id);
+    return deleted == domain.getDeleted() ? domain : null;
   }
 
   @Override
@@ -96,7 +103,7 @@ public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements B
 
   @Override
   public PageResult<T> findPage(PageParam<T> param) {
-    if(param.getParam()==null){
+    if (param.getParam() == null) {
       throw new AlsaceException("参数对象为空！");
     }
     param.getParam().setDeleted(false);
@@ -107,9 +114,9 @@ public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements B
   @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean delete(List<Long> idList) {
-    Assert.notEmpty(idList,"ID列表为空！");
+    Assert.notEmpty(idList, "ID列表为空！");
     List<T> domainList = new ArrayList<>(idList.size());
-    idList.forEach(id->{
+    idList.forEach(id -> {
       T dbUser = this.getOneById(id);
       Assert.state(dbUser != null, Constants.DELETE_NOT_EXISTS_ERROR);
       dbUser.setDeleted(true);
