@@ -46,14 +46,14 @@ public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements B
    * 设置创建用的ID、创建人、创建时间
    * @param domain
    */
-  protected void setCreateInfo(T domain){
+  protected void setCreateInfo(BaseEntity domain){
     domain.setCreatedBy(getLoginAccount()).setCreatedDate(new Date()).setId(IdUtils.id());
   }
 
   /**
    * 设置修改人、修改时间
    */
-  protected void setModifyInfo(T domain){
+  protected void setModifyInfo(BaseEntity domain){
     domain.setModifiedDate(new Date()).setModifiedBy(getLoginAccount());
   }
 

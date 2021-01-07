@@ -12,6 +12,7 @@ import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.detection.service.PersonTaskFormService;
 import com.alsace.exchange.service.detection.service.PersonTaskService;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailPageVo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/app")
-@ApiOperation(value = "APP对应接口", tags = "APP对应接口")
+@Api(value = "APP对应接口", tags = "APP对应接口")
 public class AppController extends BaseController {
 
   @Resource

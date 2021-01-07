@@ -26,6 +26,14 @@ public interface PersonTaskService extends BaseService<PersonTask,Long> {
   PersonTask save(@Validated(Create.class) PersonTask task, @Validated(Create.class) List<PersonTaskOrg> orgList, @Validated(Create.class) List<PersonTaskLocation> locationList);
 
   /**
+   * 更新人员检测任务
+   * @param task 任务主要信息
+   * @param orgList 任务检测机构
+   * @param locationList 任务地点
+   */
+  PersonTask update(PersonTask task, List<PersonTaskOrg> orgList, List<PersonTaskLocation> locationList);
+
+  /**
    * 检测任务添加检测人员
    * @param taskCode 检测任务号
    * @param operatorList 检测人员
@@ -60,4 +68,5 @@ public interface PersonTaskService extends BaseService<PersonTask,Long> {
    * 下发人员检测任务
    */
   void assign(List<String> taskCodeList);
+
 }

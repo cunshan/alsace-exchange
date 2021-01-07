@@ -7,6 +7,7 @@ import com.alsace.exchange.service.detection.service.PersonTaskLocationService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -25,5 +26,11 @@ public class PersonTaskLocationServiceImpl extends AbstractBaseServiceImpl<Perso
   @Override
   protected JpaSpecificationExecutor<PersonTaskLocation> getJpaSpecificationExecutor() {
     return this.personTaskLocationRepository;
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void deleteByTaskCode(String taskCode) {
+    personTaskLocationRepository.deleteAllByTaskCode(taskCode);
   }
 }

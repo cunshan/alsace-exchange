@@ -43,8 +43,8 @@ public class PersonTaskController extends BaseController {
 
   @ApiOperation("人员检测任务更新")
   @PostMapping("/update")
-  public AlsaceResult<PersonTask> update(@RequestBody PersonTask param) {
-    PersonTask domain = personTaskService.update(param);
+  public AlsaceResult<PersonTask> update(@RequestBody PersonTaskVo param) {
+    PersonTask domain = personTaskService.update(param.getTask(),param.getOrgList(),param.getLocationList());
     return success(domain);
   }
 

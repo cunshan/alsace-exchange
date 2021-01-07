@@ -26,4 +26,9 @@ public class PersonTaskOrgServiceImpl extends AbstractBaseServiceImpl<PersonTask
   protected JpaSpecificationExecutor<PersonTaskOrg> getJpaSpecificationExecutor() {
     return this.personTaskOrgRepository;
   }
+
+  @Override
+  public void deleteByTaskCode(String taskCode) {
+    personTaskOrgRepository.deleteAllByTaskCode(taskCode);
+  }
 }

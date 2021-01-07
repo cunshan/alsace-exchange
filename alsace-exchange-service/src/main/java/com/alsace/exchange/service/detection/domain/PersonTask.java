@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Column;
@@ -25,13 +26,13 @@ import java.util.Date;
 @Table(name = "biz_person_task")
 @ApiModel
 @DynamicUpdate
+@DynamicInsert
 public class PersonTask extends BaseEntity {
 
   private static final long serialVersionUID = 2837596444087626503L;
 
   @ApiModelProperty(value = "任务编码", required = true)
   @Column(columnDefinition = "varchar(128) not null comment '任务编码'")
-  @NotBlank(groups = {Create.class}, message = "任务编码为空!")
   private String taskCode;
 
   @ApiModelProperty(value = "任务描述", required = true)
@@ -41,7 +42,7 @@ public class PersonTask extends BaseEntity {
 
   @ApiModelProperty(value = "任务状态 10：已创建 20：待下发 30：已下发 40：待开始 50：进行中 60：已完成 70：取消", required = true)
   @Column(columnDefinition = "int(2) not null comment '任务状态 10：已创建 20：待下发 30：已下发 40：待开始 50：进行中 60：已完成 70：取消'")
-  @NotBlank(groups = {Create.class}, message = "任务编码为空!")
+  @NotBlank(groups = {Create.class}, message = "任务状态!")
   private Integer taskStatus;
 
   @ApiModelProperty(value = "任务开始时间",required = true)
