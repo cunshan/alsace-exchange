@@ -7,6 +7,7 @@ import com.alsace.exchange.service.sys.domain.Role;
 import com.alsace.exchange.service.sys.domain.RoleMenu;
 import com.alsace.exchange.service.sys.repositories.RoleMenuRepository;
 import com.alsace.exchange.service.sys.repositories.RoleRepository;
+import com.alsace.exchange.service.sys.repositories.UserRoleRepository;
 import com.alsace.exchange.service.sys.service.RoleService;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -58,6 +59,12 @@ public class RoleServiceImpl extends AbstractBaseServiceImpl<Role> implements Ro
     });
     roleMenuRepository.saveAll(roleMenuList);
     return true;
+  }
+
+  @Override
+  public List<Role> findRoleByLoginAccount(String loginAccount) {
+    Assert.hasLength(loginAccount,"登录账号为空！");
+    return roleRepository.findByLoginAccount(loginAccount);
   }
 
 }

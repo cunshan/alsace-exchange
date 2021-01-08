@@ -11,6 +11,20 @@ public class BaseController {
     protected LoginInfoProvider loginInfoProvider;
 
     /**
+     * 获取当前登录人账号
+     */
+    protected String getLoginAccount(){
+        return loginInfoProvider.loginAccount();
+    }
+
+    /**
+     * 获取当前登录人姓名
+     */
+    protected String getUserName(){
+        return loginInfoProvider.userName();
+    }
+
+    /**
      * 错误结果
      */
     protected static <T> AlsaceResult<T> error(String errorCode, String msg) {

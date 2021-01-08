@@ -10,5 +10,11 @@ public interface MenuService extends BaseService<Menu,Long> {
   /**
    * 根据角色编码查询菜单
    */
-  List<Menu> findByRoleCode(String roleCode);
+  List<Menu> findByRoleCode(List<String> roleCodeList);
+
+  /**
+   * 根据登录账号查询菜单
+   * @param loginAccount 登录账号
+   */
+  List<Menu> findByLoginAccount(String loginAccount);
 }

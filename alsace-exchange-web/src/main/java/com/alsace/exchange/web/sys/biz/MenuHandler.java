@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,13 @@ public class MenuHandler {
     Menu menuParam = new Menu();
     menuParam.setDeleted(false);
     List<Menu> menuList = menuService.findAll(menuParam);
+    List<TreeVo<Menu>> rootList = buildTree(menuList,rootId);
+    log.info(JsonUtils.toJson(rootList));
+    return rootList;
+
+  }
+
+  private List<TreeVo<Menu>> buildTree(List<Menu> menuList, Long rootId) {
     //有父节点的菜单
     Map<Long, List<TreeVo<Menu>>> childrenMap = new HashMap<>();
     //菜单根节点
@@ -45,9 +53,7 @@ public class MenuHandler {
       }
     });
     rootList.forEach(menu -> addChildren(menu, childrenMap));
-    log.info(JsonUtils.toJson(rootList));
     return rootList;
-
   }
 
   /**
@@ -65,21 +71,17 @@ public class MenuHandler {
    * 根据角色码获取菜单树
    */
   public List<TreeVo<Menu>> queryByRole(String roleCode) {
-    List<Menu> menuList = menuService.findByRoleCode(roleCode);
-    //有父节点的菜单
-    Map<Long, List<TreeVo<Menu>>> childrenMap = new HashMap<>();
-    //菜单根节点
-    List<TreeVo<Menu>> rootList = new ArrayList<>();
-    menuList.forEach(menu -> {
-      if (menu.getParentId() == null) {
-          rootList.add(new TreeVo<>(menu));
-      } else {
-        List<TreeVo<Menu>> temp = childrenMap.getOrDefault(menu.getParentId(), new ArrayList<>());
-        temp.add(new TreeVo<>(menu));
-        childrenMap.putIfAbsent(menu.getParentId(), temp);
-      }
-    });
-    rootList.forEach(menu -> addChildren(menu, childrenMap));
-    return rootList;
+    List<Menu> menuList = menuService.findByRoleCode(Collections.singletonList(roleCode));
+    return buildTree(menuList,null);
+  }
+
+  /**
+   * 根据登录账号获取对应的菜单信息
+   * @param loginAccount 登录账号
+   */
+  public List<TreeVo<Menu>> queryByLoginAccount(String loginAccount) {
+    List<Menu> menuList = menuService.findByLoginAccount(loginAccount);
+    return buildTree(menuList,null);
+
   }
 }
