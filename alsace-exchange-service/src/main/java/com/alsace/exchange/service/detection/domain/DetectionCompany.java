@@ -23,6 +23,8 @@ import javax.persistence.Table;
 @DynamicUpdate
 public class DetectionCompany extends BaseEntity {
 
+  private static final long serialVersionUID = -3019109688780296431L;
+
   @ApiModelProperty(value = "企业编码")
   @Column(columnDefinition = "varchar(128) not null comment '企业编码'")
   private String companyCode;
