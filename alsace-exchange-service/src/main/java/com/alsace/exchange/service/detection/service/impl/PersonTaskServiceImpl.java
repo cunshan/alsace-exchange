@@ -112,7 +112,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     if (!TaskStatus.INIT.status().equals(dbTask.getTaskStatus())) {
       throw new AlsaceException("当前任务状态不允许修改！");
     }
-    AlsaceBeanUtils.copyNotNullProperties(task,dbTask);
+    AlsaceBeanUtils.copyNotNullProperties(task, dbTask);
     this.personTaskRepository.saveAndFlush(dbTask);
     //删除检测机构和检测地点
     personTaskOrgService.deleteByTaskCode(task.getTaskCode());
@@ -124,7 +124,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     });
     personTaskOrgService.saveBatch(orgList);
     //保存检测地点
-    locationList.forEach(location->{
+    locationList.forEach(location -> {
       location.setTaskCode(task.getTaskCode());
       setCreateInfo(location);
     });
@@ -163,7 +163,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     Assert.state(TaskDetectionType.NOT_ALL.status().equals(task.getDetectionType()), "检测任务类型为全民检测，不能添加被检测人员！");
     Assert.state(TaskStatus.COMPLETED.status() > task.getTaskStatus(), String.format("检测任务状态不允许添被加检测人员！[%s]", task.getTaskStatus()));
     //如果结束时间已经到了，不准修改
-    if(task.getEndDate().getTime()<=new Date().getTime()){
+    if (task.getEndDate().getTime() <= new Date().getTime()) {
       throw new AlsaceException("任务已经结束，修改失败！");
     }
     //保存检测人员
@@ -203,9 +203,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     PersonTaskForm form = personTaskFormService.findOne(formParam);
     if (form == null) {
       //如果当前时间超过任务结束时间时，不可再次创建新表单
-      if(task.getEndDate().getTime()<=new Date().getTime()){
-        throw new AlsaceException("当前任务已到达结束时间，不可创建新表单！");
-      }
+      Assert.state(task.getEndDate().getTime() > new Date().getTime(), "当前任务已到达结束时间，不可创建新表单！");
       formParam.setFormCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_FORM_CODE));
       return personTaskFormService.save(formParam);
     }
