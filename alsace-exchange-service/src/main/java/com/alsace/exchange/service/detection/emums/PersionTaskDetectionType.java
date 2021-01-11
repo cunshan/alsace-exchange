@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 
 @Getter
 @Accessors(fluent = true)
-public enum TaskDetectionType {
+public enum PersionTaskDetectionType {
 
   ALL(1, "全民检测"),
   NOT_ALL(2, "非全民检测");
@@ -14,7 +14,7 @@ public enum TaskDetectionType {
 
   private final String desc;
 
-  TaskDetectionType(Integer status, String desc) {
+  PersionTaskDetectionType(Integer status, String desc) {
     this.status = status;
     this.desc = desc;
   }
@@ -22,7 +22,7 @@ public enum TaskDetectionType {
   public static String getDesc(Integer taskStatus) {
     String desc = "";
     for (int i = 0; i < values().length; i++) {
-      TaskDetectionType status = values()[i];
+      PersionTaskDetectionType status = values()[i];
       if (status.status.equals(taskStatus)) {
         desc = status.desc();
         break;
