@@ -10,4 +10,10 @@ public class Constants {
 
   public static final String ID_NOT_NULL_ERROR = "ID不能为空！";
 
+  public static final String FORMAT_ERROR = "请选择格式正确的文件！";
+
+  public static final String TEMPLATE_ERROR = "excel模板非法,请下载正确模板！";
+
+  public static final String IMPORT_ERROR = "导入失败,请检查数据！";
+
 }

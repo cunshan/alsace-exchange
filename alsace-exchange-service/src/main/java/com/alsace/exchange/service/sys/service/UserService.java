@@ -15,4 +15,11 @@ public interface UserService extends BaseService<User,Long> {
    */
   boolean addUserRoles(String loginAccount, List<String> roleList);
 
+  /**
+   * 导入用户信息
+   * @param param
+   * @return
+   */
+  List<User> importUser(List<Object> param);
+
 }
