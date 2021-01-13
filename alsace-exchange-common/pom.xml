@@ -11,7 +11,7 @@
 
     <artifactId>alsace-exchange-common</artifactId>
     <packaging>jar</packaging>
-    <version>${parent.version}</version>
+    <version>0.0.1-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>javax.validation</groupId>
