@@ -12,6 +12,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
@@ -32,6 +33,7 @@ public class EnvironmentTaskDetailResult extends BaseEntity {
 
   @ApiModelProperty(value = "核酸采样管编码")
   @Column(columnDefinition = "varchar(128) comment '核酸采样管编码'")
+  @NotBlank(message = "核酸采样管编码为空！")
   private String nucleicAcidNo;
 
   @ApiModelProperty(value = "核酸是否阳性")
@@ -40,6 +42,7 @@ public class EnvironmentTaskDetailResult extends BaseEntity {
 
   @ApiModelProperty(value = "样本类型 10:食品 20:其他")
   @Column(columnDefinition = "int(2) not null default 10 comment '样本类型 10:食品 20:其他'")
+  @NotBlank(message = "样本类型为空！")
   private Integer detailType;
 
   @ApiModelProperty(value = "照片URL")

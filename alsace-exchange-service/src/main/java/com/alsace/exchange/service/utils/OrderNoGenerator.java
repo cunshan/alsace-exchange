@@ -94,17 +94,29 @@ public class OrderNoGenerator {
   public enum OrderNoType {
 
     /**
-     * 应收单号
+     * 人员检测任务编码
      */
     PERSON_TASK_CODE("P", "人员检测任务号", 5, "yyMMdd"),
     /**
-     * 检测表单编号
+     * 人员检测表单编码
      */
-    PERSON_TASK_FORM_CODE("F", "人员检测表单编码", 6, "yyMMdd"),
+    PERSON_TASK_FORM_CODE("PF", "人员检测表单编码", 6, "yyMMdd"),
     /**
-     * 检测明细编号
+     * 人员检测明细编码
      */
-    PERSON_TASK_DETAIL_CODE("D", "人员检测明细编码", 6, "yyMMdd");
+    PERSON_TASK_DETAIL_CODE("PD", "人员检测明细编码", 6, "yyMMdd"),
+    /**
+     * 环境检测任务编码
+     */
+    ENVIRONMENT_TASK_CODE("E", "人员检测任务号", 5, "yyMMdd"),
+    /**
+     * 环境检测表单编码
+     */
+    ENVIRONMENT_TASK_FORM_CODE("EF", "人员检测表单编码", 6, "yyMMdd"),
+    /**
+     * 环境检测明细编码
+     */
+    ENVIRONMENT_TASK_DETAIL_CODE("ED", "人员检测明细编码", 6, "yyMMdd");
 
 
     /**

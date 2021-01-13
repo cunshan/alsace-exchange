@@ -9,10 +9,12 @@ import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.AlsaceBeanUtils;
 import com.alsace.exchange.service.detection.domain.EnvironmentTask;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
+import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailResult;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskForm;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskOperator;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskOrg;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskTag;
+import com.alsace.exchange.service.detection.emums.EnvironmentTaskDetailResultType;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.emums.TaskFormStatus;
 import com.alsace.exchange.service.detection.emums.TaskStatus;
@@ -79,7 +81,7 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
   public EnvironmentTask save(EnvironmentTask task, List<EnvironmentTaskOrg> orgList, List<EnvironmentTaskTag> locationList) {
     Assert.notNull(task, "任务信息为空！");
     Assert.notEmpty(orgList, "检测机构为空！");
-    String taskCode = orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_CODE);
+    String taskCode = orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ENVIRONMENT_TASK_CODE);
     //保存任务对应检测机构
     orgList.forEach(org -> org.setTaskCode(taskCode));
     environmentTaskOrgService.saveBatch(orgList);
@@ -133,7 +135,6 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
   @Override
   @Transactional(rollbackFor = {Exception.class})
   public void addOperators(String taskCode, List<EnvironmentTaskOperator> operatorList) {
-    //TODO 当前时间>=开始时间时，停止被检测人员名单的提交
     //校验任务状态
     EnvironmentTask taskParam = new EnvironmentTask();
     taskParam.setTaskCode(taskCode).setDeleted(false);
@@ -166,7 +167,7 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
     //保存检测环境
     detailList.forEach(detail -> detail.setTaskCode(taskCode)
         .setDetailStatus(TaskDetailStatus.INIT.status())
-        .setDetailCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE)));
+        .setDetailCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ENVIRONMENT_TASK_DETAIL_CODE)));
     environmentTaskDetailService.saveBatch(detailList);
     //更改任务状态为待下发
     if (TaskStatus.INIT.status().equals(task.getTaskStatus())) {
@@ -201,26 +202,51 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
     if (form == null) {
       //如果当前时间超过任务结束时间时，不可再次创建新表单
       Assert.state(task.getEndDate().getTime() > new Date().getTime(), "当前任务已到达结束时间，不可创建新表单！");
-      formParam.setFormCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_FORM_CODE));
+      formParam.setFormCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ENVIRONMENT_TASK_FORM_CODE));
       return environmentTaskFormService.save(formParam);
     }
     return form;
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public void submitDetail(EnvironmentTaskDetail param) {
     Assert.hasLength(param.getTaskCode(), "任务编码为空！");
     Assert.hasLength(param.getFormCode(), "表单编码为空！");
+    Assert.hasLength(param.getDetailCode(), "明细编码为空！");
     Assert.notNull(param.getTagId(), "标签为空！");
+    Assert.notEmpty(param.getDetailResultList(), "检测样本为空！");
     //查询出任务
     EnvironmentTask queryTask = new EnvironmentTask();
     queryTask.setTaskCode(param.getTaskCode())
         .setDeleted(false);
     EnvironmentTask task = this.findOne(queryTask);
-    if (task == null) {
-      throw new AlsaceException("任务不存在！");
-    }
-    //TODO 提交检测明细
+    Assert.state(task != null, String.format("任务不存在！[%s]", param.getTaskCode()));
+    //查询出任务明细
+    EnvironmentTaskDetail queryDetail = new EnvironmentTaskDetail();
+    queryDetail.setDetailCode(param.getDetailCode()).setDeleted(false);
+    EnvironmentTaskDetail dbDetail = this.environmentTaskDetailService.findOne(queryDetail);
+    Assert.state(dbDetail != null, String.format("任务明细不存在！[%s]", param.getDetailCode()));
+    Assert.state(TaskDetailStatus.INIT.status().equals(dbDetail.getDetailStatus()), String.format("明细已经提交！[%s]", dbDetail.getDetailCode()));
+    //任务明细改成已提交
+    dbDetail.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
+    this.environmentTaskDetailService.save(dbDetail);
+    List<EnvironmentTaskDetailResult> resultList = param.getDetailResultList();
+    // 提交检测明细样本要在3条之内
+    Assert.state(resultList.size() > 3, "检测样本数量超过3个！");
+    resultList.forEach(result -> {
+      if (EnvironmentTaskDetailResultType.FOOD.status().equals(result.getDetailType())) {
+        //食物的要求3个字段必填
+        Assert.hasLength(result.getManufacturePlace(), "产地为空！");
+        Assert.hasLength(result.getLotNumber(), "批号为空！");
+        Assert.notNull(result.getManufactureDate(), "生产日期为空！");
+      }
+    });
+    this.environmentTaskDetailService.deleteResultByDetailCode(param.getDetailCode());
+    resultList.forEach(result -> {
+      result.setDetailCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ENVIRONMENT_TASK_DETAIL_CODE));
+    });
+    this.environmentTaskDetailService.saveResult(resultList);
   }
 
   @Override

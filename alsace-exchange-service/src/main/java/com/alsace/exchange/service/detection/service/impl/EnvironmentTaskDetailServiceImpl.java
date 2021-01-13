@@ -5,8 +5,10 @@ import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
 import com.alsace.exchange.common.constants.Constants;
 import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
+import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailResult;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.repositories.EnvironmentTaskDetailRepository;
+import com.alsace.exchange.service.detection.repositories.EnvironmentTaskDetailResultRepository;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskDetailService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -23,6 +25,8 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
 
   @Resource
   private EnvironmentTaskDetailRepository environmentTaskDetailRepository;
+  @Resource
+  private EnvironmentTaskDetailResultRepository environmentTaskDetailResultRepository;
 
   @Override
   protected JpaRepository<EnvironmentTaskDetail, Long> getJpaRepository() {
@@ -59,5 +63,18 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
     });
     getJpaRepository().saveAll(domainList);
     return true;
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void deleteResultByDetailCode(String detailCode) {
+    this.environmentTaskDetailResultRepository.deleteByDetailCode(detailCode);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  @AutoFill(AutoFillType.CREATE)
+  public void saveResult(List<EnvironmentTaskDetailResult> resultList) {
+    this.environmentTaskDetailResultRepository.saveAll(resultList);
   }
 }

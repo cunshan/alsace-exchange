@@ -5,17 +5,17 @@ import lombok.experimental.Accessors;
 
 @Getter
 @Accessors(fluent = true)
-public enum EnvironmentTaskDetailType {
+public enum EnvironmentTaskDetailResultType {
 
-  INIT(10, "已创建"),
-  SUBMITTED(20, "已提交");
+  FOOD(10, "食物"),
+  OTHER(20, "其他");
 
   private final Integer status;
 
   private final String desc;
 
 
-  EnvironmentTaskDetailType(Integer status, String desc) {
+  EnvironmentTaskDetailResultType(Integer status, String desc) {
     this.status = status;
     this.desc = desc;
   }
@@ -23,7 +23,7 @@ public enum EnvironmentTaskDetailType {
   public static String getDesc(Integer taskStatus) {
     String desc = "";
     for (int i = 0; i < values().length; i++) {
-      EnvironmentTaskDetailType status = values()[i];
+      EnvironmentTaskDetailResultType status = values()[i];
       if (status.status.equals(taskStatus)) {
         desc = status.desc();
         break;

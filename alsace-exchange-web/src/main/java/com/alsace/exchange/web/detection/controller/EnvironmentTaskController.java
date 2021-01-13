@@ -35,7 +35,7 @@ public class EnvironmentTaskController extends BaseController {
   @Resource
   private EnvironmentTaskOrgService environmentTaskOrgService;
   @Resource
-  private EnvironmentTaskTagService environmentTaskLocationService;
+  private EnvironmentTaskTagService environmentTaskTagService;
 
 
   @ApiOperation("环境监测任务保存")
@@ -99,7 +99,7 @@ public class EnvironmentTaskController extends BaseController {
     List<EnvironmentTaskOrg> orgList = environmentTaskOrgService.findAll(queryOrg);
     EnvironmentTaskTag queryLocation = new EnvironmentTaskTag();
     queryLocation.setTaskCode(taskCode).setDeleted(false);
-    List<EnvironmentTaskTag> locationList = environmentTaskLocationService.findAll(queryLocation);
+    List<EnvironmentTaskTag> locationList = environmentTaskTagService.findAll(queryLocation);
     EnvironmentTaskVo res = new EnvironmentTaskVo();
     res.setTask(task).setTagList(locationList).setOrgList(orgList);
     return success(res);

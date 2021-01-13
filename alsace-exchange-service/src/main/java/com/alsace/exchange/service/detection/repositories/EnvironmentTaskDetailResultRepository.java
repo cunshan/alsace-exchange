@@ -6,4 +6,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface EnvironmentTaskDetailResultRepository extends JpaRepository<EnvironmentTaskDetailResult,Long>, JpaSpecificationExecutor<EnvironmentTaskDetailResult> {
 
+  /**
+   * 根据明细编码删除
+   */
+  void deleteByDetailCode(String detailCode);
+
 }
