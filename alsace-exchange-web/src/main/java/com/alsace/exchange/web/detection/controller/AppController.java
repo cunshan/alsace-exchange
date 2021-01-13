@@ -162,7 +162,7 @@ public class AppController extends BaseController {
   }
 
   @ApiOperation(value = "人员检测任务表单提交")
-  @PostMapping("/person/form/submit")
+  @PostMapping("/env/form/submit")
   public AlsaceResult<EnvironmentTaskForm> envSubmitForm(@RequestBody List<String> formCodeList) {
     environmentTaskFormService.submitForm(formCodeList);
     return success("提交成功", null);
