@@ -90,7 +90,6 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
     return true;
   }
 
-  @AutoFill(AutoFillType.CREATE)
   @Override
   public List<User> importUser(List<Object> param) {
     InputStream is = new ByteArrayInputStream((byte[]) param.get(0));
@@ -113,7 +112,9 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
       importResult.getList().forEach(userImport-> {
         User user=new User();
         BeanUtils.copyProperties(userImport,user);
+        user.setId(IdUtils.id());
         user.setLocked(false);
+        user.setDeleted(false);
         users.add(user);
       });
       return userRepository.saveAll(users);
