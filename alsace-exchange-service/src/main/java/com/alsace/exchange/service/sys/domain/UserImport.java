@@ -23,40 +23,14 @@ public class UserImport implements IExcelDataModel,IExcelModel, Serializable {
      * 用户姓名
      */
     @ApiModelProperty("用户姓名")
-    @Excel(name = "登录名", isImportField = "true")
+    @Excel(name = "用户姓名", isImportField = "true")
     private String userName;
-    /**
-     * 密码
-     */
-    @ApiModelProperty("密码")
-    @Excel(name = "登录名", isImportField = "false")
-    private String password;
-    /**
-     * 昵称
-     */
-    @ApiModelProperty("昵称")
-    @Excel(name = "登录名", isImportField = "true")
-    private String nickName;
     /**
      * 电话号码
      */
     @ApiModelProperty("电话号码")
-    @Excel(name = "登录名", isImportField = "true")
+    @Excel(name = "电话号码", isImportField = "true")
     private String tel;
-    /**
-     * 邮件地址
-     */
-    @ApiModelProperty("邮件地址")
-    @Excel(name = "登录名", isImportField = "false")
-    private String email;
-
-    /**
-     * 锁定标记
-     */
-    @ApiModelProperty("锁定标记")
-    @Excel(name = "锁定标记", isImportField = "false")
-    private Boolean locked;
-
 
     @Override
     public int getRowNum() {

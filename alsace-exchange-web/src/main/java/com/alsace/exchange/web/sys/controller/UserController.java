@@ -28,9 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 
 @Api(tags = "用户",value = "user")
@@ -80,17 +81,20 @@ public class UserController extends BaseController {
   }
 
   @ApiOperation("用户导入模板下载")
-  @PostMapping("/downTemplate")
-  public void downTemplate() throws IOException {
+  @RequestMapping("/downTemplate")
+  public void downTemplate(HttpServletResponse response)  {
     List<UserImport> list = Lists.newArrayList();
-    Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams(), UserImport.class, list);
-    ExportUtil.setDropDown(UserImport.class, workBook);
-    File outputFile = new File("用户导入模板.xls");
-    if (!outputFile.exists()) {
-      outputFile.createNewFile();
+    Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("用户信息导入模板", "用户信息"), UserImport.class, list);
+//    ExportUtil.setDropDown(UserImport.class, workBook);
+    try(OutputStream out = response.getOutputStream()) {
+      response.setContentType("application/ms-excel;charset=UTF-8");
+      response.setHeader("Content-Disposition", "attachment;filename="
+              .concat(String.valueOf(URLEncoder.encode("用户导入模板.xls", "UTF-8"))));
+      workBook.write(out);
+    } catch(Exception e) {
+      error("101",Constants.SYSTEM_ERROR);
     }
-    FileOutputStream fos = new FileOutputStream(outputFile);
-    workBook.write(fos);
+
   }
 
   @ApiOperation("用户导入")
@@ -98,15 +102,15 @@ public class UserController extends BaseController {
   public AlsaceResult<List<User>> importUser(@ApiParam(name = "文件", value = "file", required = true)
                                              @RequestParam("file") MultipartFile file) {
     if (!file.getOriginalFilename().toLowerCase().endsWith("xls") && !file.getOriginalFilename().toLowerCase().endsWith("xlsx")) {
-      return error("101", Constants.FORMAT_ERROR);
+      return error("102", Constants.FORMAT_ERROR);
     }
     if (ExportUtil.checkIlegalTemplate(UserImport.class, file)) {
-      return error("101",Constants.TEMPLATE_ERROR);
+      return error("102",Constants.TEMPLATE_ERROR);
     }
     try {
       return success(userService.importUser(Lists.newArrayList(file.getBytes())));
     } catch (IOException e) {
-      return error("",Constants.IMPORT_ERROR);
+      return error("102",Constants.IMPORT_ERROR);
     }
   }
 

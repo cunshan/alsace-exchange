@@ -16,4 +16,6 @@ public class Constants {
 
   public static final String IMPORT_ERROR = "导入失败,请检查数据！";
 
+  public static final String SYSTEM_ERROR = "系统异常，请联系管理员！";
+
 }

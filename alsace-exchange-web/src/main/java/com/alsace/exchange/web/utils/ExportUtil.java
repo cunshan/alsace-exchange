@@ -207,7 +207,7 @@ public class ExportUtil {
                 workBook = (HSSFWorkbook) book;
             }
             Sheet sheet = workBook.getSheetAt(0);
-            Row row = sheet.getRow(0);
+            Row row = sheet.getRow(1);
             Iterator<Cell> cellTitle = row.cellIterator();
             List<String> titleList = new ArrayList<>();
             while (cellTitle.hasNext()) {
