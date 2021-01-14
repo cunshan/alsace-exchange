@@ -30,3 +30,10 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     com.alsace.exchange.service.detection.mapper: debug
 
+#==================
+# 短信平台配置
+#==================
+sms:
+  username: qdlfm_hy
+  password: gao12345
+  appKey: cd267094931efdb4e9a6505422fbd165

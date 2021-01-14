@@ -5,16 +5,18 @@ import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.TreeVo;
 import com.alsace.exchange.service.sys.domain.Menu;
 import com.alsace.exchange.service.sys.domain.User;
-import com.alsace.exchange.service.sys.service.MenuService;
 import com.alsace.exchange.service.sys.service.UserService;
 import com.alsace.exchange.web.config.shiro.jwt.JwtToken;
+import com.alsace.exchange.web.sys.biz.LoginHandler;
 import com.alsace.exchange.web.sys.biz.MenuHandler;
+import com.alsace.exchange.web.sys.vo.AppLoginVo;
 import com.alsace.exchange.web.utils.JwtUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +32,8 @@ public class LoginController extends BaseController {
   private UserService userService;
   @Resource
   private MenuHandler menuHandler;
+  @Resource
+  private LoginHandler loginHandler;
 
   @ApiOperation(value = "用户登录", notes = "登录请求操作")
   @PostMapping("/login")
@@ -50,8 +54,23 @@ public class LoginController extends BaseController {
 
   @ApiOperation(value = "登录用户显示的菜单", notes = "登录用户显示的菜单")
   @PostMapping("/current/menu")
-  public AlsaceResult<List<TreeVo<Menu>>> currentUserMenu(){
+  public AlsaceResult<List<TreeVo<Menu>>> currentUserMenu() {
     String loginAccount = getLoginAccount();
     return success(menuHandler.queryByLoginAccount(loginAccount));
   }
+
+  @ApiOperation(value = "APP登录", tags = "APP对应接口")
+  @PostMapping("/app/login")
+  public AlsaceResult<String> appLogin(@RequestBody AppLoginVo param) {
+    //TODO app登录
+    return success("");
+  }
+
+  @ApiOperation(value = "APP登录", tags = "APP对应接口")
+  @PostMapping("/app/send-check/{mobile}")
+  public AlsaceResult<String> sendCheck(@PathVariable String mobile) {
+    loginHandler.sendSms(mobile);
+    return success("发送成功！", null);
+  }
+
 }
