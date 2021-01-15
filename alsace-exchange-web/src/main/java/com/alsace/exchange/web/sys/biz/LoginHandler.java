@@ -56,6 +56,7 @@ public class LoginHandler {
   public String appLogin(AppLoginVo param) {
     String mobile = stringRedisTemplate.opsForValue().get(param.getCheckCode());
     Assert.state(param.getMobile().equalsIgnoreCase(mobile), "验证码失效！");
+    stringRedisTemplate.delete(param.getCheckCode());
     User queryUser = new User();
     queryUser.setTel(mobile).setDeleted(false);
     User dbUser = userService.findOne(queryUser);
