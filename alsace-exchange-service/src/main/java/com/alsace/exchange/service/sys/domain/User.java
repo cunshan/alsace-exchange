@@ -31,21 +31,21 @@ public class User extends BaseEntity {
     /**
      * 登录名
      */
-    @ApiModelProperty("登录名")
+    @ApiModelProperty(value = "登录名",required = true)
     @Column(columnDefinition = "varchar(32) not null comment '登录名'")
     @NotBlank(groups = {Create.class}, message = "登录名为空！")
     private String loginAccount;
     /**
      * 用户姓名
      */
-    @ApiModelProperty("用户姓名")
+    @ApiModelProperty(value = "用户姓名",required = true)
     @Column(columnDefinition = "varchar(32) not null comment '用户姓名'")
     @NotBlank(groups = {Create.class}, message = "用户姓名为空！")
     private String userName;
     /**
      * 密码
      */
-    @ApiModelProperty("密码")
+    @ApiModelProperty(value = "密码",required = true)
     @Column(columnDefinition = "varchar(64) not null comment '密码'")
     @NotBlank(groups = {Create.class}, message = "密码为空！")
     private String password;
@@ -58,7 +58,7 @@ public class User extends BaseEntity {
     /**
      * 电话号码
      */
-    @ApiModelProperty("电话号码")
+    @ApiModelProperty(value = "电话号码",required = true)
     @Column(columnDefinition = "varchar(64) comment '电话号码'")
     @NotBlank(groups = {Create.class}, message = "电话号码为空！")
     private String tel;
