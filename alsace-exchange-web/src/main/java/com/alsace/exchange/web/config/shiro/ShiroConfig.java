@@ -43,6 +43,7 @@ public class ShiroConfig {
     chainDefinition.addPathDefinition("/login", "anon,jwt[allowed]");
     chainDefinition.addPathDefinition("/app/send-check/**", "anon,jwt[permissive]");
     chainDefinition.addPathDefinition("/app/login", "anon,jwt[permissive]");
+    chainDefinition.addPathDefinition("/user/save", "anon,jwt[permissive]");
 
     // SWAGGER2过滤【START】
     chainDefinition.addPathDefinition("/swagger-ui/**", "anon,jwt[permissive]");
