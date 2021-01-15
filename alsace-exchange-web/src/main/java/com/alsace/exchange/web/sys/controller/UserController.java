@@ -17,7 +17,6 @@ import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +44,6 @@ public class UserController extends BaseController {
   @ApiOperation("用户保存")
   @PostMapping("/save")
   public AlsaceResult<User> save(@RequestBody @Validated(Create.class) User param) {
-    param.setPassword(DigestUtils.md5Hex(param.getPassword().trim() + param.getLoginAccount()));
     User domain = userService.save(param);
     return success(domain);
   }

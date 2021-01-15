@@ -16,6 +16,7 @@ import com.alsace.exchange.service.sys.repositories.UserRepository;
 import com.alsace.exchange.service.sys.repositories.UserRoleRepository;
 import com.alsace.exchange.service.sys.service.UserService;
 import com.sun.javafx.binding.StringFormatter;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -61,6 +62,7 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
     long userCount = userRepository.count(Example.of(userParam));
     Assert.state(userCount <= 0, String.format("用户名%s已经存在！", param.getLoginAccount()));
     param.setLocked(false);
+    param.setPassword(DigestUtils.md5Hex(param.getPassword().trim() + param.getLoginAccount()));
     return userRepository.saveAndFlush(param);
   }
 
