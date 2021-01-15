@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @ApiModel("APP手机验证码登录")
@@ -11,10 +12,12 @@ import java.io.Serializable;
 public class AppLoginVo implements Serializable {
   private static final long serialVersionUID = 3809110669346951870L;
 
-  @ApiModelProperty("手机号")
+  @ApiModelProperty(value = "手机号",required = true)
+  @NotBlank(message = "手机号为空！")
   private String mobile;
 
-  @ApiModelProperty("验证码")
+  @ApiModelProperty(value = "验证码",required = true)
+  @NotBlank(message = "验证码为空！")
   private String checkCode;
 
 }
