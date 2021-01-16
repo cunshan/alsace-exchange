@@ -15,6 +15,7 @@ import com.alsace.exchange.service.sys.excel.UserImportVerifyHandler;
 import com.alsace.exchange.service.sys.repositories.UserRepository;
 import com.alsace.exchange.service.sys.repositories.UserRoleRepository;
 import com.alsace.exchange.service.sys.service.UserService;
+import com.alsace.exchange.service.sys.specs.UserSpecs;
 import com.sun.javafx.binding.StringFormatter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
@@ -83,9 +84,9 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
     new HashSet<>(roleList).forEach(role -> {
       UserRole userRole = new UserRole(loginAccount, role);
       userRole.setDeleted(false)
-              .setId(IdUtils.id())
-              .setCreatedDate(new Date())
-              .setCreatedBy(getLoginAccount());
+          .setId(IdUtils.id())
+          .setCreatedDate(new Date())
+          .setCreatedBy(getLoginAccount());
       userRoleList.add(userRole);
     });
     userRoleRepository.saveAll(userRoleList);
@@ -111,9 +112,9 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
         Assert.state(false, sb.toString());
       }
       List<User> users = new ArrayList<>();
-      importResult.getList().forEach(userImport-> {
-        User user=new User();
-        BeanUtils.copyProperties(userImport,user);
+      importResult.getList().forEach(userImport -> {
+        User user = new User();
+        BeanUtils.copyProperties(userImport, user);
         user.setId(IdUtils.id());
         user.setLocked(false);
         user.setDeleted(false);
@@ -123,5 +124,10 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
     } catch (Exception e) {
       throw new AlsaceException("导入用户数据异常！");
     }
+  }
+
+  @Override
+  public List<User> findAllByLoginAccounts(List<String> accountList) {
+    return this.userRepository.findAll(UserSpecs.loginAccountIn(accountList).and(UserSpecs.deleted(false)));
   }
 }

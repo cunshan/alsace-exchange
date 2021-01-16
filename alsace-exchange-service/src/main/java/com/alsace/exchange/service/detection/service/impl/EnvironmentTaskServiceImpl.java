@@ -140,12 +140,14 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
     taskParam.setTaskCode(taskCode).setDeleted(false);
     EnvironmentTask task = this.findOne(taskParam);
     Assert.state(task != null, "检测任务不存在！");
-    Assert.state(TaskStatus.ASSIGNED.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添加检测人员！[%s]", task.getTaskStatus()));
+//    Assert.state(TaskStatus.ASSIGNED.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添加检测人员！[%s]", task.getTaskStatus()));
     //保存检测人员
     operatorList.forEach(operator -> operator.setTaskCode(taskCode));
     environmentTaskOperatorService.saveBatch(operatorList);
     //更改任务状态为待下发
-    task.setTaskStatus(TaskStatus.READY.status());
+    if (TaskStatus.READY.status() > task.getTaskStatus()) {
+      task.setTaskStatus(TaskStatus.READY.status());
+    }
     task.setModifiedBy(getLoginAccount());
     task.setModifiedDate(new Date());
     environmentTaskRepository.saveAndFlush(task);

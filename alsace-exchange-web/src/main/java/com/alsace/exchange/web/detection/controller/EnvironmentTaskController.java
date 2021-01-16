@@ -10,6 +10,7 @@ import com.alsace.exchange.service.detection.domain.EnvironmentTaskTag;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskOrgService;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskService;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskTagService;
+import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskDetailVo;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskOperatorVo;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskVo;
@@ -36,6 +37,8 @@ public class EnvironmentTaskController extends BaseController {
   private EnvironmentTaskOrgService environmentTaskOrgService;
   @Resource
   private EnvironmentTaskTagService environmentTaskTagService;
+  @Resource
+  private PersonTaskOperatorService personTaskOperatorService;
 
 
   @ApiOperation("环境监测任务保存")
@@ -87,7 +90,7 @@ public class EnvironmentTaskController extends BaseController {
   }
 
   @ApiOperation("环境监测任务详情、检测机构和检测地点")
-  @PostMapping("/org-location/{taskCode}")
+  @PostMapping("/detail/{taskCode}")
   public AlsaceResult<EnvironmentTaskVo> orgAndLocation(@PathVariable String taskCode) {
     Assert.hasLength(taskCode, "");
     EnvironmentTask queryTask = new EnvironmentTask();
@@ -100,6 +103,8 @@ public class EnvironmentTaskController extends BaseController {
     EnvironmentTaskTag queryLocation = new EnvironmentTaskTag();
     queryLocation.setTaskCode(taskCode).setDeleted(false);
     List<EnvironmentTaskTag> locationList = environmentTaskTagService.findAll(queryLocation);
+    //地点对应的检测人员
+    locationList.forEach(location-> location.setOperatorList(personTaskOperatorService.findAllUserInfo(taskCode,location.getId())));
     EnvironmentTaskVo res = new EnvironmentTaskVo();
     res.setTask(task).setTagList(locationList).setOrgList(orgList);
     return success(res);

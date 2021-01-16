@@ -14,8 +14,8 @@ import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
+import com.alsace.exchange.service.detection.emums.PersonTaskDetectionType;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
-import com.alsace.exchange.service.detection.emums.PersionTaskDetectionType;
 import com.alsace.exchange.service.detection.emums.TaskFormStatus;
 import com.alsace.exchange.service.detection.emums.TaskStatus;
 import com.alsace.exchange.service.detection.mapper.PersonTaskMapper;
@@ -141,12 +141,14 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     taskParam.setTaskCode(taskCode).setDeleted(false);
     PersonTask task = this.findOne(taskParam);
     Assert.state(task != null, "检测任务不存在！");
-    Assert.state(TaskStatus.ASSIGNED.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添加检测人员！[%s]", task.getTaskStatus()));
+//    Assert.state(TaskStatus.ASSIGNED.status().equals(task.getTaskStatus()), String.format("检测任务状态不允许添加检测人员！[%s]", task.getTaskStatus()));
     //保存检测人员
     operatorList.forEach(operator -> operator.setTaskCode(taskCode));
     personTaskOperatorService.saveBatch(operatorList);
     //更改任务状态为待下发
-    task.setTaskStatus(TaskStatus.READY.status());
+    if (TaskStatus.READY.status() > task.getTaskStatus()) {
+      task.setTaskStatus(TaskStatus.READY.status());
+    }
     task.setModifiedBy(getLoginAccount());
     task.setModifiedDate(new Date());
     personTaskRepository.saveAndFlush(task);
@@ -160,7 +162,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     taskParam.setTaskCode(taskCode).setDeleted(false);
     PersonTask task = this.findOne(taskParam);
     Assert.state(task != null, "检测任务不存在！");
-    Assert.state(PersionTaskDetectionType.NOT_ALL.status().equals(task.getDetectionType()), "检测任务类型为全民检测，不能添加被检测人员！");
+    Assert.state(PersonTaskDetectionType.NOT_ALL.status().equals(task.getDetectionType()), "检测任务类型为全民检测，不能添加被检测人员！");
     Assert.state(TaskStatus.COMPLETED.status() > task.getTaskStatus(), String.format("检测任务状态不允许添被加检测人员！[%s]", task.getTaskStatus()));
     //如果结束时间已经到了，不准修改
     if (task.getEndDate().getTime() <= new Date().getTime()) {
@@ -223,7 +225,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     if (task == null) {
       throw new AlsaceException("任务不存在！");
     }
-    boolean checkDetail = PersionTaskDetectionType.NOT_ALL.status().equals(task.getDetectionType());
+    boolean checkDetail = PersonTaskDetectionType.NOT_ALL.status().equals(task.getDetectionType());
     if (checkDetail) {
       //校验提交的被检测人信息是否是在检测范围内
       PersonTaskDetail detailQuery = new PersonTaskDetail();

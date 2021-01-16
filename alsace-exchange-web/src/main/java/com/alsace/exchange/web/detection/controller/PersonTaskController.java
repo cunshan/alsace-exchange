@@ -6,8 +6,10 @@ import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
+import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
 import com.alsace.exchange.service.detection.service.PersonTaskLocationService;
+import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
 import com.alsace.exchange.service.detection.service.PersonTaskOrgService;
 import com.alsace.exchange.service.detection.service.PersonTaskService;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailVo;
@@ -36,6 +38,8 @@ public class PersonTaskController extends BaseController {
   private PersonTaskOrgService personTaskOrgService;
   @Resource
   private PersonTaskLocationService personTaskLocationService;
+  @Resource
+  private PersonTaskOperatorService personTaskOperatorService;
 
 
   @ApiOperation("人员检测任务保存")
@@ -86,20 +90,24 @@ public class PersonTaskController extends BaseController {
     return success("下发成功！");
   }
 
-  @ApiOperation("人员检测任务详情、检测机构和检测地点")
-  @PostMapping("/org-location/{taskCode}")
+  @ApiOperation("人员检测任务详情、检测机构、检测地点和检测人员")
+  @PostMapping("/detail/{taskCode}")
   public AlsaceResult<PersonTaskVo> orgAndLocation(@PathVariable String taskCode) {
-    Assert.hasLength(taskCode, "");
+    Assert.hasLength(taskCode, "任务编码为空！");
     PersonTask queryTask = new PersonTask();
     queryTask.setTaskCode(taskCode).setDeleted(false);
     PersonTask task = personTaskService.findOne(queryTask);
     Assert.notNull(task, "检测任务不存在！");
     PersonTaskOrg queryOrg = new PersonTaskOrg();
     queryOrg.setTaskCode(taskCode).setDeleted(false);
+    //检测机构
     List<PersonTaskOrg> orgList = personTaskOrgService.findAll(queryOrg);
+    //地点
     PersonTaskLocation queryLocation = new PersonTaskLocation();
     queryLocation.setTaskCode(taskCode).setDeleted(false);
     List<PersonTaskLocation> locationList = personTaskLocationService.findAll(queryLocation);
+    //地点对应的检测人员
+    locationList.forEach(location-> location.setOperatorList(personTaskOperatorService.findAllUserInfo(taskCode,location.getId())));
     PersonTaskVo res = new PersonTaskVo();
     res.setTask(task).setLocationList(locationList).setOrgList(orgList);
     return success(res);

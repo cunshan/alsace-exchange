@@ -22,4 +22,8 @@ public interface UserService extends BaseService<User,Long> {
    */
   List<User> importUser(List<Object> param);
 
+  /**
+   * 根据账号列表查询用户信息
+   */
+  List<User> findAllByLoginAccounts(List<String> accountList);
 }
