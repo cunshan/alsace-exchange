@@ -6,4 +6,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface RoleMenuRepository extends JpaRepository<RoleMenu,Long>, JpaSpecificationExecutor<RoleMenu> {
 
+  /**
+   * 根据角色编码删除对应菜单
+   */
+  void deleteAllByRoleCode(String roleCode);
 }
