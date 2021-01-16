@@ -66,4 +66,11 @@ public class UserDataController extends BaseController {
     return success(userDataService.findAll(param));
   }
 
+  @ApiOperation("用户数据权限值全量列表查询")
+  @PostMapping("/list")
+  public AlsaceResult<List<UserData>> page(@RequestBody UserData param) {
+    param.setDeleted(false);
+    return success(userDataService.findAll(param));
+  }
+
 }
