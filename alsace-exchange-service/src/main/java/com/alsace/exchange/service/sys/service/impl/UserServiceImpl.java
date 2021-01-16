@@ -12,7 +12,7 @@ import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.sys.domain.User;
 import com.alsace.exchange.service.sys.domain.UserImport;
 import com.alsace.exchange.service.sys.domain.UserRole;
-import com.alsace.exchange.service.sys.excel.UserImportVerifyHandler;
+import com.alsace.exchange.service.sys.excel.UserImportVerifyService;
 import com.alsace.exchange.service.sys.repositories.UserRepository;
 import com.alsace.exchange.service.sys.repositories.UserRoleRepository;
 import com.alsace.exchange.service.sys.service.UserService;
@@ -43,7 +43,7 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
   @Resource
   private UserRoleRepository userRoleRepository;
   @Resource
-  private UserImportVerifyHandler userImportVerifyHandler;
+  private UserImportVerifyService userImportVerifyService;
   @Resource
   private LoginInfoProvider loginInfoProvider;
 
@@ -104,7 +104,7 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
 //    params.setStartRows(1);
     // 开启Excel校验
     params.setNeedVerfiy(true);
-    params.setVerifyHandler(userImportVerifyHandler);
+    params.setVerifyHandler(userImportVerifyService);
     try {
       ExcelImportResult<UserImport> importResult = ExcelImportUtil.importExcelMore(is, UserImport.class, params);
       if (importResult.isVerfiyFail()) {
@@ -112,7 +112,7 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
         for (UserImport entity : importResult.getFailList()) {
           sb.append(StringFormatter.format("第{}行的错误是:{}", entity.getRowNum(), entity.getErrorMsg()));
         }
-        Assert.state(false, sb.toString());
+        throw new AlsaceException(sb.toString());
       }
       List<User> users = new ArrayList<>();
       importResult.getList().forEach(userImport -> {

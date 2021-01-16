@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 public class UserImport implements IExcelDataModel,IExcelModel, Serializable {
 
-    private static final long serialVersionUID = 5385740476210184698L;
+    private static final long serialVersionUID = 1385740476210184698L;
 
     /**
      * 登录名

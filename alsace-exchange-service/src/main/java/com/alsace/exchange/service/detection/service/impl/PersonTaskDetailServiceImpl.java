@@ -1,13 +1,23 @@
 package com.alsace.exchange.service.detection.service.impl;
 
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
 import com.alsace.exchange.common.constants.Constants;
 import com.alsace.exchange.common.enums.AutoFillType;
+import com.alsace.exchange.common.exception.AlsaceException;
+import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
+import com.alsace.exchange.service.detection.excel.PersonTaskDetailVerifyService;
 import com.alsace.exchange.service.detection.repositories.PersonTaskDetailRepository;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
+import com.alsace.exchange.service.utils.OrderNoGenerator;
+import com.sun.javafx.binding.StringFormatter;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
@@ -15,7 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,6 +36,10 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
 
   @Resource
   private PersonTaskDetailRepository personTaskDetailRepository;
+  @Resource
+  private PersonTaskDetailVerifyService personTaskDetailVerifyService;
+  @Resource
+  private OrderNoGenerator orderNoGenerator;
 
   @Override
   protected JpaRepository<PersonTaskDetail, Long> getJpaRepository() {
@@ -59,5 +76,43 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
     });
     getJpaRepository().saveAll(domainList);
     return true;
+  }
+
+  @Override
+  public List<PersonTaskDetail> importDetails(List<Object> param,String taskCode) {
+    InputStream is = new ByteArrayInputStream((byte[]) param.get(0));
+    ImportParams params = new ImportParams();
+    params.setTitleRows(1);
+    // 开启Excel校验
+    params.setNeedVerfiy(true);
+    params.setVerifyHandler(personTaskDetailVerifyService);
+    try {
+      ExcelImportResult<PersonTaskDetailImport> importResult = ExcelImportUtil.importExcelMore(is, PersonTaskDetailImport.class, params);
+      if (importResult.isVerfiyFail()) {
+        StringBuffer sb = new StringBuffer();
+        for (PersonTaskDetailImport entity : importResult.getFailList()) {
+          sb.append(StringFormatter.format("第{}行的错误是:{}", entity.getRowNum(), entity.getErrorMsg()));
+        }
+        throw new AlsaceException(sb.toString());
+      }
+      List<PersonTaskDetail> personTaskDetails = new ArrayList<>();
+      importResult.getList().forEach(personTaskDetailImport -> {
+        PersonTaskDetail personTaskDetail = new PersonTaskDetail();
+        BeanUtils.copyProperties(personTaskDetailImport, personTaskDetail);
+        personTaskDetail.setId(IdUtils.id());
+        personTaskDetail.setTaskCode(taskCode);
+        String detailCode =orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE);
+        personTaskDetail.setDetailCode(detailCode);
+        personTaskDetail.setGender("男".equals(personTaskDetailImport.getGender())?0:1);
+        personTaskDetail.setCreatedBy(loginInfoProvider.loginAccount());
+        personTaskDetail.setCreatedDate(new Date());
+        personTaskDetail.setDeleted(false);
+        personTaskDetail.setDetailStatus(TaskDetailStatus.INIT.status());
+        personTaskDetails.add(personTaskDetail);
+      });
+      return personTaskDetailRepository.saveAll(personTaskDetails);
+    } catch (Exception e) {
+      throw new AlsaceException("导入用户数据异常！" + e.getMessage());
+    }
   }
 }

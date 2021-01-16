@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class UserImportVerifyHandler implements IExcelVerifyHandler<UserImport> {
+public class UserImportVerifyService implements IExcelVerifyHandler<UserImport> {
 
     @Override
     public ExcelVerifyHandlerResult verifyHandler(UserImport userImport) {
