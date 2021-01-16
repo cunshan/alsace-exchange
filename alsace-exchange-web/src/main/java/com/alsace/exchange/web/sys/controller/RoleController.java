@@ -9,6 +9,8 @@ import com.alsace.exchange.service.sys.service.RoleService;
 import com.alsace.exchange.web.sys.vo.RoleMenuVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Api(tags = "角色",value = "role")
+@Api(tags = "角色", value = "role")
 @RestController
 @RequestMapping("/role")
 public class RoleController extends BaseController {
-  
+
   @Resource
   private RoleService roleService;
 
@@ -49,14 +51,21 @@ public class RoleController extends BaseController {
   @PostMapping("/delete")
   public AlsaceResult<String> delete(@RequestBody List<Long> idList) {
     roleService.delete(idList);
-    return success("删除成功",null);
+    return success("删除成功", null);
   }
 
   @ApiOperation("角色添加菜单")
   @PostMapping("/add-menus")
-  public AlsaceResult<String> addMenus(@RequestBody RoleMenuVo param){
-    roleService.addMenus(param.getRoleCode(),param.getMenuIdList());
-    return success("更新成功！",null);
+  public AlsaceResult<String> addMenus(@RequestBody RoleMenuVo param) {
+    roleService.addMenus(param.getRoleCode(), param.getMenuIdList());
+    return success("更新成功！", null);
+  }
+
+  @ApiOperation("根据登录账号查询角色列表")
+  @PostMapping("/list/{loginAccount}")
+  public AlsaceResult<List<Role>> page(@PathVariable String loginAccount) {
+    Assert.hasLength(loginAccount, "登录账号为空！");
+    return success(roleService.findRoleByLoginAccount(loginAccount));
   }
 
 }

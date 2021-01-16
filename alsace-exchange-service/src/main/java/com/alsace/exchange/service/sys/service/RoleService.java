@@ -14,7 +14,7 @@ public interface RoleService extends BaseService<Role,Long> {
   boolean addMenus(String roleCode, List<Long> menuIdList);
 
   /**
-   * 根据登录账号查询用户菜单
+   * 根据登录账号查询用户角色
    * @param loginAccount 登录账号
    */
   List<Role> findRoleByLoginAccount(String loginAccount);
