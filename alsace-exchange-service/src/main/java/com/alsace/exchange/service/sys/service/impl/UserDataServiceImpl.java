@@ -14,16 +14,16 @@ import javax.annotation.Resource;
 public class UserDataServiceImpl extends AbstractBaseServiceImpl<UserData> implements UserDataService {
 
   @Resource
-  private UserDataRepository dictValueRepository;
+  private UserDataRepository userDataRepository;
 
 
   @Override
   protected JpaRepository<UserData, Long> getJpaRepository() {
-    return this.dictValueRepository;
+    return this.userDataRepository;
   }
 
   @Override
   protected JpaSpecificationExecutor<UserData> getJpaSpecificationExecutor() {
-    return this.dictValueRepository;
+    return this.userDataRepository;
   }
 }
