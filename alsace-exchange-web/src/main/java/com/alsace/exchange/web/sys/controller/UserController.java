@@ -11,6 +11,7 @@ import com.alsace.exchange.common.validate.groups.Create;
 import com.alsace.exchange.service.sys.domain.User;
 import com.alsace.exchange.service.sys.domain.UserImport;
 import com.alsace.exchange.service.sys.service.UserService;
+import com.alsace.exchange.web.sys.vo.UserDataVo;
 import com.alsace.exchange.web.sys.vo.UserRoleVo;
 import com.alsace.exchange.web.utils.ExportUtil;
 import com.google.common.collect.Lists;
@@ -71,11 +72,18 @@ public class UserController extends BaseController {
     return success("删除成功",null);
   }
 
-  @ApiOperation("修改用户角色")
+  @ApiOperation(value = "修改用户角色",tags = "角色")
   @PostMapping("/add-roles")
   public AlsaceResult<String> addUserRoles(@RequestBody UserRoleVo param){
     userService.addUserRoles(param.getLoginAccount(),param.getRoleList());
-    return success("更新成功！",null);
+    return success("添加成功！",null);
+  }
+
+  @ApiOperation(value = "修改用户数据权限",tags = "用户数据权限")
+  @PostMapping("/add-data")
+  public AlsaceResult<String> addUserData(@RequestBody UserDataVo param){
+    userService.addUserData(param.getLoginAccount(),param.getDataList());
+    return success("添加成功！",null);
   }
 
   @ApiOperation("用户导入模板下载")

@@ -26,4 +26,9 @@ public class UserDataServiceImpl extends AbstractBaseServiceImpl<UserData> imple
   protected JpaSpecificationExecutor<UserData> getJpaSpecificationExecutor() {
     return this.userDataRepository;
   }
+
+  @Override
+  public void deleteByLoginAccount(String loginAccount) {
+    userDataRepository.deleteAllByLoginAccount(loginAccount);
+  }
 }

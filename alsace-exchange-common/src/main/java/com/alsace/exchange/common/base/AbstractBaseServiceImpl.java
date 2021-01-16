@@ -48,7 +48,7 @@ public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements B
    * @param domain
    */
   protected void setCreateInfo(BaseEntity domain) {
-    domain.setCreatedBy(getLoginAccount()).setCreatedDate(new Date()).setId(IdUtils.id());
+    domain.setCreatedBy(getLoginAccount()).setCreatedDate(new Date()).setId(IdUtils.id()).setDeleted(false);
   }
 
   /**

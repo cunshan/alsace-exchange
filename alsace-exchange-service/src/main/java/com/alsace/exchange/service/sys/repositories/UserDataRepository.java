@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface UserDataRepository extends JpaRepository<UserData,Long>, JpaSpecificationExecutor<UserData> {
 
+  void deleteAllByLoginAccount(String loginAccount);
 }

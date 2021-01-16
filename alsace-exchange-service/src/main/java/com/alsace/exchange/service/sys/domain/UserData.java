@@ -25,7 +25,6 @@ public class UserData extends BaseEntity {
   private static final long serialVersionUID = 7419640927791127683L;
 
   @Column(columnDefinition = "varchar(32) not null comment '登录账号'")
-  @NotBlank(message = "登录账号为空！")
   private String loginAccount;
 
   @Column(columnDefinition = "varchar(64) not null comment '数据类型'")

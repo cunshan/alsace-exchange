@@ -10,11 +10,13 @@ import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.sys.domain.User;
+import com.alsace.exchange.service.sys.domain.UserData;
 import com.alsace.exchange.service.sys.domain.UserImport;
 import com.alsace.exchange.service.sys.domain.UserRole;
 import com.alsace.exchange.service.sys.excel.UserImportVerifyHandler;
 import com.alsace.exchange.service.sys.repositories.UserRepository;
 import com.alsace.exchange.service.sys.repositories.UserRoleRepository;
+import com.alsace.exchange.service.sys.service.UserDataService;
 import com.alsace.exchange.service.sys.service.UserService;
 import com.alsace.exchange.service.sys.specs.UserSpecs;
 import com.sun.javafx.binding.StringFormatter;
@@ -46,6 +48,8 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
   private UserImportVerifyHandler userImportVerifyHandler;
   @Resource
   private LoginInfoProvider loginInfoProvider;
+  @Resource
+  private UserDataService userDataService;
 
   @Override
   protected JpaRepository<User, Long> getJpaRepository() {
@@ -75,25 +79,30 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
   public boolean addUserRoles(String loginAccount, List<String> roleList) {
     Assert.hasLength(loginAccount, "登录账号为空!");
     Assert.notEmpty(roleList, "角色不能为空！");
-    //验证用户是否存在
-    User up = new User();
-    up.setLoginAccount(loginAccount).setDeleted(false);
-    User user = this.findOne(up);
-    Assert.state(user != null, String.format("用户【%s】不存在！", loginAccount));
+    checkUser(loginAccount);
     //删除用户对应的角色
     userRoleRepository.deleteAllByLoginAccount(loginAccount);
     //为用户增加新角色
     List<UserRole> userRoleList = new ArrayList<>(roleList.size());
     new HashSet<>(roleList).forEach(role -> {
       UserRole userRole = new UserRole(loginAccount, role);
-      userRole.setDeleted(false)
-          .setId(IdUtils.id())
-          .setCreatedDate(new Date())
-          .setCreatedBy(getLoginAccount());
+      setCreateInfo(userRole);
       userRoleList.add(userRole);
     });
     userRoleRepository.saveAll(userRoleList);
     return true;
+  }
+
+  /**
+   * 校验用户是否存在
+   */
+  private User checkUser(String loginAccount) {
+    //验证用户是否存在
+    User up = new User();
+    up.setLoginAccount(loginAccount).setDeleted(false);
+    User user = this.findOne(up);
+    Assert.state(user != null, String.format("用户【%s】不存在！", loginAccount));
+    return user;
   }
 
   @Override
@@ -136,5 +145,20 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
   @Override
   public List<User> findAllByLoginAccounts(List<String> accountList) {
     return this.userRepository.findAll(UserSpecs.loginAccountIn(accountList).and(UserSpecs.deleted(false)));
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  @AutoFill(AutoFillType.CREATE)
+  public boolean addUserData(String loginAccount, List<UserData> dataList) {
+    Assert.hasLength(loginAccount,"登录账号为空！");
+    Assert.notEmpty(dataList,"数据权限列表为空！");
+    checkUser(loginAccount);
+    //删除用户对应数据权限
+    userDataService.deleteByLoginAccount(loginAccount);
+    //为用户增加新的数据权限
+    dataList.forEach(data->data.setLoginAccount(loginAccount));
+    userDataService.saveBatch(dataList);
+    return true;
   }
 }
