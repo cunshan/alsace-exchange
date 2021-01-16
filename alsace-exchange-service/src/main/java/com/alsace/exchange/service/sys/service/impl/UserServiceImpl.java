@@ -5,6 +5,7 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
+import com.alsace.exchange.common.base.LoginInfoProvider;
 import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.IdUtils;
@@ -43,6 +44,8 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
   private UserRoleRepository userRoleRepository;
   @Resource
   private UserImportVerifyHandler userImportVerifyHandler;
+  @Resource
+  private LoginInfoProvider loginInfoProvider;
 
   @Override
   protected JpaRepository<User, Long> getJpaRepository() {
@@ -118,11 +121,15 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
         user.setId(IdUtils.id());
         user.setLocked(false);
         user.setDeleted(false);
+        user.setWorking(true);
+        user.setCreatedBy(loginInfoProvider.loginAccount());
+        user.setCreatedDate(new Date());
+        user.setPassword(DigestUtils.md5Hex("123456"));
         users.add(user);
       });
       return userRepository.saveAll(users);
     } catch (Exception e) {
-      throw new AlsaceException("导入用户数据异常！");
+      throw new AlsaceException("导入用户数据异常！"+e.getMessage());
     }
   }
 

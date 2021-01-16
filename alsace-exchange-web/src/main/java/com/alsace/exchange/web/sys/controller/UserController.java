@@ -83,7 +83,6 @@ public class UserController extends BaseController {
   public void downTemplate(HttpServletResponse response)  {
     List<UserImport> list = Lists.newArrayList();
     Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("用户信息导入模板", "用户信息"), UserImport.class, list);
-//    ExportUtil.setDropDown(UserImport.class, workBook);
     try(OutputStream out = response.getOutputStream()) {
       response.setContentType("application/ms-excel;charset=UTF-8");
       response.setHeader("Content-Disposition", "attachment;filename="
