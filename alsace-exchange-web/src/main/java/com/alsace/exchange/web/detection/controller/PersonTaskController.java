@@ -126,7 +126,7 @@ public class PersonTaskController extends BaseController {
     return success("更新成功！", null);
   }
 
-  @ApiOperation("按照任务明细编码更新检测结果")
+  @ApiOperation("按照任务试管更新检测结果")
   @PostMapping("/result/single")
   public AlsaceResult<String> resultSingle(@RequestBody @Validated TaskResultSingleVo param) {
     PersonTask queryTask = new PersonTask();
