@@ -32,23 +32,6 @@ public class UserImport implements IExcelDataModel,IExcelModel, Serializable {
     @Excel(name = "电话号码", isImportField = "true")
     private String tel;
 
-    @Override
-    public int getRowNum() {
-        return 0;
-    }
-
-    @Override
-    public void setRowNum(int i) {
-
-    }
-
-    @Override
-    public String getErrorMsg() {
-        return null;
-    }
-
-    @Override
-    public void setErrorMsg(String s) {
-
-    }
+    private int rowNum;
+    private String errorMsg;
 }

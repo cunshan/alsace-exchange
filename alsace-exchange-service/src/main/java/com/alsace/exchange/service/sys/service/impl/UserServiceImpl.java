@@ -119,7 +119,7 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
       if (importResult.isVerfiyFail()) {
         StringBuffer sb = new StringBuffer();
         for (UserImport entity : importResult.getFailList()) {
-          sb.append(StringFormatter.format("第{}行的错误是:{}", entity.getRowNum(), entity.getErrorMsg()));
+          sb.append(String.format("第%s行的错误是:%s", entity.getRowNum(), entity.getErrorMsg()));
         }
         throw new AlsaceException(sb.toString());
       }

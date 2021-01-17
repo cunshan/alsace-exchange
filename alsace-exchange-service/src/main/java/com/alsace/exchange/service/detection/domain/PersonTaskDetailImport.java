@@ -70,29 +70,12 @@ public class PersonTaskDetailImport implements IExcelDataModel, IExcelModel, Ser
 
   @ApiModelProperty(value = "在职状态", required = true)
   @Excel(name = "在职状态", isImportField = "true")
-  private Boolean working;
+  private String working;
 
   @ApiModelProperty(value = "归属市")
   @Excel(name = "归属市", isImportField = "true")
   private String city;
 
-  @Override
-  public int getRowNum() {
-    return 0;
-  }
-
-  @Override
-  public void setRowNum(int i) {
-
-  }
-
-  @Override
-  public String getErrorMsg() {
-    return null;
-  }
-
-  @Override
-  public void setErrorMsg(String s) {
-
-  }
+  private int rowNum;
+  private String errorMsg;
 }
