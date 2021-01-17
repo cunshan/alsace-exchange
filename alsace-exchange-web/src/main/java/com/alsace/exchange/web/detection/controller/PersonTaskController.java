@@ -6,8 +6,8 @@ import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
-import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
+import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.detection.service.PersonTaskLocationService;
 import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
 import com.alsace.exchange.service.detection.service.PersonTaskOrgService;
@@ -15,9 +15,11 @@ import com.alsace.exchange.service.detection.service.PersonTaskService;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskOperatorVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskVo;
+import com.alsace.exchange.web.detection.vo.TaskResultVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.util.Assert;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +42,8 @@ public class PersonTaskController extends BaseController {
   private PersonTaskLocationService personTaskLocationService;
   @Resource
   private PersonTaskOperatorService personTaskOperatorService;
+  @Resource
+  private PersonTaskDetailService personTaskDetailService;
 
 
   @ApiOperation("人员检测任务保存")
@@ -92,7 +96,7 @@ public class PersonTaskController extends BaseController {
 
   @ApiOperation("人员检测任务详情、检测机构、检测地点和检测人员")
   @PostMapping("/detail/{taskCode}")
-  public AlsaceResult<PersonTaskVo> orgAndLocation(@PathVariable String taskCode) {
+  public AlsaceResult<PersonTaskVo> detail(@PathVariable String taskCode) {
     Assert.hasLength(taskCode, "任务编码为空！");
     PersonTask queryTask = new PersonTask();
     queryTask.setTaskCode(taskCode).setDeleted(false);
@@ -111,6 +115,13 @@ public class PersonTaskController extends BaseController {
     PersonTaskVo res = new PersonTaskVo();
     res.setTask(task).setLocationList(locationList).setOrgList(orgList);
     return success(res);
+  }
+
+  @ApiOperation("按照任务编码更新检测结果")
+  @PostMapping("/result")
+  public AlsaceResult<String> result(@RequestBody @Validated TaskResultVo param){
+    personTaskDetailService.updateResult(param.getTaskCodeList(),param.getPositive());
+    return success("更新成功！",null);
   }
 
 }

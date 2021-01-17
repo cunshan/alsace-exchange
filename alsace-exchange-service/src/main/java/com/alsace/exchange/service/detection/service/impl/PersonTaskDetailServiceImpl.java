@@ -115,4 +115,10 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
       throw new AlsaceException("导入用户数据异常！" + e.getMessage());
     }
   }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void updateResult(List<String> taskCodeList, Boolean positive) {
+    personTaskDetailRepository.updateResult(taskCodeList, positive);
+  }
 }

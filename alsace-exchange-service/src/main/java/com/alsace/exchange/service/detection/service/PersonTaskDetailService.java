@@ -14,4 +14,12 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
      * @return
      */
     List<PersonTaskDetail> importDetails(List<Object> param,String taskCode);
+
+
+    /**
+     * 批量更新任务对应明细的检测结果
+     * @param taskCodeList 任务编码列表
+     * @param positive 是否阳性
+     */
+    void updateResult(List<String> taskCodeList, Boolean positive);
 }
