@@ -7,6 +7,7 @@ import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
+import com.alsace.exchange.service.detection.emums.PersonTaskDetectionMethod;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.detection.service.PersonTaskLocationService;
 import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
@@ -15,7 +16,8 @@ import com.alsace.exchange.service.detection.service.PersonTaskService;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskOperatorVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskVo;
-import com.alsace.exchange.web.detection.vo.TaskResultVo;
+import com.alsace.exchange.web.detection.vo.TaskResultBatchVo;
+import com.alsace.exchange.web.detection.vo.TaskResultSingleVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.util.Assert;
@@ -118,10 +120,24 @@ public class PersonTaskController extends BaseController {
   }
 
   @ApiOperation("按照任务编码更新检测结果")
-  @PostMapping("/result")
-  public AlsaceResult<String> result(@RequestBody @Validated TaskResultVo param){
-    personTaskDetailService.updateResult(param.getTaskCodeList(),param.getPositive());
-    return success("更新成功！",null);
+  @PostMapping("/result/batch")
+  public AlsaceResult<String> resultBatch(@RequestBody @Validated TaskResultBatchVo param) {
+    personTaskDetailService.updateResultBatch(param.getTaskCodeList(), param.getPositive());
+    return success("更新成功！", null);
+  }
+
+  @ApiOperation("按照任务试管更新检测结果")
+  @PostMapping("/result/single")
+  public AlsaceResult<String> resultSingle(@RequestBody @Validated TaskResultSingleVo param) {
+    PersonTask queryTask = new PersonTask();
+    queryTask.setTaskCode(param.getTaskCode()).setDeleted(false);
+    PersonTask task = personTaskService.findOne(queryTask);
+    Assert.state(task != null, "任务不存在！");
+    if (!PersonTaskDetectionMethod.BOTH.status().equals(param.getDetectionMethod())) {
+      Assert.state(task.getDetectionType().equals(param.getDetectionMethod()), "所选检测项目与任务的检测项目不符！");
+    }
+    personTaskDetailService.updateResultSingle(param.getTaskCode(), param.getTestTubeNo(), param.getDetectionMethod(), param.getPositive());
+    return success("更新成功！", null);
   }
 
 }

@@ -11,6 +11,7 @@ import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
+import com.alsace.exchange.service.detection.emums.PersonTaskDetectionMethod;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.excel.PersonTaskDetailVerifyService;
 import com.alsace.exchange.service.detection.repositories.PersonTaskDetailRepository;
@@ -119,7 +120,31 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void updateResult(List<String> taskCodeList, Boolean positive) {
+  public void updateResultBatch(List<String> taskCodeList, Boolean positive) {
     personTaskDetailRepository.updateResult(taskCodeList, positive);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void updateResultSingle(String taskCode, String testTubeNo, Integer detectionMethod, Boolean positive) {
+    PersonTaskDetail queryDetail = new PersonTaskDetail();
+    queryDetail.setTaskCode(taskCode).setDeleted(false);
+    if (PersonTaskDetectionMethod.ANTIBODY.status().equals(detectionMethod)) {
+      //抗体检测
+      queryDetail.setAntibodyNo(testTubeNo);
+    } else if (PersonTaskDetectionMethod.NUCLEIC_ACID.status().equals(detectionMethod)) {
+      //核酸检测
+      queryDetail.setNucleicAcidNo(testTubeNo);
+    }
+    List<PersonTaskDetail> dbList = this.findAll(queryDetail);
+    Assert.state(!dbList.isEmpty(), "对应检测明细不存在！");
+    if (PersonTaskDetectionMethod.ANTIBODY.status().equals(detectionMethod)) {
+      //抗体检测
+      dbList.forEach(detail -> detail.setAntibodyPositive(positive));
+    } else if (PersonTaskDetectionMethod.NUCLEIC_ACID.status().equals(detectionMethod)) {
+      //核酸检测
+      dbList.forEach(detail -> detail.setNucleicAcidPositive(positive));
+    }
+    this.saveBatch(dbList);
   }
 }
