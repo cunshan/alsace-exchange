@@ -105,7 +105,7 @@ public class User extends BaseEntity {
     private String job;
 
     @ApiModelProperty(value = "在职状态")
-    @Column(columnDefinition = "tinyint(1) not null comment '在职状态'")
+    @Column(columnDefinition = "tinyint(1) comment '在职状态'")
     private Boolean working;
 
     @ApiModelProperty(value = "归属所编码")
