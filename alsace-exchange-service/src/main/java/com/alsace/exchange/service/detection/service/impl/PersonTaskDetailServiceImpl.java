@@ -105,6 +105,7 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
         String detailCode =orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE);
         personTaskDetail.setDetailCode(detailCode);
         personTaskDetail.setGender("男".equals(personTaskDetailImport.getGender())?0:1);
+        personTaskDetail.setWorking("是".equals(personTaskDetailImport.getWorking()));
         personTaskDetail.setCreatedBy(loginInfoProvider.loginAccount());
         personTaskDetail.setCreatedDate(new Date());
         personTaskDetail.setDeleted(false);

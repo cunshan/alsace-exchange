@@ -25,4 +25,11 @@ public class UserSpecs {
     return (root, query, builder) -> builder.equal(root.get("deleted"),deleted);
   }
 
+  /**
+   * tel  equal
+   */
+  public static Specification<User> tel(String tel){
+    return (root, query, builder) -> builder.equal(root.get("tel"),tel);
+  }
+
 }
