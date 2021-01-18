@@ -76,9 +76,8 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "tinyint(1) not null default 0 comment '锁定标记'")
     private Boolean locked;
 
-    @ApiModelProperty(value = "性别", required = true)
+    @ApiModelProperty(value = "性别")
     @Column(columnDefinition = "int(1) comment '性别 0 男性  1女性'")
-    @NotNull(groups = {Create.class}, message = "性别为空！")
     private Integer gender;
 
     @ApiModelProperty(value = "民族")
