@@ -92,9 +92,8 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "varchar(255) comment '住址'")
     private String address;
 
-    @ApiModelProperty(value = "身份证号", required = true)
+    @ApiModelProperty(value = "身份证号")
     @Column(columnDefinition = "varchar(64) comment '身份证号'")
-    @NotBlank(groups = {Create.class}, message = "身份证号为空！")
     private String idCardNo;
 
     @ApiModelProperty(value = "地区")
@@ -105,9 +104,8 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "varchar(128) comment '岗位'")
     private String job;
 
-    @ApiModelProperty(value = "在职状态", required = true)
+    @ApiModelProperty(value = "在职状态")
     @Column(columnDefinition = "tinyint(1) not null comment '在职状态'")
-    @NotNull(groups = {Create.class}, message = "在职状态为空！")
     private Boolean working;
 
     @ApiModelProperty(value = "归属所编码")
