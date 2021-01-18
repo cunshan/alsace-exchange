@@ -176,6 +176,7 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
     param.getParam().setDeleted(false);
     User user = param.getParam();
     List<Specification<User>> specifications = new ArrayList<>();
+    specifications.add(UserSpecs.deleted(false));
     if (!StringUtils.isBlank(user.getTel())) {
       specifications.add(UserSpecs.telEq(user.getTel()));
     }
