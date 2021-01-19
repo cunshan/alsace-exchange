@@ -68,6 +68,10 @@ public class PersonTaskDetailImport implements IExcelDataModel, IExcelModel, Ser
   @Excel(name = "企业编码", isImportField = "true")
   private String companyCode;
 
+  @ApiModelProperty(value = "企业税号", required = true)
+  @Excel(name = "企业税号", isImportField = "true")
+  private String taxNo;
+
   @ApiModelProperty(value = "在职状态", required = true)
   @Excel(name = "在职状态", isImportField = "true")
   private String working;
