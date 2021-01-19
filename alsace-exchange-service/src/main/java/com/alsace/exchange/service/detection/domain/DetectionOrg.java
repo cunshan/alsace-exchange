@@ -41,6 +41,10 @@ public class DetectionOrg extends BaseEntity {
   @Column(columnDefinition = "varchar(255) not null comment '机构地址'")
   private String orgAddress;
 
+  @ApiModelProperty(value = "联系人")
+  @Column(columnDefinition = "varchar(50) not null comment '联系人'")
+  private String contacts;
+
   @ApiModelProperty(value = "联系方式")
   @Column(columnDefinition = "varchar(128) not null comment '联系方式'")
   private String tel;
