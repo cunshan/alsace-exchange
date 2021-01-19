@@ -96,6 +96,11 @@ public class PersonTaskDetail extends BaseEntity {
   @NotBlank(groups = {Create.class}, message = "企业编码为空！")
   private String companyCode;
 
+  @ApiModelProperty(value = "企业税号", required = true)
+  @Column(columnDefinition = "varchar(128) comment '企业税号'")
+  @NotBlank(groups = {Create.class}, message = "企业税号！")
+  private String taxNo;
+
   @ApiModelProperty(value = "在职状态", required = true)
   @Column(columnDefinition = "tinyint(1) not null comment '在职状态'")
   @NotNull(groups = {Create.class}, message = "在职状态为空！")

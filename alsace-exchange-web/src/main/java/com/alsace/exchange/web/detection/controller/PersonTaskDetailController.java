@@ -7,11 +7,13 @@ import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.constants.Constants;
+import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.sys.domain.User;
 import com.alsace.exchange.service.sys.domain.UserImport;
+import com.alsace.exchange.web.detection.vo.PersonTaskVo;
 import com.alsace.exchange.web.utils.ExportUtil;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
@@ -45,6 +47,12 @@ public class PersonTaskDetailController extends BaseController {
   public AlsaceResult<PageResult<PersonTaskDetail>> page(@RequestBody PageParam<PersonTaskDetail> param) {
     PageResult<PersonTaskDetail> page = personTaskDetailService.findPage(param);
     return success(page);
+  }
+
+  @ApiOperation("人员检测任务明细保存")
+  @PostMapping("/save")
+  public AlsaceResult<PersonTaskDetail> save(@RequestBody PersonTaskDetail param) {
+    return success(personTaskDetailService.save(param));
   }
 
   @ApiOperation("人员检测任务明细更新")
