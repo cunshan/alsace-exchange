@@ -22,8 +22,8 @@ public class TaskResultSingleVo {
   @NotNull(message = "是否阳性为空！")
   private Boolean positive;
 
-  @ApiModelProperty(value = "是否阳性", required = true)
-  @NotNull(message = "是否阳性为空！")
-  private Integer detectionMethod;
+  @ApiModelProperty(value = "检测项目", required = true)
+  @NotNull(message = "检测项目为空！")
+  private String detectionMethod;
 
 }

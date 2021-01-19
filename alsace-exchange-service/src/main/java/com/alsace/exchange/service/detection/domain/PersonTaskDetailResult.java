@@ -20,10 +20,10 @@ import java.util.Date;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "biz_environment_task_detail_result")
+@Table(name = "biz_person_task_detail_result")
 @ApiModel
 @DynamicUpdate
-public class EnvironmentTaskDetailResult extends BaseEntity {
+public class PersonTaskDetailResult extends BaseEntity {
 
   private static final long serialVersionUID = 2837596444087626503L;
 
@@ -36,35 +36,21 @@ public class EnvironmentTaskDetailResult extends BaseEntity {
   private String detailCode;
 
   @ApiModelProperty(value = "采样管编码")
-  @Column(columnDefinition = "varchar(128) comment '采样管编码'")
+  @Column(columnDefinition = "varchar(128) comment '核酸采样管编码'")
   @NotBlank(message = "采样管编码为空！")
   private String testTubeNo;
 
   @ApiModelProperty(value = "是否阳性")
-  @Column(columnDefinition = "tinyint(1) comment '是否阳性'")
+  @Column(columnDefinition = "tinyint(1) comment '核酸是否阳性'")
   private Boolean positive;
 
-  @ApiModelProperty(value = "样本类型 10:食品 20:其他")
-  @Column(columnDefinition = "varchar(32) not null default 10 comment '样本类型 10:食品 20:其他'")
+  @ApiModelProperty(value = "样本类型 10:核酸 20:抗体")
+  @Column(columnDefinition = "varchar(32) not null default 10 comment '样本类型 10:核酸 20:抗体'")
   @NotBlank(message = "样本类型为空！")
   private String detailType;
 
   @ApiModelProperty(value = "照片URL")
   @Column(columnDefinition = "varchar(255) comment '照片URL'")
   private String pictures;
-
-  //以下食品样本必填
-  @ApiModelProperty(value = "产地")
-  @Column(columnDefinition = "varchar(255) comment '产地'")
-  private String manufacturePlace;
-
-  @ApiModelProperty(value = "生产日期")
-  @Column(columnDefinition = "datetime comment '生产日期'")
-  private Date manufactureDate;
-
-  @ApiModelProperty(value = "批号")
-  @Column(columnDefinition = "varchar(255) comment '批号'")
-  private String lotNumber;
-  //以上食品样本必填
 
 }

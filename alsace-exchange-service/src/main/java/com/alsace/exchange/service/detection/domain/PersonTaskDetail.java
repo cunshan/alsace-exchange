@@ -13,8 +13,10 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -107,24 +109,19 @@ public class PersonTaskDetail extends BaseEntity {
   @Column(columnDefinition = "varchar(128) comment '归属市'")
   private String city;
 
-  @ApiModelProperty(value = "核酸采样管编码")
-  @Column(columnDefinition = "varchar(128) comment '核酸采样管编码'")
-  private String nucleicAcidNo;
+  @ApiModelProperty(value = "采样管编码")
+  @Column(columnDefinition = "varchar(128) comment '采样管编码'")
+  private String testTubeNo;
 
-  @ApiModelProperty(value = "核酸是否阳性")
-  @Column(columnDefinition = "tinyint(1) comment '核酸是否阳性'")
-  private Boolean nucleicAcidPositive;
-
-  @ApiModelProperty(value = "抗体采样管编码")
-  @Column(columnDefinition = "varchar(128) comment '抗体采样管编码'")
-  private String antibodyNo;
-
-  @ApiModelProperty(value = "抗体是否阳性")
-  @Column(columnDefinition = "tinyint(1) comment '抗体是否阳性'")
-  private Boolean antibodyPositive;
+  @ApiModelProperty(value = "是否阳性")
+  @Column(columnDefinition = "tinyint(1) comment '是否阳性'")
+  private Boolean positive;
 
   @ApiModelProperty(value = "明细状态 10:创建 20:已提交")
   @Column(columnDefinition = "int(2) not null default 10 comment '明细状态 10:创建 20:已提交'")
   private Integer detailStatus;
 
+
+  @Transient
+  private List<PersonTaskDetailResult> detailResultList;
 }

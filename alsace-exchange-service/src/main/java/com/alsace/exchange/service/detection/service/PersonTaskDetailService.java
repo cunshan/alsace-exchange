@@ -2,6 +2,7 @@ package com.alsace.exchange.service.detection.service;
 
 import com.alsace.exchange.common.base.BaseService;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
 import com.alsace.exchange.service.sys.domain.User;
 
 import javax.validation.constraints.NotNull;
@@ -31,5 +32,10 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
      * @param detectionMethod 检测项目  1：核酸检测 2：抗体检测
      * @param positive 是否阳性
      */
-    void updateResultSingle(String taskCode, String testTubeNo, Integer detectionMethod, Boolean positive);
+    void updateResultSingle(String taskCode, String testTubeNo, String detectionType, Boolean positive);
+
+    /**
+     * 批量保存检测结果
+     */
+  void saveResult(List<PersonTaskDetailResult> resultList);
 }

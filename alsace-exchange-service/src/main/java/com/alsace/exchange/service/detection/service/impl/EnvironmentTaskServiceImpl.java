@@ -244,10 +244,7 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
         Assert.notNull(result.getManufactureDate(), "生产日期为空！");
       }
     });
-    this.environmentTaskDetailService.deleteResultByDetailCode(param.getDetailCode());
-    resultList.forEach(result -> {
-      result.setDetailCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ENVIRONMENT_TASK_DETAIL_CODE));
-    });
+    resultList.forEach(result -> result.setDetailCode(dbDetail.getDetailCode()).setTaskCode(dbDetail.getTaskCode()));
     this.environmentTaskDetailService.saveResult(resultList);
   }
 

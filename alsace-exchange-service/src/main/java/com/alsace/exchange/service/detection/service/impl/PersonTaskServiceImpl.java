@@ -10,6 +10,7 @@ import com.alsace.exchange.common.utils.AlsaceBeanUtils;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
 import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
@@ -61,6 +62,8 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   private PersonTaskDetailService personTaskDetailService;
   @Resource
   private PersonTaskFormService personTaskFormService;
+
+
 
   @Resource
   private OrderNoGenerator orderNoGenerator;
@@ -217,6 +220,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     Assert.hasLength(param.getTaskCode(), "任务编码为空！");
     Assert.hasLength(param.getFormCode(), "表单编码为空！");
     Assert.notNull(param.getLocationId(), "地点为空！");
+    Assert.notEmpty(param.getDetailResultList(), "试管明细为空！");
     //查询出任务
     PersonTask queryTask = new PersonTask();
     queryTask.setTaskCode(param.getTaskCode())
@@ -241,6 +245,10 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
       param.setId(dbDetail.getId());
       param.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
       personTaskDetailService.update(param);
+      //添加试管信息
+      List<PersonTaskDetailResult> resultList = param.getDetailResultList();
+      resultList.forEach(result->result.setDetailCode(dbDetail.getDetailCode()).setTaskCode(dbDetail.getTaskCode()));
+      personTaskDetailService.saveResult(resultList);
       return;
     }
     //全民检测 直接添加检测明细

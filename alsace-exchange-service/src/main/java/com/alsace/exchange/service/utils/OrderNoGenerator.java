@@ -33,7 +33,7 @@ public class OrderNoGenerator {
     Boolean exists = redisClient.hasKey(key);
     Long incr = redisClient.opsForValue().increment(key);
     // 设置过期时间
-    if (!exists) {
+    if (exists == null || !exists) {
       // 构造redis过期时间 UnixMillis
       // 设置过期时间为当前时间的最后一秒
       long expire = this.offsetTime(type);

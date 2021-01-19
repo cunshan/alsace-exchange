@@ -11,10 +11,12 @@ import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
 import com.alsace.exchange.service.detection.emums.PersonTaskDetectionMethod;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.excel.PersonTaskDetailVerifyService;
 import com.alsace.exchange.service.detection.repositories.PersonTaskDetailRepository;
+import com.alsace.exchange.service.detection.repositories.PersonTaskDetailResultRepository;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
 import com.sun.javafx.binding.StringFormatter;
@@ -41,6 +43,8 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   private PersonTaskDetailVerifyService personTaskDetailVerifyService;
   @Resource
   private OrderNoGenerator orderNoGenerator;
+  @Resource
+  private PersonTaskDetailResultRepository personTaskDetailResultRepository;
 
   @Override
   protected JpaRepository<PersonTaskDetail, Long> getJpaRepository() {
@@ -80,7 +84,7 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   }
 
   @Override
-  public List<PersonTaskDetail> importDetails(List<Object> param,String taskCode) {
+  public List<PersonTaskDetail> importDetails(List<Object> param, String taskCode) {
     InputStream is = new ByteArrayInputStream((byte[]) param.get(0));
     ImportParams params = new ImportParams();
     params.setTitleRows(1);
@@ -102,9 +106,9 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
         BeanUtils.copyProperties(personTaskDetailImport, personTaskDetail);
         personTaskDetail.setId(IdUtils.id());
         personTaskDetail.setTaskCode(taskCode);
-        String detailCode =orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE);
+        String detailCode = orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE);
         personTaskDetail.setDetailCode(detailCode);
-        personTaskDetail.setGender("男".equals(personTaskDetailImport.getGender())?0:1);
+        personTaskDetail.setGender("男".equals(personTaskDetailImport.getGender()) ? 0 : 1);
         personTaskDetail.setWorking("是".equals(personTaskDetailImport.getWorking()));
         personTaskDetail.setCreatedBy(loginInfoProvider.loginAccount());
         personTaskDetail.setCreatedDate(new Date());
@@ -121,30 +125,22 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void updateResultBatch(List<String> taskCodeList, Boolean positive) {
-    personTaskDetailRepository.updateResult(taskCodeList, positive);
+    personTaskDetailResultRepository.updateResultByTaskCode(taskCodeList, positive);
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void updateResultSingle(String taskCode, String testTubeNo, Integer detectionMethod, Boolean positive) {
-    PersonTaskDetail queryDetail = new PersonTaskDetail();
-    queryDetail.setTaskCode(taskCode).setDeleted(false);
-    if (PersonTaskDetectionMethod.ANTIBODY.status().equals(detectionMethod)) {
-      //抗体检测
-      queryDetail.setAntibodyNo(testTubeNo);
-    } else if (PersonTaskDetectionMethod.NUCLEIC_ACID.status().equals(detectionMethod)) {
-      //核酸检测
-      queryDetail.setNucleicAcidNo(testTubeNo);
+  public void updateResultSingle(String taskCode, String testTubeNo, String detectionType, Boolean positive) {
+    int count = personTaskDetailResultRepository.updateResultByTubeNo(taskCode, testTubeNo, detectionType, positive);
+    if (count <= 0) {
+      throw new AlsaceException("更新失败！");
     }
-    List<PersonTaskDetail> dbList = this.findAll(queryDetail);
-    Assert.state(!dbList.isEmpty(), "对应检测明细不存在！");
-    if (PersonTaskDetectionMethod.ANTIBODY.status().equals(detectionMethod)) {
-      //抗体检测
-      dbList.forEach(detail -> detail.setAntibodyPositive(positive));
-    } else if (PersonTaskDetectionMethod.NUCLEIC_ACID.status().equals(detectionMethod)) {
-      //核酸检测
-      dbList.forEach(detail -> detail.setNucleicAcidPositive(positive));
-    }
-    this.saveBatch(dbList);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  @AutoFill(AutoFillType.CREATE)
+  public void saveResult(List<PersonTaskDetailResult> resultList) {
+    personTaskDetailResultRepository.saveAll(resultList);
   }
 }
