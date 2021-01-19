@@ -64,7 +64,6 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   private PersonTaskFormService personTaskFormService;
 
 
-
   @Resource
   private OrderNoGenerator orderNoGenerator;
 
@@ -216,6 +215,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public void submitDetail(PersonTaskDetail param) {
     Assert.hasLength(param.getTaskCode(), "任务编码为空！");
     Assert.hasLength(param.getFormCode(), "表单编码为空！");
@@ -229,6 +229,10 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     if (task == null) {
       throw new AlsaceException("任务不存在！");
     }
+    PersonTaskLocation queryLocation = new PersonTaskLocation();
+    queryLocation.setTaskCode(param.getTaskCode()).setId(param.getLocationId()).setDeleted(false);
+    PersonTaskLocation dbLocation = personTaskLocationService.findOne(queryLocation);
+    Assert.state(dbLocation != null, "地点不存在！");
     boolean checkDetail = PersonTaskDetectionType.NOT_ALL.status().equals(task.getDetectionType());
     if (checkDetail) {
       //校验提交的被检测人信息是否是在检测范围内
@@ -247,7 +251,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
       personTaskDetailService.update(param);
       //添加试管信息
       List<PersonTaskDetailResult> resultList = param.getDetailResultList();
-      resultList.forEach(result->result.setDetailCode(dbDetail.getDetailCode()).setTaskCode(dbDetail.getTaskCode()));
+      resultList.forEach(result -> result.setDetailCode(dbDetail.getDetailCode()).setTaskCode(dbDetail.getTaskCode()));
       personTaskDetailService.saveResult(resultList);
       return;
     }

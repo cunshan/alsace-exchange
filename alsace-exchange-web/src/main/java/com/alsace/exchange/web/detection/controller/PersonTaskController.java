@@ -133,9 +133,6 @@ public class PersonTaskController extends BaseController {
     queryTask.setTaskCode(param.getTaskCode()).setDeleted(false);
     PersonTask task = personTaskService.findOne(queryTask);
     Assert.state(task != null, "任务不存在！");
-    if (!PersonTaskDetectionMethod.BOTH.status().equals(param.getDetectionMethod())) {
-      Assert.state(task.getDetectionType().equals(param.getDetectionMethod()), "所选检测项目与任务的检测项目不符！");
-    }
     personTaskDetailService.updateResultSingle(param.getTaskCode(), param.getTestTubeNo(), param.getDetectionMethod(), param.getPositive());
     return success("更新成功！", null);
   }

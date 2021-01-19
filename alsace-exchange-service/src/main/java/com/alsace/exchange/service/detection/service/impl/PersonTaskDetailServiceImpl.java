@@ -8,6 +8,7 @@ import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
 import com.alsace.exchange.common.constants.Constants;
 import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.exception.AlsaceException;
+import com.alsace.exchange.common.utils.AlsaceBeanUtils;
 import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
@@ -64,6 +65,7 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
     PersonTaskDetail dbDetail = this.getOneById(param.getId(), false);
     Assert.notNull(dbDetail, "对应明细不存在！");
     Assert.state(TaskDetailStatus.INIT.status().equals(dbDetail.getDetailStatus()), "对应明细状态已提交，不能修改！");
+    AlsaceBeanUtils.copyNotNullProperties(param, dbDetail);
     return personTaskDetailRepository.saveAndFlush(dbDetail);
   }
 

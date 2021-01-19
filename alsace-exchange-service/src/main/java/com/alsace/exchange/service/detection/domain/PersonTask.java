@@ -61,9 +61,9 @@ public class PersonTask extends BaseEntity {
   private Integer detectionType;
 
   @ApiModelProperty(value = "检测项目 1:核酸检测 2:抗体检测", required = true)
-  @Column(columnDefinition = "int(2) not null comment '检测项目 1:核酸检测 2:抗体检测'")
+  @Column(columnDefinition = "varchar(32) not null comment '检测项目 1:核酸检测 2:抗体检测'")
   @NotBlank(groups = {Create.class}, message = "检测项目为空！")
-  private Integer detectionMethod;
+  private String detectionMethod;
 
   @ApiModelProperty(value = "混管设置", required = true)
   @Column(columnDefinition = "varchar(255) not null comment '混管设置'")

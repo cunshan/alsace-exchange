@@ -29,7 +29,6 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
      * 根据试管编码更新
      * @param taskCode 任务编码
      * @param testTubeNo 试管编码
-     * @param detectionMethod 检测项目  1：核酸检测 2：抗体检测
      * @param positive 是否阳性
      */
     void updateResultSingle(String taskCode, String testTubeNo, String detectionType, Boolean positive);
