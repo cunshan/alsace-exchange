@@ -1,8 +1,11 @@
 package com.alsace.exchange.service.sys.specs;
 
 import com.alsace.exchange.service.sys.domain.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,53 +28,29 @@ public class UserSpecs {
     return (root, query, builder) -> builder.equal(root.get("deleted"), deleted);
   }
 
-  /**
-   * tel  equal
-   */
-  public static Specification<User> tel(String tel) {
-    return (root, query, builder) -> builder.equal(root.get("tel"), tel);
+  public static Specification<User> build(User user) {
+    return (root, query, cb) -> {
+      List<Predicate> predicateList = new ArrayList<>();
+      predicateList.add(cb.equal(root.get("deleted"), false));
+      if (!StringUtils.isBlank(user.getTel())) {
+        predicateList.add(cb.equal(root.get("tel"), user.getTel()));
+      }
+      if (!StringUtils.isBlank(user.getUserName())) {
+        predicateList.add(cb.like(root.get("userName"), user.getUserName() + "%"));
+      }
+      if (!StringUtils.isBlank(user.getLoginAccount())) {
+        predicateList.add(cb.equal(root.get("loginAccount"), user.getLoginAccount()));
+      }
+      if (!StringUtils.isBlank(user.getNickName())) {
+        predicateList.add(cb.like(root.get("nickName"), user.getNickName() + "%"));
+      }
+      if (!StringUtils.isBlank(user.getEmail())) {
+        predicateList.add(cb.equal(root.get("email"), user.getEmail()));
+      }
+      if (user.getLocked() != null) {
+        predicateList.add(cb.equal(root.get("locked"), user.getLocked()));
+      }
+      return query.where(predicateList.toArray(new Predicate[0])).getRestriction();
+    };
   }
-
-  /**
-   * 登录账号精确
-   */
-  public static Specification<User> loginAccountEq(String loginAccount) {
-    return (root, query, builder) -> builder.equal(root.get("loginAccount"), loginAccount);
-  }
-
-  /**
-   * 电话精确
-   */
-  public static Specification<User> telEq(String tel) {
-    return (root, query, builder) -> builder.equal(root.get("tel"), tel);
-  }
-
-  /**
-   * 邮箱精确
-   */
-  public static Specification<User> emailEq(String email) {
-    return (root, query, builder) -> builder.equal(root.get("email"), email);
-  }
-
-  /**
-   * 锁定精确
-   */
-  public static Specification<User> lockedEq(Boolean locked) {
-    return (root, query, builder) -> builder.equal(root.get("locked"), locked);
-  }
-
-  /**
-   * 用户名账号
-   */
-  public static Specification<User> userNameLike(String userName) {
-    return (root, query, builder) -> builder.like(root.get("userName"), userName + "%");
-  }
-
-  /**
-   * 昵称账号
-   */
-  public static Specification<User> nickNameLike(String nickName) {
-    return (root, query, builder) -> builder.like(root.get("nickName"), nickName + "%");
-  }
-
 }

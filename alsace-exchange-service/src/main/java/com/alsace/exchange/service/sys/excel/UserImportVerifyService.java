@@ -5,13 +5,12 @@ import cn.afterturn.easypoi.handler.inter.IExcelVerifyHandler;
 import com.alsace.exchange.service.sys.domain.User;
 import com.alsace.exchange.service.sys.domain.UserImport;
 import com.alsace.exchange.service.sys.repositories.UserRepository;
-import com.alsace.exchange.service.sys.specs.UserSpecs;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Optional;
 
 @Component
 @Slf4j
@@ -29,8 +28,11 @@ public class UserImportVerifyService implements IExcelVerifyHandler<UserImport> 
         }
 //        Assert.state(StringUtils.isBlank(userImport.getUserName()),"姓名不能为空！");
 //        Assert.state(StringUtils.isBlank(userImport.getTel()),"手机号不能为空！");
-        Optional<User> user = userRepository.findOne(UserSpecs.tel(userImport.getTel()).and(UserSpecs.deleted(false)));
-        if (user.isPresent()) {
+        User queryUser = new User();
+        queryUser.setTel(userImport.getTel());
+        queryUser.setDeleted(false);
+        User user = userRepository.findOne(Example.of(queryUser)).orElse(null);
+        if (user == null) {
             return new ExcelVerifyHandlerResult(false, String.format("手机号%s已经存在,用户名为%s",userImport.getTel(),userImport.getUserName()));
         }
 //        Assert.state(user!=null,String.format("手机号%已经存在,用户名为%",userImport.getTel(),userImport.getUserName()));

@@ -22,12 +22,9 @@ import com.alsace.exchange.service.sys.repositories.UserRoleRepository;
 import com.alsace.exchange.service.sys.service.UserDataService;
 import com.alsace.exchange.service.sys.service.UserService;
 import com.alsace.exchange.service.sys.specs.UserSpecs;
-import com.sun.javafx.binding.StringFormatter;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -175,33 +172,7 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
     }
     param.getParam().setDeleted(false);
     User user = param.getParam();
-    List<Specification<User>> specifications = new ArrayList<>();
-    specifications.add(UserSpecs.deleted(false));
-    if (!StringUtils.isBlank(user.getTel())) {
-      specifications.add(UserSpecs.telEq(user.getTel()));
-    }
-    if (!StringUtils.isBlank(user.getUserName())) {
-      specifications.add(UserSpecs.userNameLike(user.getUserName()));
-    }
-    if (!StringUtils.isBlank(user.getLoginAccount())) {
-      specifications.add(UserSpecs.loginAccountEq(user.getLoginAccount()));
-    }
-    if (!StringUtils.isBlank(user.getNickName())) {
-      specifications.add(UserSpecs.nickNameLike(user.getNickName()));
-    }
-    if (!StringUtils.isBlank(user.getEmail())) {
-      specifications.add(UserSpecs.emailEq(user.getEmail()));
-    }
-    if (user.getLocked() != null) {
-      specifications.add(UserSpecs.lockedEq(user.getLocked()));
-    }
-    if (specifications.isEmpty()) {
-      return new PageResult<>(getJpaRepository().findAll(AlsacePageHelper.page(param)));
-    }
-    Specification<User> specification = specifications.get(0);
-    for (int i = 1; i < specifications.size(); i++) {
-      specification.and(specifications.get(i));
-    }
+    Specification<User> specification = UserSpecs.build(user);
     return new PageResult<>(getJpaSpecificationExecutor().findAll(specification, AlsacePageHelper.page(param)));
   }
 }
