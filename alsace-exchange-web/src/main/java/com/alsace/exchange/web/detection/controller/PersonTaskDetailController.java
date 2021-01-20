@@ -10,9 +10,11 @@ import com.alsace.exchange.common.constants.Constants;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
+import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.sys.domain.User;
 import com.alsace.exchange.service.sys.domain.UserImport;
+import com.alsace.exchange.service.utils.OrderNoGenerator;
 import com.alsace.exchange.web.detection.vo.PersonTaskVo;
 import com.alsace.exchange.web.utils.ExportUtil;
 import com.google.common.collect.Lists;
@@ -41,6 +43,8 @@ public class PersonTaskDetailController extends BaseController {
 
   @Resource
   private PersonTaskDetailService personTaskDetailService;
+  @Resource
+  private OrderNoGenerator orderNoGenerator;
 
   @ApiOperation("人员检测任务明细分页查询")
   @PostMapping("/page")
@@ -52,6 +56,9 @@ public class PersonTaskDetailController extends BaseController {
   @ApiOperation("人员检测任务明细保存")
   @PostMapping("/save")
   public AlsaceResult<PersonTaskDetail> save(@RequestBody PersonTaskDetail param) {
+    String detailCode =orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE);
+    param.setDetailCode(detailCode);
+    param.setDetailStatus(TaskDetailStatus.INIT.status());
     return success(personTaskDetailService.save(param));
   }
 
