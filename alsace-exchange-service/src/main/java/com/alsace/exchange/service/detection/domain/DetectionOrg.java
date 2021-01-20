@@ -37,6 +37,10 @@ public class DetectionOrg extends BaseEntity {
   @Column(columnDefinition = "varchar(128) not null comment '父级唯一码'")
   private String parentOrgCode;
 
+  @ApiModelProperty(value = "父级名称")
+  @Column(columnDefinition = "varchar(128) not null comment '父级名称'")
+  private String parentOrgName;
+
   @ApiModelProperty(value = "机构地址")
   @Column(columnDefinition = "varchar(255) not null comment '机构地址'")
   private String orgAddress;
