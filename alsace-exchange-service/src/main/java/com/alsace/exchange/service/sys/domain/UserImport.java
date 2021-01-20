@@ -1,8 +1,8 @@
 package com.alsace.exchange.service.sys.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import cn.afterturn.easypoi.handler.inter.IExcelModel;
 import cn.afterturn.easypoi.handler.inter.IExcelDataModel;
+import cn.afterturn.easypoi.handler.inter.IExcelModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
