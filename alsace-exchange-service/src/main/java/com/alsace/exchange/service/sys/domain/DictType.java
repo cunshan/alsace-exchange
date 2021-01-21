@@ -3,9 +3,9 @@ package com.alsace.exchange.service.sys.domain;
 import com.alsace.exchange.common.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -13,14 +13,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
 @Table(name = "sys_dict_type")
 @ApiModel
 @DynamicUpdate
+@Getter
+@Setter
 public class DictType extends BaseEntity {
 
   private static final long serialVersionUID = 2755183158140725692L;

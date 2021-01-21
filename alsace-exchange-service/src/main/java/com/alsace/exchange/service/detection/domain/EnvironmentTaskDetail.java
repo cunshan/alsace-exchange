@@ -4,9 +4,9 @@ import com.alsace.exchange.common.base.BaseEntity;
 import com.alsace.exchange.common.validate.groups.Create;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -17,8 +17,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity

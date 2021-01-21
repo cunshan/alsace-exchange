@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class OrderNoGenerator {
 
-  private static final String REDIS_PREFIX = "FMS_ORDER_NO_";
+  private static final String REDIS_PREFIX = "ALSACE_ORDER_NO_";
 
   @Resource
   private RedisTemplate<String, String> redisClient;
