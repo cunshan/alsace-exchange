@@ -24,46 +24,82 @@ public class OperationLog extends BaseEntity {
   private static final long serialVersionUID = 5020353257577471551L;
 
   /**
-   * 访问url
+   * 登录账号
    */
-  @Column(columnDefinition = "varchar(255) not null comment '访问url'")
-  private String url;
+  @Column(columnDefinition = "varchar(32) comment '登录人账号'")
+  private String loginAccount;
 
   /**
-   * 客户端地址
+   * 用户名
    */
-  @Column(columnDefinition = "varchar(255) not null comment '客户端地址'")
-  private String host;
+  @Column(columnDefinition = "varchar(32) comment '登录人姓名'")
+  private String userName;
 
   /**
-   * 参数
+   * 用户操作
    */
-  @Column(columnDefinition = "text not null comment '参数'")
-  private String param;
+  @Column(columnDefinition = "varchar(128) comment '用户操作'")
+  private String operation;
 
   /**
-   * 返回结果
+   * 日志类型
    */
-  @Column(columnDefinition = "text not null comment '返回结果'")
-  private String result;
+  @Column(columnDefinition = "varchar(32) comment '日志类型'")
+  private String logType;
 
   /**
-   * 操作人账号
+   * 请求方法
    */
-  @Column(columnDefinition = "varchar(32) not null comment '操作人账号'")
-  private String operatorAccount;
+  @Column(columnDefinition = "varchar(255) comment '请求方法'")
+  private String method;
 
   /**
-   * 操作人名称
+   * 请求参数
    */
-  @Column(columnDefinition = "varchar(32) not null comment '操作人名称'")
-  private String operatorName;
+  @Column(columnDefinition = "text(32) comment '请求参数'")
+  private String params;
 
   /**
-   * 模块
+   * 执行时长(毫秒)
    */
-  @Column(columnDefinition = "varchar(32) not null comment '模块'")
-  private String module;
+  @Column(columnDefinition = "bigint(20) comment '执行时长(毫秒)'")
+  private Long time;
+
+  /**
+   * IP地址
+   */
+  @Column(columnDefinition = "varchar(32) comment 'IP地址'")
+  private String ip;
+
+  /**
+   * 模块名称
+   */
+  @Column(columnDefinition = "varchar(255) comment '模块名称'")
+  private String moduleName;
+
+  /**
+   * 请求地址
+   */
+  @Column(columnDefinition = "varchar(255) comment '请求地址'")
+  private String requestUrl;
+
+  /**
+   * 请求方法
+   */
+  @Column(columnDefinition = "varchar(255) comment '请求方法'")
+  private String requestMethod;
+
+  /**
+   * 浏览器信息
+   */
+  @Column(columnDefinition = "varchar(64) comment '浏览器信息'")
+  private String userAgent;
+
+  /**
+   * 异常信息
+   */
+  @Column(columnDefinition = "text comment '异常信息'")
+  private String exception;
 
 
 }
