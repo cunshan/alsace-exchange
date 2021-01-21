@@ -13,14 +13,12 @@ import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
-import com.alsace.exchange.service.detection.emums.PersonTaskDetectionMethod;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.excel.PersonTaskDetailVerifyService;
 import com.alsace.exchange.service.detection.repositories.PersonTaskDetailRepository;
 import com.alsace.exchange.service.detection.repositories.PersonTaskDetailResultRepository;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
-import com.sun.javafx.binding.StringFormatter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -98,7 +96,7 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
       if (importResult.isVerfiyFail()) {
         StringBuffer sb = new StringBuffer();
         for (PersonTaskDetailImport entity : importResult.getFailList()) {
-          sb.append(StringFormatter.format("第{}行的错误是:{}", entity.getRowNum(), entity.getErrorMsg()));
+          sb.append(String.format("第%s行的错误是:%s", entity.getRowNum(), entity.getErrorMsg()));
         }
         throw new AlsaceException(sb.toString());
       }
