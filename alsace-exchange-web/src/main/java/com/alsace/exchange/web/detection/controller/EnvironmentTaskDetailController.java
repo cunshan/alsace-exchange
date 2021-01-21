@@ -5,7 +5,9 @@ import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
+import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskDetailService;
+import com.alsace.exchange.service.utils.OrderNoGenerator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +25,8 @@ public class EnvironmentTaskDetailController extends BaseController {
 
   @Resource
   private EnvironmentTaskDetailService environmentTaskDetailService;
+  @Resource
+  private OrderNoGenerator orderNoGenerator;
 
   @ApiOperation("环境监测任务明细分页查询")
   @PostMapping("/page")
@@ -43,6 +47,15 @@ public class EnvironmentTaskDetailController extends BaseController {
   public AlsaceResult<String> delete(@RequestBody List<Long> idList) {
     environmentTaskDetailService.delete(idList);
     return success("删除成功",null);
+  }
+
+  @ApiOperation("环境检测任务明细保存")
+  @PostMapping("/save")
+  public AlsaceResult<EnvironmentTaskDetail> save(@RequestBody EnvironmentTaskDetail param) {
+    String detailCode =orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ENVIRONMENT_TASK_DETAIL_CODE);
+    param.setDetailCode(detailCode);
+    param.setDetailStatus(TaskDetailStatus.INIT.status());
+    return success(environmentTaskDetailService.save(param));
   }
 
 }
