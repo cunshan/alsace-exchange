@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface Log {
 
-    String value() default "";
+    String value() ;
 
-    String moduleName() default "";
+    String moduleName() ;
 
 }

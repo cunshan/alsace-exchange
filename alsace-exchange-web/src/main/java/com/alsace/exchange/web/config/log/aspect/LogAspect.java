@@ -1,11 +1,14 @@
 package com.alsace.exchange.web.config.log.aspect;
 
+import com.alsace.exchange.common.utils.JsonUtils;
 import com.alsace.exchange.service.sys.domain.OperationLog;
 import com.alsace.exchange.service.sys.enums.OperationLogType;
 import com.alsace.exchange.service.utils.ApplicationContextHolder;
 import com.alsace.exchange.web.config.log.annontation.Log;
 import com.alsace.exchange.web.config.log.event.OperationLogEvent;
 import com.alsace.exchange.web.utils.HttpContextUtil;
+import com.alsace.exchange.web.utils.LoginUtils;
+import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -63,7 +66,7 @@ public class LogAspect {
         MethodSignature msig = (MethodSignature) sig;
         Object target = point.getTarget();
         Method currentMethod = target.getClass().getMethod(msig.getName(), msig.getParameterTypes());
-        String methodName = currentMethod.getName();
+        String methodName = sig.getDeclaringTypeName() + "." + currentMethod.getName();
         //获取拦截方法的参数
         Object[] params = point.getArgs();
         //获取操作名称
@@ -79,9 +82,13 @@ public class LogAspect {
         opLog.setRequestMethod(HttpContextUtil.requestMethod());
         opLog.setUserAgent(HttpContextUtil.getUserAgent());
         opLog.setIp(HttpContextUtil.getRemoteAddr());
-        opLog.setParams(Arrays.toString(params));
+        opLog.setParams(JsonUtils.toJson(params));
         opLog.setLogType(OperationLogType.ACCESS_LOG.name());
-
+        opLog.setLoginAccount(LoginUtils.loginAccount());
+        opLog.setUserName(LoginUtils.userName());
+        if(e !=null){
+            opLog.setException(Throwables.getStackTraceAsString(e));
+        }
         ApplicationContextHolder.publishEvent(new OperationLogEvent(opLog));
     }
 
