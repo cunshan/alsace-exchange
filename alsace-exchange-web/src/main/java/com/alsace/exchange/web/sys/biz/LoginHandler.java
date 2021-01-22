@@ -44,7 +44,7 @@ public class LoginHandler {
     String checkCode = checkSb.toString();
     //验证码放入redis
     stringRedisTemplate.opsForValue().set(checkCode, mobile, 10, TimeUnit.MINUTES);
-//    smsSendService.send(mobile,String.format(CHECK_CODE_TEMPLATE,checkCode.toString()));
+    smsSendService.send(mobile, String.format(CHECK_CODE_TEMPLATE, checkCode));
     return checkCode;
   }
 
