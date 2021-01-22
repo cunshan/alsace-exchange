@@ -34,11 +34,11 @@ public class DetectionOrg extends BaseEntity {
 
 
   @ApiModelProperty(value = "父级唯一码")
-  @Column(columnDefinition = "varchar(128) not null comment '父级唯一码'")
+  @Column(columnDefinition = "varchar(128) comment '父级唯一码'")
   private String parentOrgCode;
 
   @ApiModelProperty(value = "父级名称")
-  @Column(columnDefinition = "varchar(128) not null comment '父级名称'")
+  @Column(columnDefinition = "varchar(128) comment '父级名称'")
   private String parentOrgName;
 
   @ApiModelProperty(value = "机构地址")
