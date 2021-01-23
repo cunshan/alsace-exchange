@@ -21,7 +21,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 /**
  * 日志aop
@@ -32,64 +31,67 @@ import java.util.Arrays;
 public class LogAspect {
 
 
-    @Pointcut(value = "@annotation(com.alsace.exchange.web.config.log.annontation.Log)")
-    public void cutService() {
-    }
+  @Pointcut(value = "@annotation(com.alsace.exchange.web.config.log.annontation.Log)")
+  public void cutService() {
+  }
 
-    @Around("cutService()")
-    public Object recordSysLog(ProceedingJoinPoint point) throws Throwable {
+  @Around("cutService()")
+  public Object recordSysLog(ProceedingJoinPoint point) throws Throwable {
 
-        long startTime = System.currentTimeMillis();
-        //先执行业务
-        Object result = point.proceed();
-        long endTime = System.currentTimeMillis();
-        try {
-            handle(point, endTime - startTime, null);
-        } catch (Exception e) {
-            log.error("日志记录出错!", e);
-        }
-        return result;
+    long startTime = System.currentTimeMillis();
+    //先执行业务
+    Object result = point.proceed();
+    long endTime = System.currentTimeMillis();
+    try {
+      handle(point, endTime - startTime, result, null);
+    } catch (Exception e) {
+      log.error("日志记录出错!", e);
     }
+    return result;
+  }
 
-    @AfterThrowing(pointcut = "cutService()", throwing = "e")
-    public void doAfterThrowing(JoinPoint point, Throwable e) {
-        try {
-            handle(point, null, e);
-        } catch (Exception ex) {
-            log.error("日志记录出错!", ex);
-        }
+  @AfterThrowing(pointcut = "cutService()", throwing = "e")
+  public void doAfterThrowing(JoinPoint point, Throwable e) {
+    try {
+      handle(point, null, null, e);
+    } catch (Exception ex) {
+      log.error("日志记录出错!", ex);
     }
+  }
 
-    private void handle(JoinPoint point, Long methodProcessTime, Throwable e) throws Exception {
-        //获取拦截的方法名
-        Signature sig = point.getSignature();
-        MethodSignature msig = (MethodSignature) sig;
-        Object target = point.getTarget();
-        Method currentMethod = target.getClass().getMethod(msig.getName(), msig.getParameterTypes());
-        String methodName = sig.getDeclaringTypeName() + "." + currentMethod.getName();
-        //获取拦截方法的参数
-        Object[] params = point.getArgs();
-        //获取操作名称
-        Log annotation = currentMethod.getAnnotation(Log.class);
-        String moduleName = annotation.moduleName();
-        String operationName = annotation.value();
-        OperationLog opLog = new OperationLog();
-        opLog.setModuleName(moduleName);
-        opLog.setOperation(operationName);
-        opLog.setMethod(methodName);
-        opLog.setTime(methodProcessTime);
-        opLog.setRequestUrl(HttpContextUtil.requestUrl());
-        opLog.setRequestMethod(HttpContextUtil.requestMethod());
-        opLog.setUserAgent(HttpContextUtil.getUserAgent());
-        opLog.setIp(HttpContextUtil.getRemoteAddr());
-        opLog.setParams(JsonUtils.toJson(params));
-        opLog.setLogType(OperationLogType.ACCESS_LOG.name());
-        opLog.setLoginAccount(LoginUtils.loginAccount());
-        opLog.setUserName(LoginUtils.userName());
-        if(e !=null){
-            opLog.setException(Throwables.getStackTraceAsString(e));
-        }
-        ApplicationContextHolder.publishEvent(new OperationLogEvent(opLog));
+  private void handle(JoinPoint point, Long methodProcessTime, Object result, Throwable e) throws Exception {
+    //获取拦截的方法名
+    Signature sig = point.getSignature();
+    MethodSignature msig = (MethodSignature) sig;
+    Object target = point.getTarget();
+    Method currentMethod = target.getClass().getMethod(msig.getName(), msig.getParameterTypes());
+    String methodName = sig.getDeclaringTypeName() + "." + currentMethod.getName();
+    //获取拦截方法的参数
+    Object[] params = point.getArgs();
+    //获取操作名称
+    Log annotation = currentMethod.getAnnotation(Log.class);
+    String moduleName = annotation.moduleName();
+    String operationName = annotation.value();
+    OperationLog opLog = new OperationLog();
+    opLog.setModuleName(moduleName);
+    opLog.setOperation(operationName);
+    opLog.setMethod(methodName);
+    opLog.setTime(methodProcessTime);
+    opLog.setRequestUrl(HttpContextUtil.requestUrl());
+    opLog.setRequestMethod(HttpContextUtil.requestMethod());
+    opLog.setUserAgent(HttpContextUtil.getUserAgent());
+    opLog.setIp(HttpContextUtil.getRemoteAddr());
+    opLog.setParams(JsonUtils.toJson(params));
+    opLog.setLogType(OperationLogType.ACCESS_LOG.name());
+    opLog.setLoginAccount(LoginUtils.loginAccount());
+    opLog.setUserName(LoginUtils.userName());
+    if (result != null) {
+      opLog.setResult(JsonUtils.toJson(result));
     }
+    if (e != null) {
+      opLog.setException(Throwables.getStackTraceAsString(e));
+    }
+    ApplicationContextHolder.publishEvent(new OperationLogEvent(opLog));
+  }
 
 }

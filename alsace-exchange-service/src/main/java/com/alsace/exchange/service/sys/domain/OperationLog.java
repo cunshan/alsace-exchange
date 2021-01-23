@@ -56,8 +56,14 @@ public class OperationLog extends BaseEntity {
   /**
    * 请求参数
    */
-  @Column(columnDefinition = "text(32) comment '请求参数'")
+  @Column(columnDefinition = "text comment '请求参数'")
   private String params;
+
+  /**
+   * 返回结果
+   */
+  @Column(columnDefinition = "text comment '返回结果'")
+  private String result;
 
   /**
    * 执行时长(毫秒)
