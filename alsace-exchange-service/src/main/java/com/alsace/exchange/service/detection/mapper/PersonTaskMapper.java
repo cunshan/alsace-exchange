@@ -11,7 +11,7 @@ import java.util.List;
 public interface PersonTaskMapper {
 
   @Select({
-      "select t.task_code as taskCode,t.task_desc as taskDesc," ,
+      "select t.task_code as taskCode,t.task_name as taskName,t.task_desc as taskDesc," ,
           "t.task_status as taskStatus,t.start_date as startDate,t.end_date as endDate," ,
           "t.detection_type as detectionType,t.detection_method as detectionMethod," ,
           "t.mixed_mode as mixedMode,l.id as locationId,l.location_name as locationName " ,

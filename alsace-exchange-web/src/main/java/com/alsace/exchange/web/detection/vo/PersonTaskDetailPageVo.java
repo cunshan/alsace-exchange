@@ -1,6 +1,5 @@
 package com.alsace.exchange.web.detection.vo;
 
-import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

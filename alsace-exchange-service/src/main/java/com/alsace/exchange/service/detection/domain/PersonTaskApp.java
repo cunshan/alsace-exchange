@@ -16,6 +16,9 @@ public class PersonTaskApp implements Serializable {
   @ApiModelProperty(value = "任务编码")
   private String taskCode;
 
+  @ApiModelProperty(value = "任务名称")
+  private String taskName;
+
   @ApiModelProperty(value = "任务描述")
   private String taskDesc;
 
