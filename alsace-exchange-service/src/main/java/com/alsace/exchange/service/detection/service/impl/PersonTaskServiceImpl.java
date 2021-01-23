@@ -16,6 +16,7 @@ import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
 import com.alsace.exchange.service.detection.emums.PersonTaskDetectionType;
+import com.alsace.exchange.service.detection.emums.TaskDetailResultStatus;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.emums.TaskFormStatus;
 import com.alsace.exchange.service.detection.emums.TaskStatus;
@@ -251,7 +252,10 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
       personTaskDetailService.update(param);
       //添加试管信息
       List<PersonTaskDetailResult> resultList = param.getDetailResultList();
-      resultList.forEach(result -> result.setDetailCode(dbDetail.getDetailCode()).setTaskCode(dbDetail.getTaskCode()));
+      resultList.forEach(result ->
+          result.setDetailCode(dbDetail.getDetailCode())
+              .setTaskCode(dbDetail.getTaskCode())
+              .setResultStatus(TaskDetailResultStatus.INIT.status()));
       personTaskDetailService.saveResult(resultList);
       return;
     }

@@ -15,6 +15,7 @@ import com.alsace.exchange.service.detection.domain.EnvironmentTaskOperator;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskOrg;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskTag;
 import com.alsace.exchange.service.detection.emums.EnvironmentTaskDetailResultType;
+import com.alsace.exchange.service.detection.emums.TaskDetailResultStatus;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.emums.TaskFormStatus;
 import com.alsace.exchange.service.detection.emums.TaskStatus;
@@ -244,7 +245,10 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
         Assert.notNull(result.getManufactureDate(), "生产日期为空！");
       }
     });
-    resultList.forEach(result -> result.setDetailCode(dbDetail.getDetailCode()).setTaskCode(dbDetail.getTaskCode()));
+    resultList.forEach(result ->
+        result.setDetailCode(dbDetail.getDetailCode())
+            .setTaskCode(dbDetail.getTaskCode())
+            .setResultStatus(TaskDetailResultStatus.INIT.status()));
     this.environmentTaskDetailService.saveResult(resultList);
   }
 

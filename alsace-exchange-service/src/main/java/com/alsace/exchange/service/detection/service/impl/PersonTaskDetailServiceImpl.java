@@ -125,13 +125,13 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void updateResultBatch(List<String> taskCodeList, Boolean positive) {
-    personTaskDetailResultRepository.updateResultByTaskCode(taskCodeList, positive);
+    personTaskDetailResultRepository.updateResultByTaskCode(taskCodeList, positive, getLoginAccount());
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void updateResultSingle(String taskCode, String testTubeNo, String detectionType, Boolean positive) {
-    int count = personTaskDetailResultRepository.updateResultByTubeNo(taskCode, testTubeNo, detectionType, positive);
+    int count = personTaskDetailResultRepository.updateResultByTubeNo(taskCode, testTubeNo, detectionType, positive, getLoginAccount());
     if (count <= 0) {
       throw new AlsaceException("更新失败！");
     }

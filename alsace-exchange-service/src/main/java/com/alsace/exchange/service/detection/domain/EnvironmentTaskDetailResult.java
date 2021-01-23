@@ -67,4 +67,8 @@ public class EnvironmentTaskDetailResult extends BaseEntity {
   private String lotNumber;
   //以上食品样本必填
 
+  @ApiModelProperty(value = "明细状态 10:未检测 20:已提交")
+  @Column(columnDefinition = "int(2) not null default 10 comment '明细状态 10:未检测 20:已提交'")
+  private Integer resultStatus;
+
 }

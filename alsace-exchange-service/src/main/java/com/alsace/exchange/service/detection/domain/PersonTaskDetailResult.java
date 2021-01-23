@@ -52,4 +52,8 @@ public class PersonTaskDetailResult extends BaseEntity {
   @Column(columnDefinition = "varchar(255) comment '照片URL'")
   private String pictures;
 
+  @ApiModelProperty(value = "检测结果状态 10:未检测 20:已提交")
+  @Column(columnDefinition = "int(2) not null default 10 comment '检测结果状态 10:未检测 20:已提交'")
+  private Integer resultStatus;
+
 }
