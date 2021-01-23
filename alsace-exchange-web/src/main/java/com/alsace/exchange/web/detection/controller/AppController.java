@@ -17,6 +17,7 @@ import com.alsace.exchange.service.detection.service.EnvironmentTaskService;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.detection.service.PersonTaskFormService;
 import com.alsace.exchange.service.detection.service.PersonTaskService;
+import com.alsace.exchange.web.config.log.annontation.Log;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskDetailPageVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailPageVo;
 import io.swagger.annotations.Api;
@@ -51,18 +52,21 @@ public class AppController extends BaseController {
 
   @ApiOperation(value = "人员检测任务列表查询")
   @PostMapping("/person/page")
+  @Log(value = "人员检测任务列表查询",moduleName = "APP")
   public AlsaceResult<PageResult<PersonTaskApp>> personTaskPage(PageParam pageParam) {
     return success(personTaskService.findPersonTaskApp(pageParam));
   }
 
   @ApiOperation(value = "开始人员检测任务")
   @PostMapping("/person/start/{taskCode}")
+  @Log(value = "开始人员检测任务",moduleName = "APP")
   public AlsaceResult<PersonTaskForm> startTask(@PathVariable String taskCode) {
     return success(personTaskService.startTask(taskCode));
   }
 
   @ApiOperation(value = "获取单条人员检测任务明细")
   @PostMapping("/person/detail/get-one")
+  @Log(value = "获取单条人员检测任务明细",moduleName = "APP")
   public AlsaceResult<PersonTaskDetail> detail(@RequestBody PersonTaskDetail param) {
     param.setDeleted(false);
     PersonTaskDetail detail = personTaskDetailService.findOne(param);
@@ -74,6 +78,7 @@ public class AppController extends BaseController {
 
   @ApiOperation(value = "提交人员检测明细")
   @PostMapping("/person/detail/submit")
+  @Log(value = "提交人员检测明细",moduleName = "APP")
   public AlsaceResult<String> submitDetail(@RequestBody PersonTaskDetail param) {
     personTaskService.submitDetail(param);
     return success("提交成功", null);
@@ -82,6 +87,7 @@ public class AppController extends BaseController {
 
   @ApiOperation(value = "人员检测任务明细分页查询")
   @PostMapping("/person/form/page")
+  @Log(value = "人员检测任务明细分页查询",moduleName = "APP")
   public AlsaceResult<PersonTaskDetailPageVo> personPage(@RequestBody PageParam<PersonTaskDetailPageVo> param) {
     Assert.notNull(param.getParam(), "查询参数为空！");
     PersonTaskDetailPageVo paramVo = param.getParam();
@@ -102,6 +108,7 @@ public class AppController extends BaseController {
 
   @ApiOperation(value = "人员检测任务表单提交")
   @PostMapping("/person/form/submit")
+  @Log(value = "人员检测任务表单提交",moduleName = "APP")
   public AlsaceResult<PersonTaskForm> submitForm(@RequestBody List<String> formCodeList) {
     personTaskFormService.submitForm(formCodeList);
     return success("提交成功", null);
@@ -111,18 +118,21 @@ public class AppController extends BaseController {
 
   @ApiOperation(value = "环境检测任务列表查询")
   @PostMapping("/env/page")
+  @Log(value = "环境检测任务列表查询",moduleName = "APP")
   public AlsaceResult<PageResult<EnvironmentTask>> envTaskPage(PageParam pageParam) {
     return success(environmentTaskService.findEnvironmentTaskApp(pageParam));
   }
 
   @ApiOperation(value = "开始环境检测任务")
   @PostMapping("/env/start/{taskCode}")
+  @Log(value = "开始环境检测任务",moduleName = "APP")
   public AlsaceResult<EnvironmentTaskForm> envStartTask(@PathVariable String taskCode) {
     return success(environmentTaskService.startTask(taskCode));
   }
 
   @ApiOperation(value = "获取单条环境检测任务明细")
   @PostMapping("/env/detail/get-one")
+  @Log(value = "获取单条环境检测任务明细",moduleName = "APP")
   public AlsaceResult<EnvironmentTaskDetail> envDetail(@RequestBody EnvironmentTaskDetail param) {
     param.setDeleted(false);
     EnvironmentTaskDetail detail = environmentTaskDetailService.findOne(param);
@@ -134,6 +144,7 @@ public class AppController extends BaseController {
 
   @ApiOperation(value = "提交环境检测明细")
   @PostMapping("/env/detail/submit")
+  @Log(value = "提交环境检测明细",moduleName = "APP")
   public AlsaceResult<String> envSubmitDetail(@RequestBody EnvironmentTaskDetail param) {
     environmentTaskService.submitDetail(param);
     return success("提交成功", null);
@@ -142,6 +153,7 @@ public class AppController extends BaseController {
 
   @ApiOperation(value = "APP人员检测任务明细分页查询")
   @PostMapping("/env/form/page")
+  @Log(value = "APP人员检测任务明细分页查询",moduleName = "APP")
   public AlsaceResult<EnvironmentTaskDetailPageVo> envPage(@RequestBody PageParam<EnvironmentTaskDetailPageVo> param) {
     Assert.notNull(param.getParam(), "查询参数为空！");
     EnvironmentTaskDetailPageVo paramVo = param.getParam();
@@ -162,6 +174,7 @@ public class AppController extends BaseController {
 
   @ApiOperation(value = "人员检测任务表单提交")
   @PostMapping("/env/form/submit")
+  @Log(value = "人员检测任务表单提交",moduleName = "APP")
   public AlsaceResult<EnvironmentTaskForm> envSubmitForm(@RequestBody List<String> formCodeList) {
     environmentTaskFormService.submitForm(formCodeList);
     return success("提交成功", null);
