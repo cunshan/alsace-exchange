@@ -12,7 +12,8 @@ import java.util.List;
 public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Long> {
     /**
      * 导入被检测人员信息
-     * @param param
+     * @param taskCode 任务编码
+     * @param param 导入内容
      * @return
      */
     List<PersonTaskDetail> importDetails(List<Object> param,String taskCode);

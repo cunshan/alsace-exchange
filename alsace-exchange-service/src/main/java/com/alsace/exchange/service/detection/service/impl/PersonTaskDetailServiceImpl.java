@@ -84,6 +84,7 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public List<PersonTaskDetail> importDetails(List<Object> param, String taskCode) {
     InputStream is = new ByteArrayInputStream((byte[]) param.get(0));
     ImportParams params = new ImportParams();
@@ -118,7 +119,7 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
       });
       return personTaskDetailRepository.saveAll(personTaskDetails);
     } catch (Exception e) {
-      throw new AlsaceException("导入用户数据异常！" + e.getMessage());
+      throw new AlsaceException("导入被检测人员数据异常！" + e.getMessage());
     }
   }
 
