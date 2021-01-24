@@ -34,7 +34,7 @@ public class PersonTaskApp implements Serializable {
   @ApiModelProperty(value = "检测类型 1 全民检测  2 非全民检测")
   private Integer detectionType;
 
-  @ApiModelProperty(value = "检测项目")
+  @ApiModelProperty(value = "检测项目 存储为以下格式[{\"code\":\"1\",\"name\":\"核酸检测\"}]")
   private String detectionMethod;
 
   @ApiModelProperty(value = "混管设置")

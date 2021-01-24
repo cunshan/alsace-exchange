@@ -7,10 +7,12 @@ import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.AlsaceBeanUtils;
+import com.alsace.exchange.common.utils.JsonUtils;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetectionMethod;
 import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
@@ -23,6 +25,7 @@ import com.alsace.exchange.service.detection.emums.TaskStatus;
 import com.alsace.exchange.service.detection.mapper.PersonTaskMapper;
 import com.alsace.exchange.service.detection.repositories.PersonTaskRepository;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
+import com.alsace.exchange.service.detection.service.PersonTaskDetectionMethodService;
 import com.alsace.exchange.service.detection.service.PersonTaskFormService;
 import com.alsace.exchange.service.detection.service.PersonTaskLocationService;
 import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
@@ -31,6 +34,7 @@ import com.alsace.exchange.service.detection.service.PersonTaskService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -63,6 +67,8 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   private PersonTaskDetailService personTaskDetailService;
   @Resource
   private PersonTaskFormService personTaskFormService;
+  @Resource
+  private PersonTaskDetectionMethodService personTaskDetectionMethodService;
 
 
   @Resource
@@ -95,6 +101,12 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     locationList.add(new PersonTaskLocation().setLocationName("无地点要求"));
     locationList.forEach(location -> location.setTaskCode(taskCode));
     personTaskLocationService.saveBatch(locationList);
+    //保存任务对应检测项目
+    List<PersonTaskDetectionMethod> methodList = JsonUtils.fromJson(task.getDetectionMethod(), new TypeToken<List<PersonTaskDetectionMethod>>() {
+    }.getType());
+    Assert.notEmpty(methodList, "检测项目为空！");
+    methodList.forEach(method -> method.setTaskCode(taskCode));
+    personTaskDetectionMethodService.saveBatch(methodList);
     //保存任务
     task.setTaskCode(taskCode);
     task.setTaskStatus(TaskStatus.INIT.status());

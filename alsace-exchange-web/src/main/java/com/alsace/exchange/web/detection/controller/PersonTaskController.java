@@ -7,7 +7,6 @@ import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
-import com.alsace.exchange.service.detection.emums.PersonTaskDetectionMethod;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.detection.service.PersonTaskLocationService;
 import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
