@@ -20,7 +20,6 @@
         <module>alsace-exchange-service</module>
         <module>alsace-exchange-web</module>
         <module>alsace-exchange-task</module>
-        <module>alsace-exchange-gateway</module>
     </modules>
 
     <properties>
