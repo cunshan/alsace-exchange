@@ -108,15 +108,15 @@ public class OrderNoGenerator {
     /**
      * 环境检测任务编码
      */
-    ENVIRONMENT_TASK_CODE("E", "人员检测任务号", 5, "yyMMdd"),
+    ENVIRONMENT_TASK_CODE("E", "环境检测任务号", 5, "yyMMdd"),
     /**
      * 环境检测表单编码
      */
-    ENVIRONMENT_TASK_FORM_CODE("EF", "人员检测表单编码", 6, "yyMMdd"),
+    ENVIRONMENT_TASK_FORM_CODE("EF", "环境检测表单编码", 6, "yyMMdd"),
     /**
      * 环境检测明细编码
      */
-    ENVIRONMENT_TASK_DETAIL_CODE("ED", "人员检测明细编码", 6, "yyMMdd");
+    ENVIRONMENT_TASK_DETAIL_CODE("ED", "环境检测明细编码", 6, "yyMMdd");
 
 
     /**
