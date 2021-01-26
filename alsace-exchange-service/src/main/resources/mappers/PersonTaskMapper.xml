@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alsace.exchange.service.detection.mapper.PersonTaskMapper">
+    <select id="findPage" resultType="com.alsace.exchange.service.detection.domain.PersonTask">
+        select t.created_by as createdBy, t.created_date as createdDate, t.deleted as deleted,
+               t.detection_method as detectionMethod, t.detection_type as detectionType,
+               t.end_date as endDate, t.id as id, t.mixed_mode as mixedMode,
+               t.modified_by as modifiedBy, t.modified_date as modifiedDate,
+               t.remarks as remarks, t.start_date as startDate, t.task_code as taskCode,
+               t.task_desc as taskDesc, t.task_name as taskName, t.task_status as taskStatus
+        from biz_person_task t
+        where t.deleted = false
+
+        <if test="param.taskCode !=null and param.taskCode !=''">
+            and t.task_code = #{param.taskCode}
+        </if>
+        <if test="param.taskName !=null and param.taskName !=''">
+            and t.task_name like concat('%',#{param.taskCode},'%')
+        </if>
+        <if test="param.taskStatus !=null">
+            and t.task_status = #{param.taskStatus}
+        </if>
+        <if test="param.startDate !=null">
+            <![CDATA[
+            and t.start_date <= #{param.startDate}
+            ]]>
+        </if>
+        <if test="param.endDate !=null">
+            <![CDATA[
+            and t.end_date >= #{param.endDate}
+            ]]>
+        </if>
+        <if test="param.detectionType !=null">
+            and t.detection_type = #{param.detectionType}
+        </if>
+        <if test="param.mixedMode !=null and param.mixedMode !=''">
+            and t.mixed_mode = #{param.mixedMode}
+        </if>
+        <if test="param.methodList!=null and !param.methodList.isEmpty()">
+            and exists (select 1 from biz_person_task_detection_method m where m.task_code=t.task_code and m.code in
+            <foreach collection="param.methodList" item="method" open="(" separator="," close=")">
+                #{method.code}
+            </foreach>
+            )
+        </if>
+        <choose>
+            <when test="!param.userDataList.isEmpty()">
+                and exists (select 1 from biz_person_task_org o where o.org_code in
+                <foreach collection="param.methodList" item="method" open="(" separator="," close=")">
+                    #{method.code}
+                </foreach>
+                )
+
+            </when>
+          <otherwise>
+              and t.created_by = #{param.loginAccount}
+          </otherwise>
+        </choose>
+    </select>
+    
+    <select id="selectAppTaskList" resultType="com.alsace.exchange.service.detection.domain.PersonTaskApp">
+        select t.task_code as taskCode,t.task_name as taskName,t.task_desc as taskDesc,
+            t.task_status as taskStatus,t.start_date as startDate,t.end_date as endDate,
+          t.detection_type as detectionType,t.detection_method as detectionMethod,
+          t.mixed_mode as mixedMode,l.id as locationId,l.location_name as locationName
+          from biz_person_task t left join biz_person_task_location l on t.task_code = l.task_code and l.deleted='0'
+          where t.deleted='0'
+          and exists (select 1 from biz_person_task_operator o where o.login_account=#{loginAccount} and o.task_code = t.task_code and l.id = o.location_id)
+    </select>
+</mapper>

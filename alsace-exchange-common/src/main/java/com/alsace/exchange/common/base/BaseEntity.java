@@ -9,8 +9,11 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -64,5 +67,10 @@ public class BaseEntity implements Serializable {
     @ApiModelProperty("删除标记")
     @Column(columnDefinition="tinyint(1) not null default 0 comment '删除标记'")
     private Boolean deleted;
+
+    @Transient
+    private List<CodeName> userDataList = new ArrayList<>();
+    @Transient
+    private String loginAccount;
 
 }

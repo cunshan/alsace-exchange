@@ -1,7 +1,9 @@
 package com.alsace.exchange.service.detection.domain;
 
 import com.alsace.exchange.common.base.BaseEntity;
+import com.alsace.exchange.common.utils.JsonUtils;
 import com.alsace.exchange.common.validate.groups.Create;
+import com.google.gson.reflect.TypeToken;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -17,6 +19,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -74,5 +77,11 @@ public class PersonTask extends BaseEntity {
   @Column(columnDefinition = "varchar(255) not null comment '混管设置'")
   @NotBlank(groups = {Create.class}, message = "混管设置为空！")
   private String mixedMode;
+
+
+  public List<PersonTaskDetectionMethod> getMethodList(){
+    return JsonUtils.fromJson(this.getDetectionMethod(), new TypeToken<List<PersonTaskDetectionMethod>>() {
+    }.getType());
+  }
 
 }

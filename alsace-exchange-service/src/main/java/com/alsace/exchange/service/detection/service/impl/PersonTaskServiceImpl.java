@@ -2,6 +2,8 @@ package com.alsace.exchange.service.detection.service.impl;
 
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
+import com.alsace.exchange.common.base.AlsacePageHelper;
+import com.alsace.exchange.common.base.CodeName;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.enums.AutoFillType;
@@ -31,11 +33,14 @@ import com.alsace.exchange.service.detection.service.PersonTaskLocationService;
 import com.alsace.exchange.service.detection.service.PersonTaskOperatorService;
 import com.alsace.exchange.service.detection.service.PersonTaskOrgService;
 import com.alsace.exchange.service.detection.service.PersonTaskService;
+import com.alsace.exchange.service.sys.domain.UserData;
+import com.alsace.exchange.service.sys.service.UserDataService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.reflect.TypeToken;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
@@ -69,6 +74,8 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   private PersonTaskFormService personTaskFormService;
   @Resource
   private PersonTaskDetectionMethodService personTaskDetectionMethodService;
+  @Resource
+  private UserDataService userDataService;
 
 
   @Resource
@@ -102,8 +109,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     locationList.forEach(location -> location.setTaskCode(taskCode));
     personTaskLocationService.saveBatch(locationList);
     //保存任务对应检测项目
-    List<PersonTaskDetectionMethod> methodList = JsonUtils.fromJson(task.getDetectionMethod(), new TypeToken<List<PersonTaskDetectionMethod>>() {
-    }.getType());
+    List<PersonTaskDetectionMethod> methodList = task.getMethodList();
     Assert.notEmpty(methodList, "检测项目为空！");
     methodList.forEach(method -> method.setTaskCode(taskCode));
     personTaskDetectionMethodService.saveBatch(methodList);
@@ -111,6 +117,25 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     task.setTaskCode(taskCode);
     task.setTaskStatus(TaskStatus.INIT.status());
     return save(task);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public PageResult<PersonTask> findPage(PageParam<PersonTask> param) {
+    PersonTask taskParam = param.getParam();
+    String loginAccount = getLoginAccount();
+    taskParam.setLoginAccount(loginAccount);
+    //查询出当前人的数据权限
+    UserData queryUserData = new UserData();
+    queryUserData.setLoginAccount(loginAccount).setDeleted(false);
+    List<UserData> userDataList = userDataService.findAll(queryUserData);
+    List<CodeName> codeNames = new ArrayList<>(userDataList.size());
+    userDataList.forEach(userData->codeNames.add(new CodeName(userData.getDataCode(),userData.getDataLabel())));
+    taskParam.setUserDataList(codeNames);
+    PageInfo<PersonTask> pageInfo =
+        PageHelper.startPage(param.getPageNum(),param.getPageSize())
+            .doSelectPageInfo(()->personTaskMapper.findPage(taskParam));
+    return new PageResult<>(pageInfo);
   }
 
   @Override
