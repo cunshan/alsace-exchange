@@ -17,7 +17,7 @@
             and t.task_code = #{param.taskCode}
         </if>
         <if test="param.taskName !=null and param.taskName !=''">
-            and t.task_name like concat('%',#{param.taskCode},'%')
+            and t.task_name like concat('%',#{param.taskName},'%')
         </if>
         <if test="param.taskStatus !=null">
             and t.task_status = #{param.taskStatus}
