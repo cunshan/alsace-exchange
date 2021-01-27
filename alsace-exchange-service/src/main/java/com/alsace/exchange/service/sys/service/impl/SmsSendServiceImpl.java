@@ -46,6 +46,7 @@ public class SmsSendServiceImpl implements SmsSendService {
       paramMap.put("mobile", mobile);
       paramMap.put("content", msg);
       String resMsg = restTemplate.getForObject(url, String.class, paramMap);
+      log.info("手机验证码返回结果：" + resMsg);
       boolean success = StringUtils.isNotBlank(resMsg) && resMsg.startsWith("success:");
       if (!success) {
         throw new AlsaceException("调用返回失败：" + resMsg);
