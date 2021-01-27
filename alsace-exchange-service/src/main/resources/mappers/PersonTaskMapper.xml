@@ -46,7 +46,7 @@
             )
         </if>
         <choose>
-            <when test="param.userDataList=null and !param.userDataList.isEmpty()">
+            <when test="param.userDataList!=null and !param.userDataList.isEmpty()">
                 and exists (select 1 from biz_person_task_org o where o.task_code=t.task_code and o.org_code in
                 <foreach collection="param.userDataList" item="method" open="(" separator="," close=")">
                     #{method.code}
