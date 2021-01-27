@@ -9,6 +9,7 @@ import com.alsace.exchange.web.config.log.annontation.Log;
 import com.alsace.exchange.web.sys.biz.LoginHandler;
 import com.alsace.exchange.web.sys.biz.MenuHandler;
 import com.alsace.exchange.web.sys.vo.AppLoginVo;
+import com.alsace.exchange.web.sys.vo.LoginVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +32,7 @@ public class LoginController extends BaseController {
   @ApiOperation(value = "用户登录", notes = "登录请求操作")
   @PostMapping("/login")
   @Log(value = "用户登录",moduleName = "Login")
-  public AlsaceResult<String> login(@RequestBody User param) {
-
+  public AlsaceResult<LoginVo> login(@RequestBody User param) {
     return success("登录成功", loginHandler.login(param));
   }
 

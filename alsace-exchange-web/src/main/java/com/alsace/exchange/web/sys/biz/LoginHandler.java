@@ -5,6 +5,7 @@ import com.alsace.exchange.service.sys.service.SmsSendService;
 import com.alsace.exchange.service.sys.service.UserService;
 import com.alsace.exchange.web.config.shiro.jwt.JwtToken;
 import com.alsace.exchange.web.sys.vo.AppLoginVo;
+import com.alsace.exchange.web.sys.vo.LoginVo;
 import com.alsace.exchange.web.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -69,7 +70,7 @@ public class LoginHandler {
     return tokenStr;
   }
 
-  public String login(User param) {
+  public LoginVo login(User param) {
     User userParam = new User().setLoginAccount(param.getLoginAccount());
     User user = userService.findOne(userParam);
     org.springframework.util.Assert.state(user != null, "用户不存在！");
@@ -81,6 +82,6 @@ public class LoginHandler {
     JwtToken token = new JwtToken(tokenStr);
     SecurityUtils.getSubject().login(token);
     //TODO 记录登录日志
-    return tokenStr;
+    return new LoginVo(tokenStr, user.getUserName(), user.getNickName());
   }
 }
