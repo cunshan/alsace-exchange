@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class LoginHandler {
 
-  private static final String CHECK_CODE_TEMPLATE = "移动检测平台】您的登录验证码是：%s.";
+  private static final String CHECK_CODE_TEMPLATE = "【移动检测平台】您的登录验证码是：%s.";
   private static final Random random = new Random();
 
   @Resource
