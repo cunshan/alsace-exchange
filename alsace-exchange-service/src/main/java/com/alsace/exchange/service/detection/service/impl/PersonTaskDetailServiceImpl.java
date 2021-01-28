@@ -5,20 +5,29 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
+import com.alsace.exchange.common.base.CodeName;
+import com.alsace.exchange.common.base.PageParam;
+import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.constants.Constants;
 import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.AlsaceBeanUtils;
 import com.alsace.exchange.common.utils.IdUtils;
+import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.excel.PersonTaskDetailVerifyService;
+import com.alsace.exchange.service.detection.mapper.PersonTaskDetailMapper;
 import com.alsace.exchange.service.detection.repositories.PersonTaskDetailRepository;
 import com.alsace.exchange.service.detection.repositories.PersonTaskDetailResultRepository;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
+import com.alsace.exchange.service.sys.domain.UserData;
+import com.alsace.exchange.service.sys.service.UserDataService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -44,6 +53,10 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   private OrderNoGenerator orderNoGenerator;
   @Resource
   private PersonTaskDetailResultRepository personTaskDetailResultRepository;
+  @Resource
+  private PersonTaskDetailMapper personTaskDetailMapper;
+  @Resource
+  private UserDataService userDataService;
 
   @Override
   protected JpaRepository<PersonTaskDetail, Long> getJpaRepository() {
@@ -143,5 +156,24 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   @AutoFill(AutoFillType.CREATE)
   public void saveResult(List<PersonTaskDetailResult> resultList) {
     personTaskDetailResultRepository.saveAll(resultList);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public PageResult<PersonTaskDetail> findResultPage(PageParam<PersonTaskDetail> param) {
+    PersonTaskDetail personTaskDetail = param.getParam();
+    String loginAccount = getLoginAccount();
+    personTaskDetail.setLoginAccount(loginAccount);
+    //查询出当前人的数据权限
+    UserData queryUserData = new UserData();
+    queryUserData.setLoginAccount(loginAccount).setDeleted(false);
+    List<UserData> userDataList = userDataService.findAll(queryUserData);
+    List<CodeName> codeNames = new ArrayList<>(userDataList.size());
+    userDataList.forEach(userData->codeNames.add(new CodeName(userData.getDataCode(),userData.getDataLabel())));
+    personTaskDetail.setUserDataList(codeNames);
+    PageInfo<PersonTaskDetail> pageInfo =
+            PageHelper.startPage(param.getPageNum(),param.getPageSize())
+                    .doSelectPageInfo(()->personTaskDetailMapper.findResultPage(personTaskDetail));
+    return new PageResult<>(pageInfo);
   }
 }

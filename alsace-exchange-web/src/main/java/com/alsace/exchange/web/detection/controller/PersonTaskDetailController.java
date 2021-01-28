@@ -15,6 +15,7 @@ import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.sys.domain.User;
 import com.alsace.exchange.service.sys.domain.UserImport;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
+import com.alsace.exchange.web.detection.vo.PersonTaskDetailVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskVo;
 import com.alsace.exchange.web.utils.ExportUtil;
 import com.google.common.collect.Lists;
@@ -108,5 +109,12 @@ public class PersonTaskDetailController extends BaseController {
     } catch (IOException e) {
       return error("102",Constants.IMPORT_ERROR);
     }
+  }
+
+  @ApiOperation("人员检测结果分页查询")
+  @PostMapping("/resultPage")
+  public  AlsaceResult<PageResult<PersonTaskDetail>> resultPage(@RequestBody PageParam<PersonTaskDetail> param){
+    PageResult<PersonTaskDetail> page = personTaskDetailService.findResultPage(param);
+    return success(page);
   }
 }

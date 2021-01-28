@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -129,4 +130,32 @@ public class PersonTaskDetail extends BaseEntity {
 
   @Transient
   private List<PersonTaskDetailResult> detailResultList;
+
+  @ApiModelProperty(value = "样本类型 10:核酸 20:抗体")
+  @Transient
+  private String detailType;
+
+  @ApiModelProperty(value = "照片URL")
+  @Transient
+  private String pictures;
+
+  @ApiModelProperty(value = "检测结果状态 10:未检测 20:已提交")
+  @Transient
+  private Integer resultStatus;
+
+  @ApiModelProperty(value = "任务名称")
+  @Transient
+  private String taskName;
+
+  @ApiModelProperty(value = "任务状态 10：已创建 20：待下发 30：已下发 40：待开始 50：进行中 60：已完成 70：取消", required = true)
+  @Transient
+  private Integer taskStatus;
+
+  @ApiModelProperty(value = "任务开始时间",required = true)
+  @Transient
+  private Date startDate;
+
+  @ApiModelProperty(value = "任务结束时间", required = true)
+  @Transient
+  private Date endDate;
 }

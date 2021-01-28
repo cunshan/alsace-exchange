@@ -1,6 +1,8 @@
 package com.alsace.exchange.service.detection.service;
 
 import com.alsace.exchange.common.base.BaseService;
+import com.alsace.exchange.common.base.PageParam;
+import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
 import com.alsace.exchange.service.sys.domain.User;
@@ -37,5 +39,13 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
     /**
      * 批量保存检测结果
      */
-  void saveResult(List<PersonTaskDetailResult> resultList);
+    void saveResult(List<PersonTaskDetailResult> resultList);
+
+  /**
+   * 人员检测结果分页查询
+   * @param param 分页查询条件
+   * @Author: wayne
+   * @Date: 2021/1/28
+   */
+    PageResult<PersonTaskDetail> findResultPage(PageParam<PersonTaskDetail> param);
 }
