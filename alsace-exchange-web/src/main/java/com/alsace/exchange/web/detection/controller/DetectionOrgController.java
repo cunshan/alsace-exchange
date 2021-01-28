@@ -13,11 +13,13 @@ import com.alsace.exchange.service.detection.domain.DetectionOrgImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.service.DetectionOrgService;
 import com.alsace.exchange.web.detection.biz.DetectionOrgHandler;
+import com.alsace.exchange.web.utils.ChineseCharacterUtil;
 import com.alsace.exchange.web.utils.ExportUtil;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +50,11 @@ public class DetectionOrgController extends BaseController {
   @ApiOperation("检测机构保存")
   @PostMapping("/save")
   public AlsaceResult<DetectionOrg> save(@RequestBody DetectionOrg param) {
+    //二级维护 根据名称生成首字母编码 可能出现重复值的可能
+    if(StringUtils.isNotBlank(param.getParentOrgCode())){
+      String orgCode=ChineseCharacterUtil.getUpperCase(param.getOrgName(),false);
+      param.setOrgCode(param.getParentOrgCode()+"-"+orgCode);
+    }
     return success(detectionOrgService.save(param));
   }
 
