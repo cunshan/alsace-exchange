@@ -6,12 +6,14 @@ import com.alsace.exchange.common.validate.groups.Create;
 import com.google.gson.reflect.TypeToken;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.Transient;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -78,6 +80,13 @@ public class PersonTask extends BaseEntity {
   @NotBlank(groups = {Create.class}, message = "混管设置为空！")
   private String mixedMode;
 
+  @ApiModelProperty("被检测人总数")
+  @Transient
+  private String sumDetail;
+
+  @Transient
+  @ApiModelProperty("已检测人总数")
+  private String sumSubmit;
 
   public List<PersonTaskDetectionMethod> getMethodList(){
     return JsonUtils.fromJson(this.getDetectionMethod(), new TypeToken<List<PersonTaskDetectionMethod>>() {

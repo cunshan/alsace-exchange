@@ -9,7 +9,9 @@
                t.end_date as endDate, t.id as id, t.mixed_mode as mixedMode,
                t.modified_by as modifiedBy, t.modified_date as modifiedDate,
                t.remarks as remarks, t.start_date as startDate, t.task_code as taskCode,
-               t.task_desc as taskDesc, t.task_name as taskName, t.task_status as taskStatus
+               t.task_desc as taskDesc, t.task_name as taskName, t.task_status as taskStatus,
+               (select count(1) from biz_person_task_detail d where t.task_code=d.task_code) sumDetail,
+               (select count(1) from biz_person_task_detail d where t.task_code=d.task_code and detail_status=20) sumSubmit
         from biz_person_task t
         where t.deleted = false
 
@@ -59,7 +61,7 @@
           </otherwise>
         </choose>
     </select>
-    
+
     <select id="selectAppTaskList" resultType="com.alsace.exchange.service.detection.domain.PersonTaskApp">
         select t.task_code as taskCode,t.task_name as taskName,t.task_desc as taskDesc,
             t.task_status as taskStatus,t.start_date as startDate,t.end_date as endDate,
