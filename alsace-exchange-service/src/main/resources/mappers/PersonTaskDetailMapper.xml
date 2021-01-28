@@ -30,7 +30,8 @@
             R.pictures,
             R.positive,
             R.test_tube_no testTubeNo,
-            R.result_status resultStatus
+            R.result_status resultStatus,
+            T.task_name taskName
         FROM biz_person_task T
         inner join biz_person_task_detail D on D.task_code=T.task_code
         left join biz_person_task_detail_result R
