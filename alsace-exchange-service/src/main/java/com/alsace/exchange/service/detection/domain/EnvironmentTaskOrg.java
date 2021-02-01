@@ -41,4 +41,8 @@ public class EnvironmentTaskOrg extends BaseEntity {
   @NotBlank(groups = {Create.class}, message = "机构编码为空！")
   private String orgCode;
 
+  @ApiModelProperty(value = "机构类型")
+  @Column(columnDefinition = "varchar(128) comment '机构类型'")
+  @NotBlank(groups = {Create.class}, message = "机构类型为空！")
+  private String orgType;
 }
