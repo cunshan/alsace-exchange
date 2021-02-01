@@ -7,8 +7,11 @@ import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
 import com.alsace.exchange.service.sys.domain.User;
+import com.itextpdf.text.DocumentException;
 
 import javax.validation.constraints.NotNull;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,4 +60,12 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
      * @Date: 2021/1/30
      */
     List<PersonTaskDetailImport> findResults(PersonTaskDetail param);
+
+    /**
+     * 导出PDF
+     * @param taskCode 任务编号
+     * @Author: wayne
+     * @Date: 2021/2/1
+     */
+    ByteArrayOutputStream convertReceivePdf(String taskCode) throws IOException, DocumentException;
 }

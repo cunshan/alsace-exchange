@@ -7,31 +7,34 @@ import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.constants.Constants;
-import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
-import com.alsace.exchange.service.sys.domain.User;
-import com.alsace.exchange.service.sys.domain.UserImport;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
-import com.alsace.exchange.web.detection.vo.PersonTaskDetailVo;
-import com.alsace.exchange.web.detection.vo.PersonTaskVo;
+import com.alsace.exchange.service.detection.service.PdfService;
 import com.alsace.exchange.web.utils.ExportUtil;
 import com.google.common.collect.Lists;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfWriter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.Document;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -122,7 +125,7 @@ public class PersonTaskDetailController extends BaseController {
 
   @ApiOperation("人员检测结果导出")
   @RequestMapping("/resultExport")
-  public  void resultExport(HttpServletResponse response,@RequestBody PersonTaskDetail param){
+  public void resultExport(HttpServletResponse response,@RequestBody PersonTaskDetail param){
 //    PersonTaskDetail param =new PersonTaskDetail();
     List<PersonTaskDetailImport> list = personTaskDetailService.findResults(param);
     Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("人员检测结果", "人员检测结果"), PersonTaskDetailImport.class, list);
@@ -136,6 +139,26 @@ public class PersonTaskDetailController extends BaseController {
       workBook.write(out);
     } catch(Exception e) {
       error("101", Constants.SYSTEM_ERROR);
+    }
+  }
+
+  @ApiOperation("人员检测结果PDF导出")
+  @RequestMapping("/resultPdf")
+  public void resultPdf(HttpServletResponse response,@ApiParam(name = "任务编码", value = "taskCode", required = true) @RequestParam("taskCode") String taskCode){
+    try{
+      ByteArrayOutputStream outputStream=personTaskDetailService.convertReceivePdf(taskCode);
+      response.setContentType(response.getContentType());
+      response.setHeader("Content-Disposition","attachment; filename=" + URLEncoder.encode( "测试.pdf", "UTF-8"));
+      byte[] bytes = outputStream.toByteArray();
+      BufferedOutputStream bos = null;
+      bos = new BufferedOutputStream(response.getOutputStream());
+      bos.write(bytes);
+      bos.close();
+
+    } catch (DocumentException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 }
