@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Api(tags = "人员检测任务明细",value = "personTaskDetail")
@@ -116,5 +118,24 @@ public class PersonTaskDetailController extends BaseController {
   public  AlsaceResult<PageResult<PersonTaskDetail>> resultPage(@RequestBody PageParam<PersonTaskDetail> param){
     PageResult<PersonTaskDetail> page = personTaskDetailService.findResultPage(param);
     return success(page);
+  }
+
+  @ApiOperation("人员检测结果导出")
+  @RequestMapping("/resultExport")
+  public  void resultExport(HttpServletResponse response,@RequestBody PersonTaskDetail param){
+//    PersonTaskDetail param =new PersonTaskDetail();
+    List<PersonTaskDetailImport> list = personTaskDetailService.findResults(param);
+    Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("人员检测结果", "人员检测结果"), PersonTaskDetailImport.class, list);
+    LocalDateTime time=LocalDateTime.now();
+    DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String excelName="人员检测结果"+time.format(pattern)+".xls";
+    try(OutputStream out = response.getOutputStream()) {
+      response.setContentType("application/ms-excel;charset=UTF-8");
+      response.setHeader("Content-Disposition", "attachment;filename="
+              .concat(String.valueOf(URLEncoder.encode(excelName, "UTF-8"))));
+      workBook.write(out);
+    } catch(Exception e) {
+      error("101", Constants.SYSTEM_ERROR);
+    }
   }
 }

@@ -68,6 +68,15 @@ public class PersonTaskDetailImport implements IExcelDataModel, IExcelModel, Ser
   @Excel(name = "归属市", isImportField = "true")
   private String city;
 
+  @ApiModelProperty(value = "检测类型")
+  private String detailType;
+
+  @ApiModelProperty(value = "采样编码")
+  private String testTubeNo;
+
+  @ApiModelProperty(value = "检测结果")
+  private String positive;
+
   private int rowNum;
   private String errorMsg;
 }

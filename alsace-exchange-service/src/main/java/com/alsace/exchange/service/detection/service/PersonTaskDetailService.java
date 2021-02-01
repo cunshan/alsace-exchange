@@ -4,6 +4,7 @@ import com.alsace.exchange.common.base.BaseService;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
 import com.alsace.exchange.service.sys.domain.User;
 
@@ -48,4 +49,12 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
    * @Date: 2021/1/28
    */
     PageResult<PersonTaskDetail> findResultPage(PageParam<PersonTaskDetail> param);
+
+    /**
+     * 人员检测结果条件查询
+     * @param param 分页查询条件
+     * @Author: wayne
+     * @Date: 2021/1/30
+     */
+    List<PersonTaskDetailImport> findResults(PersonTaskDetail param);
 }

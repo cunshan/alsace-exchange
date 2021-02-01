@@ -13,7 +13,6 @@ import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.AlsaceBeanUtils;
 import com.alsace.exchange.common.utils.IdUtils;
-import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
@@ -175,5 +174,19 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
             PageHelper.startPage(param.getPageNum(),param.getPageSize())
                     .doSelectPageInfo(()->personTaskDetailMapper.findResultPage(personTaskDetail));
     return new PageResult<>(pageInfo);
+  }
+
+  @Override
+  public List<PersonTaskDetailImport> findResults(PersonTaskDetail param) {
+    String loginAccount = getLoginAccount();
+    param.setLoginAccount(loginAccount);
+    //查询出当前人的数据权限
+    UserData queryUserData = new UserData();
+    queryUserData.setLoginAccount(loginAccount).setDeleted(false);
+    List<UserData> userDataList = userDataService.findAll(queryUserData);
+    List<CodeName> codeNames = new ArrayList<>(userDataList.size());
+    userDataList.forEach(userData->codeNames.add(new CodeName(userData.getDataCode(),userData.getDataLabel())));
+    param.setUserDataList(codeNames);
+    return personTaskDetailMapper.findResults(param);
   }
 }
