@@ -11,20 +11,20 @@ import com.alsace.exchange.common.base.LoginInfoProvider;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.enums.AutoFillType;
+import com.alsace.exchange.common.enums.OrderByEnum;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.IdUtils;
+import com.alsace.exchange.common.utils.JpaHelper;
 import com.alsace.exchange.service.sys.domain.User;
 import com.alsace.exchange.service.sys.domain.UserData;
 import com.alsace.exchange.service.sys.domain.UserImport;
 import com.alsace.exchange.service.sys.domain.UserRole;
-import com.alsace.exchange.common.enums.OrderByEnum;
 import com.alsace.exchange.service.sys.excel.UserImportVerifyService;
 import com.alsace.exchange.service.sys.repositories.UserRepository;
 import com.alsace.exchange.service.sys.repositories.UserRoleRepository;
 import com.alsace.exchange.service.sys.service.UserDataService;
 import com.alsace.exchange.service.sys.service.UserService;
 import com.alsace.exchange.service.sys.specs.UserSpecs;
-import com.alsace.exchange.common.utils.JpaHelper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
@@ -39,11 +39,9 @@ import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -174,15 +172,13 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
 
   @Override
   public PageResult<User> findPage(PageParam<User> param) {
-    if (param.getParam() == null) {
-      throw new AlsaceException("参数对象为空！");
-    }
+    Assert.notNull(param.getParam(),"参数对象为空！");
     param.getParam().setDeleted(false);
     User user = param.getParam();
     Set<String> likeSet = new HashSet<>();
     likeSet.add("userName");
     likeSet.add("nickName");
-    Specification<User> specification = JpaHelper.buildConditions(user, likeSet, new AlsaceOrderBy(OrderByEnum.DESC, Collections.singletonList("createDate")));
+    Specification<User> specification = JpaHelper.buildConditions(user, likeSet, new AlsaceOrderBy(OrderByEnum.DESC, Collections.singletonList("createdDate")));
     return new PageResult<>(getJpaSpecificationExecutor().findAll(specification, AlsacePageHelper.page(param)));
   }
 }
