@@ -121,6 +121,10 @@ public class PersonTaskController extends BaseController {
   @ApiOperation("按照任务编码更新检测结果")
   @PostMapping("/result/batch")
   public AlsaceResult<String> resultBatch(@RequestBody @Validated TaskResultBatchVo param) {
+    //TODO 判断任务状态
+    //TODO 更新没有结果的试管明细
+    //TODO 更新没有结果的任务明细
+    //TODO 更新任务状态 完成
     personTaskDetailService.updateResultBatch(param.getTaskCodeList(), param.getPositive());
     return success("更新成功！", null);
   }
@@ -128,11 +132,13 @@ public class PersonTaskController extends BaseController {
   @ApiOperation("按照任务试管更新检测结果")
   @PostMapping("/result/single")
   public AlsaceResult<String> resultSingle(@RequestBody @Validated TaskResultSingleVo param) {
+    //TODO 判断任务状态
     PersonTask queryTask = new PersonTask();
     queryTask.setTaskCode(param.getTaskCode()).setDeleted(false);
     PersonTask task = personTaskService.findOne(queryTask);
     Assert.state(task != null, "任务不存在！");
     personTaskDetailService.updateResultSingle(param.getTaskCode(), param.getTestTubeNo(), param.getDetectionMethod(), param.getPositive());
+    //TODO 如果存在阳性 更新对应的明细状态
     return success("更新成功！", null);
   }
 
