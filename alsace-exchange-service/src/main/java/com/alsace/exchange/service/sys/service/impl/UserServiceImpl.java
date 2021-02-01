@@ -5,6 +5,7 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
+import com.alsace.exchange.common.base.AlsaceOrderBy;
 import com.alsace.exchange.common.base.AlsacePageHelper;
 import com.alsace.exchange.common.base.LoginInfoProvider;
 import com.alsace.exchange.common.base.PageParam;
@@ -38,6 +39,8 @@ import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -176,13 +179,10 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
     }
     param.getParam().setDeleted(false);
     User user = param.getParam();
-    //Specification<User> specification = UserSpecs.build(user);
     Set<String> likeSet = new HashSet<>();
     likeSet.add("userName");
     likeSet.add("nickName");
-    LinkedHashMap<String, OrderByEnum> orderMap = new LinkedHashMap<>();
-    orderMap.put("createdDate",OrderByEnum.DESC);
-    Specification<User> specification = JpaHelper.buildConditions(user,likeSet,orderMap);
+    Specification<User> specification = JpaHelper.buildConditions(user, likeSet, new AlsaceOrderBy(OrderByEnum.DESC, Collections.singletonList("createDate")));
     return new PageResult<>(getJpaSpecificationExecutor().findAll(specification, AlsacePageHelper.page(param)));
   }
 }

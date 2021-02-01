@@ -116,8 +116,12 @@ public class OrderNoGenerator {
     /**
      * 环境检测明细编码
      */
-    ENVIRONMENT_TASK_DETAIL_CODE("ED", "环境检测明细编码", 6, "yyMMdd");
+    ENVIRONMENT_TASK_DETAIL_CODE("ED", "环境检测明细编码", 6, "yyMMdd"),
 
+    /**
+     * 机构编码
+     */
+    ORG_CODE("G", "机构编码", 4, "yyMM");
 
     /**
      * 单号前缀

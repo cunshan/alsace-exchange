@@ -1,5 +1,6 @@
 package com.alsace.exchange.common.utils;
 
+import com.alsace.exchange.common.base.AlsaceOrderBy;
 import com.alsace.exchange.common.enums.OrderByEnum;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,7 +24,7 @@ public class JpaHelper {
     excludeProperties.add("userDataAccount");
   }
 
-  public static <T> Specification<T> buildConditions(T domain, Set<String> likeProperties, Map<String, OrderByEnum> orderProperties) {
+  public static <T> Specification<T> buildConditions(T domain, Set<String> likeProperties, AlsaceOrderBy... orderBy) {
     DirectFieldAccessFallbackBeanWrapper beanWrapper = new DirectFieldAccessFallbackBeanWrapper(domain);
     PropertyDescriptor[] pds = beanWrapper.getPropertyDescriptors();
     List<String> propertyNames = new ArrayList<>();
@@ -51,19 +52,22 @@ public class JpaHelper {
       });
 
       List<Order> orders = new ArrayList<>();
-      if (orderProperties != null) {
-        orderProperties.forEach((property, orderBy) -> orders.add(orderBy.equals(OrderByEnum.ASC) ? cb.asc(root.get(property)) : cb.desc(root.get(property))));
+      if (orderBy != null && orderBy.length>0) {
+        for (AlsaceOrderBy order : orderBy) {
+          order.getPropertyList().forEach(property -> orders.add(order.getOrder().equals(OrderByEnum.ASC) ? cb.asc(root.get(property)) : cb.desc(root.get(property))));
+        }
+
       }
       return query.where(predicateList.toArray(new Predicate[0])).orderBy(orders.toArray(new Order[0])).getRestriction();
     };
   }
 
   public static <T> Specification<T> buildConditions(T domain, Set<String> likeProperties) {
-    return buildConditions(domain, likeProperties, null);
+    return buildConditions(domain, likeProperties);
   }
 
   public static <T> Specification<T> buildConditions(T domain) {
-    return buildConditions(domain, null, null);
+    return buildConditions(domain, null);
   }
 
 }

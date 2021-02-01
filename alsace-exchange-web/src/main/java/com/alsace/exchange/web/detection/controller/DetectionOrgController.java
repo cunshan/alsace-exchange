@@ -12,6 +12,7 @@ import com.alsace.exchange.service.detection.domain.DetectionOrg;
 import com.alsace.exchange.service.detection.domain.DetectionOrgImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.service.DetectionOrgService;
+import com.alsace.exchange.service.utils.OrderNoGenerator;
 import com.alsace.exchange.web.detection.biz.DetectionOrgHandler;
 import com.alsace.exchange.web.utils.ChineseCharacterUtil;
 import com.alsace.exchange.web.utils.ExportUtil;
@@ -45,16 +46,14 @@ public class DetectionOrgController extends BaseController {
   private DetectionOrgService detectionOrgService;
   @Resource
   private DetectionOrgHandler detectionOrgHandler;
+  @Resource
+  private OrderNoGenerator orderNoGenerator;
 
 
   @ApiOperation("检测机构保存")
   @PostMapping("/save")
   public AlsaceResult<DetectionOrg> save(@RequestBody DetectionOrg param) {
-    //二级维护 根据名称生成首字母编码 可能出现重复值的可能
-    if(StringUtils.isNotBlank(param.getParentOrgCode())){
-      String orgCode=ChineseCharacterUtil.getUpperCase(param.getOrgName(),false);
-      param.setOrgCode(param.getParentOrgCode()+"-"+orgCode);
-    }
+    param.setOrgCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ORG_CODE));
     return success(detectionOrgService.save(param));
   }
 
