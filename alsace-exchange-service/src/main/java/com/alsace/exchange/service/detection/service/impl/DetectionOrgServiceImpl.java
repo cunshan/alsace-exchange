@@ -95,7 +95,7 @@ public class DetectionOrgServiceImpl extends AbstractBaseServiceImpl<DetectionOr
     likeSet.add("orgAddress");
     likeSet.add("contacts");
     likeSet.add("tel");
-    Specification<DetectionOrg> spec = JpaHelper.buildConditions(param.getParam(), likeSet, new AlsaceOrderBy(OrderByEnum.DESC, Arrays.asList("parentOrgCode","createdDate")));
+    Specification<DetectionOrg> spec = JpaHelper.buildConditions(param.getParam(), likeSet, new AlsaceOrderBy(OrderByEnum.ASC, Arrays.asList("orgCode","createdDate")));
     return new PageResult<>(getJpaSpecificationExecutor().findAll(spec, AlsacePageHelper.page(param)));
   }
 }

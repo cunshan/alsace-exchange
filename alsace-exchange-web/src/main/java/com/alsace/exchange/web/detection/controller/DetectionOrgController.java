@@ -53,13 +53,19 @@ public class DetectionOrgController extends BaseController {
   @ApiOperation("检测机构保存")
   @PostMapping("/save")
   public AlsaceResult<DetectionOrg> save(@RequestBody DetectionOrg param) {
-    param.setOrgCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ORG_CODE));
+    //判断是否是二级维护 拼接父级编码
+    if(StringUtils.isNotBlank(param.getParentOrgCode())){
+      param.setOrgCode(param.getParentOrgCode()+"-"+orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ORG_CODE));
+    }else {
+      param.setOrgCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ORG_PARENT_CODE));
+    }
     return success(detectionOrgService.save(param));
   }
 
   @ApiOperation("检测机构分页查询")
   @PostMapping("/page")
   public AlsaceResult<PageResult<DetectionOrg>> page(@RequestBody PageParam<DetectionOrg> param) {
+    param.getParam().setDeleted(false);
     PageResult<DetectionOrg> page = detectionOrgService.findPage(param);
     return success(page);
   }
