@@ -26,12 +26,8 @@ public class DetectionOrgImport implements IExcelDataModel, IExcelModel, Seriali
   @Excel(name = "机构名称", isImportField = "true")
   private String orgName;
 
-  @ApiModelProperty(value = "机构编码")
-  @Excel(name = "机构编码", isImportField = "true")
-  private String orgCode;
-
   @ApiModelProperty(value = "机构类型")
-  @Excel(name = "机构类型", isImportField = "true")
+  @Excel(name = "机构类型（1：检测机构、2：被检测机构）", isImportField = "true")
   private String orgType;
 
   @ApiModelProperty(value = "机构地址")
