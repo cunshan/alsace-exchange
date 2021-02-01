@@ -71,6 +71,6 @@ public class BaseEntity implements Serializable {
     @Transient
     private List<CodeName> userDataList = new ArrayList<>();
     @Transient
-    private String loginAccount;
+    private String userDataAccount;
 
 }

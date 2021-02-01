@@ -13,7 +13,7 @@ public class SqlHelper {
 
   private static Pattern humpPattern = Pattern.compile("[A-Z]");
 
-  public static String getSelectHeader(Class source, String tableName) {
+  public static String getSelectHeader(Object source, String tableName) {
     if (!StringUtils.isBlank(tableName)) {
       tableName = tableName + ".";
     }
@@ -37,7 +37,10 @@ public class SqlHelper {
   }
 
   public static void main(String[] args){
-    System.out.println(SqlHelper.getSelectHeader(PersonTask.class,"t"));
+    System.out.println(SqlHelper.getSelectHeader(new PersonTask(),"t"));
   }
+
+
+
 
 }

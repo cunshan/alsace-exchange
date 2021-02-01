@@ -14,18 +14,18 @@ import java.util.Set;
 @Slf4j
 public class AlsaceBeanUtils extends BeanUtils {
 
-  public static void copyNotNullProperties(Object source,Object dest){
+  public static void copyNotNullProperties(Object source, Object dest) {
 
-    BeanUtils.copyProperties(source,dest,getNullPropertyNames(source));
+    BeanUtils.copyProperties(source, dest, getNullPropertyNames(source));
 
   }
 
-  public static String[] getNullPropertyNames (Object source) {
+  public static String[] getNullPropertyNames(Object source) {
     final BeanWrapper src = new BeanWrapperImpl(source);
     PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
     Set<String> emptyNames = new HashSet<>();
-    for(PropertyDescriptor pd : pds) {
+    for (PropertyDescriptor pd : pds) {
       Object srcValue = src.getPropertyValue(pd.getName());
       if (srcValue == null) emptyNames.add(pd.getName());
     }
@@ -37,12 +37,14 @@ public class AlsaceBeanUtils extends BeanUtils {
   /**
    * 获取类所有属性
    */
-  public static List<String> getAllPropertyNames(Class<Object> source){
+  public static List<String> getAllPropertyNames(Object source) {
     final BeanWrapper src = new BeanWrapperImpl(source);
     PropertyDescriptor[] pds = src.getPropertyDescriptors();
     List<String> propertyNames = new ArrayList<>();
-    for(PropertyDescriptor pd : pds) {
-      propertyNames.add(pd.getName());
+    for (PropertyDescriptor pd : pds) {
+      if (!"class".equalsIgnoreCase(pd.getName())) {
+        propertyNames.add(pd.getName());
+      }
     }
     return propertyNames;
   }
