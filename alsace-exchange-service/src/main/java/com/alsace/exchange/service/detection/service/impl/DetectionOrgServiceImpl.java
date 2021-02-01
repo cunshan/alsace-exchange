@@ -31,6 +31,7 @@ import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -99,7 +100,7 @@ public class DetectionOrgServiceImpl extends AbstractBaseServiceImpl<DetectionOr
     likeSet.add("orgAddress");
     likeSet.add("contacts");
     likeSet.add("tel");
-    Specification<DetectionOrg> spec = JpaHelper.buildConditions(param.getParam(), likeSet, new AlsaceOrderBy(OrderByEnum.DESC, Collections.singletonList("createDate")));
+    Specification<DetectionOrg> spec = JpaHelper.buildConditions(param.getParam(), likeSet, new AlsaceOrderBy(OrderByEnum.DESC, Arrays.asList("parentOrgCode","createdDate")));
     return new PageResult<>(getJpaSpecificationExecutor().findAll(spec, AlsacePageHelper.page(param)));
   }
 }
