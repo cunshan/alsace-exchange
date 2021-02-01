@@ -16,14 +16,14 @@ import com.alsace.exchange.service.sys.domain.User;
 import com.alsace.exchange.service.sys.domain.UserData;
 import com.alsace.exchange.service.sys.domain.UserImport;
 import com.alsace.exchange.service.sys.domain.UserRole;
-import com.alsace.exchange.service.sys.enums.OrderByEnum;
+import com.alsace.exchange.common.enums.OrderByEnum;
 import com.alsace.exchange.service.sys.excel.UserImportVerifyService;
 import com.alsace.exchange.service.sys.repositories.UserRepository;
 import com.alsace.exchange.service.sys.repositories.UserRoleRepository;
 import com.alsace.exchange.service.sys.service.UserDataService;
 import com.alsace.exchange.service.sys.service.UserService;
 import com.alsace.exchange.service.sys.specs.UserSpecs;
-import com.alsace.exchange.service.utils.JpaHelper;
+import com.alsace.exchange.common.utils.JpaHelper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
@@ -42,7 +42,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Service

@@ -1,6 +1,6 @@
-package com.alsace.exchange.service.utils;
+package com.alsace.exchange.common.utils;
 
-import com.alsace.exchange.service.sys.enums.OrderByEnum;
+import com.alsace.exchange.common.enums.OrderByEnum;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.DirectFieldAccessFallbackBeanWrapper;
