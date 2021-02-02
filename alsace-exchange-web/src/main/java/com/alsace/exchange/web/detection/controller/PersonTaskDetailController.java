@@ -12,24 +12,20 @@ import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
-import com.alsace.exchange.service.detection.service.PdfService;
 import com.alsace.exchange.web.utils.ExportUtil;
 import com.google.common.collect.Lists;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.pdf.PdfWriter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.Document;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -62,6 +58,13 @@ public class PersonTaskDetailController extends BaseController {
   @ApiOperation("人员检测任务明细保存")
   @PostMapping("/save")
   public AlsaceResult<PersonTaskDetail> save(@RequestBody PersonTaskDetail param) {
+    //判断身份证号 是否重复
+    PersonTaskDetail personTaskDetail = new PersonTaskDetail();
+    personTaskDetail.setTaskCode(param.getTaskCode());
+    personTaskDetail.setIdCardNo(param.getIdCardNo());
+    personTaskDetail.setDeleted(false);
+    personTaskDetail =personTaskDetailService.findOne(personTaskDetail);
+    Assert.notNull(personTaskDetail, "身份证号："+param.getIdCardNo()+"已经存在，请检查后重新导入！");
     String detailCode =orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE);
     param.setDetailCode(detailCode);
     param.setDetailStatus(TaskDetailStatus.INIT.status());

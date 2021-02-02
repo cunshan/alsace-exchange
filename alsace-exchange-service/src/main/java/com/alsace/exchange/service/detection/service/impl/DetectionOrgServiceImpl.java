@@ -17,6 +17,8 @@ import com.alsace.exchange.service.detection.domain.DetectionOrgImport;
 import com.alsace.exchange.service.detection.excel.DetectionOrgVerifyService;
 import com.alsace.exchange.service.detection.repositories.DetectionOrgRepository;
 import com.alsace.exchange.service.detection.service.DetectionOrgService;
+import com.alsace.exchange.service.utils.OrderNoGenerator;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,6 +42,8 @@ public class DetectionOrgServiceImpl extends AbstractBaseServiceImpl<DetectionOr
   private DetectionOrgRepository detectionOrgRepository;
   @Resource
   private DetectionOrgVerifyService detectionOrgVerifyService;
+  @Resource
+  private OrderNoGenerator orderNoGenerator;
 
 
   @Override
@@ -76,6 +80,8 @@ public class DetectionOrgServiceImpl extends AbstractBaseServiceImpl<DetectionOr
         detectionOrg.setId(IdUtils.id());
         detectionOrg.setParentOrgCode(orgCode);
         detectionOrg.setParentOrgName(orgName);
+        //拼接父级编码
+        detectionOrg.setOrgCode(orgCode+"-"+orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ORG_CODE));
         detectionOrg.setCreatedBy(loginInfoProvider.loginAccount());
         detectionOrg.setCreatedDate(new Date());
         detectionOrg.setDeleted(false);

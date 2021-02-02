@@ -15,9 +15,6 @@ public class DetectionOrgVerifyService implements IExcelVerifyHandler<DetectionO
 
     @Override
     public ExcelVerifyHandlerResult verifyHandler(DetectionOrgImport detectionOrg) {
-        if (StringUtils.isBlank(detectionOrg.getOrgCode())) {
-            return new ExcelVerifyHandlerResult(false, "机构编码不能为空！");
-        }
         if (StringUtils.isBlank(detectionOrg.getOrgName())) {
             return new ExcelVerifyHandlerResult(false, "机构名称不能为空！");
         }

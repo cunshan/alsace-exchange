@@ -51,7 +51,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonTaskDetail> implements PersonTaskDetailService {
@@ -128,6 +127,12 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
       List<PersonTaskDetail> personTaskDetails = new ArrayList<>();
       importResult.getList().forEach(personTaskDetailImport -> {
         PersonTaskDetail personTaskDetail = new PersonTaskDetail();
+        personTaskDetail.setTaskCode(taskCode);
+        personTaskDetail.setIdCardNo(personTaskDetailImport.getIdCardNo());
+        personTaskDetail.setDeleted(false);
+        //判断身份证号 是否重复
+        personTaskDetail =this.findOne(personTaskDetail);
+        Assert.notNull(personTaskDetail, "身份证号："+personTaskDetailImport.getIdCardNo()+"已经存在，请检查后重新导入！");
         BeanUtils.copyProperties(personTaskDetailImport, personTaskDetail);
         personTaskDetail.setId(IdUtils.id());
         personTaskDetail.setTaskCode(taskCode);
