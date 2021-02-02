@@ -77,7 +77,7 @@ public class EnvironmentTaskDetailController extends BaseController {
   @RequestMapping("/downTemplate")
   public void downTemplate(HttpServletResponse response)  {
     List<PersonTaskDetailImport> list = Lists.newArrayList();
-    Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("被检测环境信息导入模板", "被检测人员"), EnvironmentTaskDetailImport.class, list);
+    Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("被检测环境信息导入模板", "被检测环境信息"), EnvironmentTaskDetailImport.class, list);
     try(OutputStream out = response.getOutputStream()) {
       response.setContentType("application/ms-excel;charset=UTF-8");
       response.setHeader("Content-Disposition", "attachment;filename="
