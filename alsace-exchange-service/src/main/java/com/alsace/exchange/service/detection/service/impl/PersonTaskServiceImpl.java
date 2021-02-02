@@ -126,11 +126,11 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     queryUserData.setLoginAccount(loginAccount).setDeleted(false);
     List<UserData> userDataList = userDataService.findAll(queryUserData);
     List<CodeName> codeNames = new ArrayList<>(userDataList.size());
-    userDataList.forEach(userData->codeNames.add(new CodeName(userData.getDataCode(),userData.getDataLabel())));
+    userDataList.forEach(userData -> codeNames.add(new CodeName(userData.getDataCode(), userData.getDataLabel())));
     taskParam.setUserDataList(codeNames);
     PageInfo<PersonTask> pageInfo =
-        PageHelper.startPage(param.getPageNum(),param.getPageSize())
-            .doSelectPageInfo(()->personTaskMapper.findPage(taskParam));
+        PageHelper.startPage(param.getPageNum(), param.getPageSize())
+            .doSelectPageInfo(() -> personTaskMapper.findPage(taskParam));
     return new PageResult<>(pageInfo);
   }
 
@@ -269,8 +269,8 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     boolean checkDetail = PersonTaskDetectionType.NOT_ALL.status().equals(task.getDetectionType());
     if (checkDetail) {
       //非全民检测
-     saveNotAll(param);
-    }else {
+      saveNotAll(param);
+    } else {
       //全民检测
       saveAll(param);
     }
@@ -281,7 +281,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     PersonTaskDetail detailQuery = new PersonTaskDetail();
     detailQuery.setTaskCode(param.getTaskCode()).setIdCardNo(param.getIdCardNo()).setDeleted(true);
     PersonTaskDetail dbDetail = personTaskDetailService.findOne(detailQuery);
-    Assert.notNull(dbDetail,"该身份证对应检测明细已经存在！");
+    Assert.notNull(dbDetail, "该身份证对应检测明细已经存在！");
     //全民检测 直接添加检测明细
     param.setDetailCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE));
     param.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
@@ -343,6 +343,24 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
       setModifyInfo(task);
     });
     this.personTaskRepository.saveAll(taskList);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void updateResultBatch(List<String> taskCodeList, Boolean positive) {
+    //校验任务状态必须为进行中的
+    taskCodeList.forEach(taskCode -> {
+      PersonTask queryTask = new PersonTask();
+      queryTask.setTaskCode(taskCode).setDeleted(false);
+      PersonTask task = this.findOne(queryTask);
+      Assert.state(TaskStatus.PROCESSING.status().equals(task.getTaskStatus()), String.format("任务【%s】不是进行中的任务，不能提交检测结果！", taskCode));
+      task.setTaskStatus(TaskStatus.COMPLETED.status());
+      setModifyInfo(task);
+      personTaskRepository.saveAndFlush(task);
+    });
+    //更新所有没有提交的检测结果
+    personTaskDetailService.updateResultBatch(taskCodeList,positive);
+
   }
 
 }
