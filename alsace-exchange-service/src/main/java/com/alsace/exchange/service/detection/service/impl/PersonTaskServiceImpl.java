@@ -268,29 +268,20 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     Assert.state(dbLocation != null, "地点不存在！");
     boolean checkDetail = PersonTaskDetectionType.NOT_ALL.status().equals(task.getDetectionType());
     if (checkDetail) {
-      //校验提交的被检测人信息是否是在检测范围内
-      PersonTaskDetail detailQuery = new PersonTaskDetail();
-      detailQuery.setTaskCode(param.getTaskCode()).setIdCardNo(param.getIdCardNo()).setDeleted(false);
-      PersonTaskDetail dbDetail = personTaskDetailService.findOne(detailQuery);
-      if (dbDetail == null) {
-        throw new AlsaceException(String.format("身份证号：%s 不在当前任务检测范围之内！", param.getIdCardNo()));
-      }
-      if (TaskDetailStatus.SUBMITTED.status().equals(dbDetail.getDetailStatus())) {
-        throw new AlsaceException("当前检测信息已提交！");
-      }
-      //更新明细
-      param.setId(dbDetail.getId());
-      param.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
-      personTaskDetailService.update(param);
-      //添加试管信息
-      List<PersonTaskDetailResult> resultList = param.getDetailResultList();
-      resultList.forEach(result ->
-          result.setDetailCode(dbDetail.getDetailCode())
-              .setTaskCode(dbDetail.getTaskCode())
-              .setResultStatus(TaskDetailResultStatus.INIT.status()));
-      personTaskDetailService.saveResult(resultList);
-      return;
+      //非全民检测
+     saveNotAll(param);
+    }else {
+      //全民检测
+      saveAll(param);
     }
+  }
+
+  private void saveAll(PersonTaskDetail param) {
+    //按照身份证校验重复
+    PersonTaskDetail detailQuery = new PersonTaskDetail();
+    detailQuery.setTaskCode(param.getTaskCode()).setIdCardNo(param.getIdCardNo()).setDeleted(true);
+    PersonTaskDetail dbDetail = personTaskDetailService.findOne(detailQuery);
+    Assert.notNull(dbDetail,"该身份证对应检测明细已经存在！");
     //全民检测 直接添加检测明细
     param.setDetailCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE));
     param.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
@@ -300,6 +291,33 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     resultList.forEach(result ->
         result.setDetailCode(param.getDetailCode())
             .setTaskCode(param.getTaskCode())
+            .setResultStatus(TaskDetailResultStatus.INIT.status()));
+    personTaskDetailService.saveResult(resultList);
+  }
+
+  /**
+   * 保存非全民检测
+   */
+  private void saveNotAll(PersonTaskDetail param) {
+    //校验提交的被检测人信息是否是在检测范围内
+    PersonTaskDetail detailQuery = new PersonTaskDetail();
+    detailQuery.setTaskCode(param.getTaskCode()).setIdCardNo(param.getIdCardNo()).setDeleted(false);
+    PersonTaskDetail dbDetail = personTaskDetailService.findOne(detailQuery);
+    if (dbDetail == null) {
+      throw new AlsaceException(String.format("身份证号：%s 不在当前任务检测范围之内！", param.getIdCardNo()));
+    }
+    if (TaskDetailStatus.SUBMITTED.status().equals(dbDetail.getDetailStatus())) {
+      throw new AlsaceException("当前检测信息已提交！");
+    }
+    //更新明细
+    param.setId(dbDetail.getId());
+    param.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
+    personTaskDetailService.update(param);
+    //添加试管信息
+    List<PersonTaskDetailResult> resultList = param.getDetailResultList();
+    resultList.forEach(result ->
+        result.setDetailCode(dbDetail.getDetailCode())
+            .setTaskCode(dbDetail.getTaskCode())
             .setResultStatus(TaskDetailResultStatus.INIT.status()));
     personTaskDetailService.saveResult(resultList);
   }
