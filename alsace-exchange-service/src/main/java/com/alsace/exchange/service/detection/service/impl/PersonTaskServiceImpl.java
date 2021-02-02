@@ -2,14 +2,12 @@ package com.alsace.exchange.service.detection.service.impl;
 
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
-import com.alsace.exchange.common.base.AlsacePageHelper;
 import com.alsace.exchange.common.base.CodeName;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.AlsaceBeanUtils;
-import com.alsace.exchange.common.utils.JsonUtils;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
@@ -38,9 +36,7 @@ import com.alsace.exchange.service.sys.service.UserDataService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.gson.reflect.TypeToken;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
@@ -124,7 +120,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   public PageResult<PersonTask> findPage(PageParam<PersonTask> param) {
     PersonTask taskParam = param.getParam();
     String loginAccount = getLoginAccount();
-    taskParam.setLoginAccount(loginAccount);
+    taskParam.setUserDataAccount(loginAccount);
     //查询出当前人的数据权限
     UserData queryUserData = new UserData();
     queryUserData.setLoginAccount(loginAccount).setDeleted(false);

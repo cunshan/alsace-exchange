@@ -69,7 +69,7 @@
                 </foreach>)
             </when>
           <otherwise>
-              and T.created_by = #{param.loginAccount}
+              and T.created_by = #{param.userDataAccount}
           </otherwise>
         </choose>
     </select>
@@ -144,7 +144,7 @@
                 </foreach>)
             </when>
             <otherwise>
-                and T.created_by = #{param.loginAccount}
+                and T.created_by = #{param.userDataAccount}
             </otherwise>
         </choose>
     </select>

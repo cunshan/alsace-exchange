@@ -5,13 +5,16 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
+import com.alsace.exchange.common.base.AlsaceOrderBy;
 import com.alsace.exchange.common.base.AlsacePageHelper;
 import com.alsace.exchange.common.base.LoginInfoProvider;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.enums.AutoFillType;
+import com.alsace.exchange.common.enums.OrderByEnum;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.IdUtils;
+import com.alsace.exchange.common.utils.JpaHelper;
 import com.alsace.exchange.service.sys.domain.User;
 import com.alsace.exchange.service.sys.domain.UserData;
 import com.alsace.exchange.service.sys.domain.UserImport;
@@ -36,9 +39,11 @@ import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements UserService {
@@ -167,12 +172,13 @@ public class UserServiceImpl extends AbstractBaseServiceImpl<User> implements Us
 
   @Override
   public PageResult<User> findPage(PageParam<User> param) {
-    if (param.getParam() == null) {
-      throw new AlsaceException("参数对象为空！");
-    }
+    Assert.notNull(param.getParam(),"参数对象为空！");
     param.getParam().setDeleted(false);
     User user = param.getParam();
-    Specification<User> specification = UserSpecs.build(user);
+    Set<String> likeSet = new HashSet<>();
+    likeSet.add("userName");
+    likeSet.add("nickName");
+    Specification<User> specification = JpaHelper.buildConditions(user, likeSet, new AlsaceOrderBy(OrderByEnum.DESC, Collections.singletonList("createdDate")));
     return new PageResult<>(getJpaSpecificationExecutor().findAll(specification, AlsacePageHelper.page(param)));
   }
 }

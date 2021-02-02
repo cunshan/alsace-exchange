@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonTaskDetail> implements PersonTaskDetailService {
@@ -173,7 +174,7 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   public PageResult<PersonTaskDetail> findResultPage(PageParam<PersonTaskDetail> param) {
     PersonTaskDetail personTaskDetail = param.getParam();
     String loginAccount = getLoginAccount();
-    personTaskDetail.setLoginAccount(loginAccount);
+    personTaskDetail.setUserDataAccount(loginAccount);
     //查询出当前人的数据权限
     UserData queryUserData = new UserData();
     queryUserData.setLoginAccount(loginAccount).setDeleted(false);
@@ -190,7 +191,7 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   @Override
   public List<PersonTaskDetailImport> findResults(PersonTaskDetail param) {
     String loginAccount = getLoginAccount();
-    param.setLoginAccount(loginAccount);
+    param.setUserDataAccount(loginAccount);
     //查询出当前人的数据权限
     UserData queryUserData = new UserData();
     queryUserData.setLoginAccount(loginAccount).setDeleted(false);
