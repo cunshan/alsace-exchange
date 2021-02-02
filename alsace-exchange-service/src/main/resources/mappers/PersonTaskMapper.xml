@@ -60,6 +60,7 @@
               and t.created_by = #{param.userDataAccount}
           </otherwise>
         </choose>
+        order by t.created_date desc,t.modified_date desc
     </select>
 
     <select id="selectAppTaskList" resultType="com.alsace.exchange.service.detection.domain.PersonTaskApp">
