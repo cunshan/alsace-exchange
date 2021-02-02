@@ -29,13 +29,12 @@ public class OrderNoGenerator {
     String dateStr = type.dateFormat.format(new Date());
     // 构造redis的key
     String key = REDIS_PREFIX + dateStr + "_" + type.prefix;
-    // 判断key是否存在
-    Boolean exists = redisClient.hasKey(key);
     Long incr = redisClient.opsForValue().increment(key);
     // 设置过期时间
-    if (exists == null || !exists) {
+    if (incr.intValue() == 1L) {
+      //说明原来不存在  第一次保存
       // 构造redis过期时间 UnixMillis
-      // 设置过期时间为当前时间的最后一秒
+      // 设置过期时间为当前时间的后一天避免单号被重置
       long expire = this.offsetTime(type);
       redisClient.expire(key, expire, TimeUnit.MILLISECONDS);
     }
@@ -54,7 +53,7 @@ public class OrderNoGenerator {
       case "yyMM":
         return this.offsetTimeMonth();
       case "yyMMdd":
-        return this.offsetTimeToday();
+        return 3600*24*1000L;
       default:
         throw new RuntimeException("时间格式匹配错误");
     }
@@ -63,31 +62,11 @@ public class OrderNoGenerator {
   }
 
   private long offsetTimeMonth() {
-    // 当前月最后一天的23:59:59 9999
+    // 下个月1号跟当前时间的差值
     Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-    calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-    commOffsetTime(calendar);
+    calendar.add(Calendar.MONTH,1);
+    calendar.set(Calendar.DAY_OF_MONTH,1);
     return calendar.getTimeInMillis() - new Date().getTime();
-  }
-
-  /**
-   * 当前时间 与 当前天最后一秒 时间差
-   */
-  private long offsetTimeToday() {
-    // 当天的23:59:59 9999
-    Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-    commOffsetTime(calendar);
-    return calendar.getTimeInMillis() - new Date().getTime();
-  }
-
-  /**
-   * 通用配置
-   */
-  private void commOffsetTime(Calendar calendar) {
-    calendar.set(Calendar.HOUR, calendar.getActualMaximum(Calendar.HOUR));
-    calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
-    calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
-    calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
   }
 
   @Getter
