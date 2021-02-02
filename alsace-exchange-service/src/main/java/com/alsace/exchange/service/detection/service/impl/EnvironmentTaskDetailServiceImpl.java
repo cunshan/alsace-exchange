@@ -5,6 +5,9 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
+import com.alsace.exchange.common.base.CodeName;
+import com.alsace.exchange.common.base.PageParam;
+import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.constants.Constants;
 import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.exception.AlsaceException;
@@ -13,15 +16,26 @@ import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailResult;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskTag;
-import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
-import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
+import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
+import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailImport;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.excel.EnvironmentTaskDetailVerifyService;
+import com.alsace.exchange.service.detection.mapper.EnvironmentTaskDetailMapper;
+import com.alsace.exchange.service.detection.mapper.PersonTaskDetailMapper;
 import com.alsace.exchange.service.detection.repositories.EnvironmentTaskDetailRepository;
 import com.alsace.exchange.service.detection.repositories.EnvironmentTaskDetailResultRepository;
 import com.alsace.exchange.service.detection.repositories.EnvironmentTaskTagRepository;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskDetailService;
+import com.alsace.exchange.service.sys.domain.UserData;
+import com.alsace.exchange.service.sys.service.UserDataService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
+import com.alsace.exchange.service.utils.PdfUtils;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,6 +46,8 @@ import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +68,10 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
   private OrderNoGenerator orderNoGenerator;
   @Resource
   private EnvironmentTaskTagRepository environmentTaskTagRepository;
+  @Resource
+  private EnvironmentTaskDetailMapper environmentTaskDetailMapper;
+  @Resource
+  private UserDataService userDataService;
 
   @Override
   protected JpaRepository<EnvironmentTaskDetail, Long> getJpaRepository() {
@@ -156,5 +176,71 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
     } catch (Exception e) {
       throw new AlsaceException("导入被检测环境数据异常！" + e.getMessage());
     }
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public PageResult<EnvironmentTaskDetail> findResultPage(PageParam<EnvironmentTaskDetail> param) {
+    EnvironmentTaskDetail environmentTaskDetail = param.getParam();
+    String loginAccount = getLoginAccount();
+    environmentTaskDetail.setUserDataAccount(loginAccount);
+    //查询出当前人的数据权限
+    UserData queryUserData = new UserData();
+    queryUserData.setLoginAccount(loginAccount).setDeleted(false);
+    List<UserData> userDataList = userDataService.findAll(queryUserData);
+    List<CodeName> codeNames = new ArrayList<>(userDataList.size());
+    userDataList.forEach(userData->codeNames.add(new CodeName(userData.getDataCode(),userData.getDataLabel())));
+    environmentTaskDetail.setUserDataList(codeNames);
+    PageInfo<EnvironmentTaskDetail> pageInfo =
+            PageHelper.startPage(param.getPageNum(),param.getPageSize())
+                    .doSelectPageInfo(()->environmentTaskDetailMapper.findResultPage(environmentTaskDetail));
+    return new PageResult<>(pageInfo);
+  }
+
+  @Override
+  public List<EnvironmentTaskDetailImport> findResults(EnvironmentTaskDetail param) {
+    String loginAccount = getLoginAccount();
+    param.setUserDataAccount(loginAccount);
+    //查询出当前人的数据权限
+    UserData queryUserData = new UserData();
+    queryUserData.setLoginAccount(loginAccount).setDeleted(false);
+    List<UserData> userDataList = userDataService.findAll(queryUserData);
+    List<CodeName> codeNames = new ArrayList<>(userDataList.size());
+    userDataList.forEach(userData->codeNames.add(new CodeName(userData.getDataCode(),userData.getDataLabel())));
+    param.setUserDataList(codeNames);
+    return environmentTaskDetailMapper.findResults(param);
+  }
+
+  @Override
+  public ByteArrayOutputStream convertReceivePdf(String taskCode) throws IOException, DocumentException {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    //设值字体样式
+    BaseFont bf = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
+    Font fontBold = new Font(bf, 11, Font.BOLD);
+    Font font2 = new Font(bf, 11, Font.NORMAL);
+    // 页面大小
+    Rectangle tRectangle = new Rectangle(PageSize.A4);
+    // 定义文档
+    Document doc = new Document(tRectangle, 20, 20, 20, 20);
+    // 书写器
+    PdfWriter writer = PdfWriter.getInstance(doc, out);
+    //版本(默认1.4)
+    writer.setPdfVersion(PdfWriter.PDF_VERSION_1_2);
+    PdfPTable table = new PdfPTable(5);
+    table.setTotalWidth(new float[]{100, 100, 100, 100, 100});
+    //添加PDF标题内容
+    PdfUtils.addPdfTitle(table, fontBold,"检测结果导出");
+    EnvironmentTaskDetail EnvironmentTaskDetail =new EnvironmentTaskDetail();
+    EnvironmentTaskDetail.setTaskCode(taskCode);
+    List<EnvironmentTaskDetailImport> details = this.findResults(EnvironmentTaskDetail);
+    //添加导出信息
+    PdfUtils.addEnvPdfTable(table, fontBold, font2, details);
+    //打开文档
+    doc.open();
+    //添加img
+    doc.add(table);
+    //记得关闭document
+    doc.close();
+    return out;
   }
 }

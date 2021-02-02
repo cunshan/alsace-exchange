@@ -151,7 +151,10 @@ public class PersonTaskDetailController extends BaseController {
     try{
       ByteArrayOutputStream outputStream=personTaskDetailService.convertReceivePdf(taskCode);
       response.setContentType(response.getContentType());
-      response.setHeader("Content-Disposition","attachment; filename=" + URLEncoder.encode( "测试.pdf", "UTF-8"));
+      LocalDateTime time=LocalDateTime.now();
+      DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      String pdfName="人员检测结果"+time.format(pattern)+".pdf";
+      response.setHeader("Content-Disposition","attachment; filename=" + URLEncoder.encode( pdfName, "UTF-8"));
       byte[] bytes = outputStream.toByteArray();
       BufferedOutputStream bos = null;
       bos = new BufferedOutputStream(response.getOutputStream());
