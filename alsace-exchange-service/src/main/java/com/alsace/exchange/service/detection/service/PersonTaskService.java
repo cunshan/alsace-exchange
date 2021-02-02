@@ -69,4 +69,8 @@ public interface PersonTaskService extends BaseService<PersonTask,Long> {
    */
   void assign(List<String> taskCodeList);
 
+  /**
+   * 批量更新任务结果
+   */
+  void updateResultBatch(List<String> taskCodeList, Boolean positive);
 }
