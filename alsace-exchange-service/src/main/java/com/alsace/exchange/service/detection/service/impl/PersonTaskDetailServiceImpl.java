@@ -132,7 +132,7 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
         personTaskDetail.setDeleted(false);
         //判断身份证号 是否重复
         personTaskDetail =this.findOne(personTaskDetail);
-        Assert.notNull(personTaskDetail, "身份证号："+personTaskDetailImport.getIdCardNo()+"已经存在，请检查后重新导入！");
+        Assert.isNull(personTaskDetail, "身份证号："+personTaskDetailImport.getIdCardNo()+"已经存在，请检查后重新导入！");
         BeanUtils.copyProperties(personTaskDetailImport, personTaskDetail);
         personTaskDetail.setId(IdUtils.id());
         personTaskDetail.setTaskCode(taskCode);
