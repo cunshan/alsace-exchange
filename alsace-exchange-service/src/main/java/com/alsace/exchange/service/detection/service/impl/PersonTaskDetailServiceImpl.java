@@ -3,8 +3,6 @@ package com.alsace.exchange.service.detection.service.impl;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
 import com.alsace.exchange.common.base.CodeName;
@@ -23,24 +21,19 @@ import com.alsace.exchange.service.detection.excel.PersonTaskDetailVerifyService
 import com.alsace.exchange.service.detection.mapper.PersonTaskDetailMapper;
 import com.alsace.exchange.service.detection.repositories.PersonTaskDetailRepository;
 import com.alsace.exchange.service.detection.repositories.PersonTaskDetailResultRepository;
-import com.alsace.exchange.service.detection.service.PdfService;
 import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.sys.domain.UserData;
 import com.alsace.exchange.service.sys.service.UserDataService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
+import com.alsace.exchange.service.utils.PdfUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.BeanUtils;
@@ -51,13 +44,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -229,15 +219,13 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
     writer.setPdfVersion(PdfWriter.PDF_VERSION_1_2);
     PdfPTable table = new PdfPTable(5);
     table.setTotalWidth(new float[]{100, 100, 100, 100, 100});
-    //添加表格内容
     //添加PDF标题内容
-    this.addPdfTitle(table, fontBold);
+    PdfUtils.addPdfTitle(table, fontBold,"检测结果导出");
     PersonTaskDetail personTaskDetail =new PersonTaskDetail();
     personTaskDetail.setTaskCode(taskCode);
     List<PersonTaskDetailImport> details = this.findResults(personTaskDetail);
     //添加导出信息
-    addPdfTable(table, fontBold, font2, details);
-
+    PdfUtils.addPdfTable(table, fontBold, font2, details);
     //打开文档
     doc.open();
     //添加img
@@ -245,43 +233,5 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
     //记得关闭document
     doc.close();
     return out;
-  }
-  private static void addPdfTable(PdfPTable table, Font fontBold, Font font2, List<PersonTaskDetailImport> details) {
-    table.addCell(PdfService.getPDFCell("姓名", fontBold, true));
-    table.addCell(PdfService.getPDFCell("身份证", fontBold, true));
-    table.addCell(PdfService.getPDFCell("采样管码", fontBold, true));
-    table.addCell(PdfService.getPDFCell("检测时间", fontBold, true));
-    table.addCell(PdfService.getPDFCell("检测结果", fontBold, true));
-    details.forEach(detail -> {
-      table.addCell(PdfService.getPDFCell(detail.getPersonName(), font2, false));
-      table.addCell(PdfService.getPDFCell(detail.getIdCardNo(), font2, false));
-      table.addCell(PdfService.getPDFCell(detail.getPersonName(), font2, false));
-      table.addCell(PdfService.getPDFCell(detail.getIdCardNo(), font2, false));
-      table.addCell(PdfService.getPDFCell(detail.getPersonName(), font2, false));
-//            table.addCell(PdfUtils.getPDFCell(String.valueOf(detail.getCnyNoTaxAmount()), font2, false));
-//            //税额 = 金额 * 税率
-//            table.addCell(PdfUtils.getPDFCell(String.valueOf(detail.getCnyTaxAmount()), font2, false));
-    });
-  }
-  private void addPdfTitle(PdfPTable table, Font fontBold) {
-    //中间部分填充
-    PdfPCell cell = this.mergeCol("检测结果导出", fontBold, 5, false);
-    cell.disableBorderSide(15);
-    table.addCell(cell);
-  }
-
-  //合并列的静态函数
-  public static PdfPCell mergeCol(String str, Font font, int i, Boolean isBgColor) {
-    PdfPCell cell = new PdfPCell(new Paragraph(str, font));
-    //设置背景颜色为浅灰
-    if (isBgColor) {
-      cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-    }
-    cell.setMinimumHeight(25);
-    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-    cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-    //将该单元格所在行包括该单元格在内的i列单元格合并为一个单元格
-    cell.setColspan(i);
-    return cell;
   }
 }
