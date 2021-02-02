@@ -64,7 +64,7 @@ public class PersonTaskDetailController extends BaseController {
     personTaskDetail.setIdCardNo(param.getIdCardNo());
     personTaskDetail.setDeleted(false);
     personTaskDetail =personTaskDetailService.findOne(personTaskDetail);
-    Assert.notNull(personTaskDetail, "身份证号："+param.getIdCardNo()+"已经存在，请检查后重新导入！");
+    Assert.isNull(personTaskDetail, "身份证号："+param.getIdCardNo()+"已经存在，请检查后重新录入！");
     String detailCode =orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE);
     param.setDetailCode(detailCode);
     param.setDetailStatus(TaskDetailStatus.INIT.status());

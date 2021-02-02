@@ -46,7 +46,7 @@ public class PersonTask extends BaseEntity {
   private String taskName;
 
   @ApiModelProperty(value = "任务描述", required = true)
-  @Column(columnDefinition = "varchar(255) not null comment '任务描述'")
+  @Column(columnDefinition = "text not null comment '任务描述'")
   @NotBlank(groups = {Create.class}, message = "任务描述为空!")
   private String taskDesc;
 
