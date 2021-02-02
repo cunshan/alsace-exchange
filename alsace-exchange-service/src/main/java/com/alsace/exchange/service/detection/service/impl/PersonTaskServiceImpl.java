@@ -171,7 +171,6 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   @Override
   @Transactional(rollbackFor = {Exception.class})
   public void addOperators(String taskCode, List<PersonTaskOperator> operatorList) {
-    //TODO 当前时间>=开始时间时，停止被检测人员名单的提交
     //校验任务状态
     PersonTask taskParam = new PersonTask();
     taskParam.setTaskCode(taskCode).setDeleted(false);

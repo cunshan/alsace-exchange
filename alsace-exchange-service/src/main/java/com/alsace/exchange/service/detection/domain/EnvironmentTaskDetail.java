@@ -96,5 +96,10 @@ public class EnvironmentTaskDetail extends BaseEntity {
 
   @Transient
   private List<EnvironmentTaskDetailResult> detailResultList;
+  /**
+   * 标签名称 用于导入
+   */
+  @Transient
+  private String tagName;
 
 }

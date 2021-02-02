@@ -115,14 +115,6 @@ public class PersonTaskDetail extends BaseEntity {
   @Column(columnDefinition = "varchar(128) comment '归属市'")
   private String city;
 
-  @ApiModelProperty(value = "采样管编码")
-  @Column(columnDefinition = "varchar(128) comment '采样管编码'")
-  private String testTubeNo;
-
-  @ApiModelProperty(value = "是否阳性")
-  @Column(columnDefinition = "tinyint(1) comment '是否阳性'")
-  private Boolean positive;
-
   @ApiModelProperty(value = "明细状态 10:创建 20:已提交")
   @Column(columnDefinition = "int(2) not null default 10 comment '明细状态 10:创建 20:已提交'")
   private Integer detailStatus;

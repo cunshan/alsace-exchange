@@ -36,12 +36,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -79,20 +77,13 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
   @Override
   @Transactional(rollbackFor = {Exception.class})
   @AutoFill(AutoFillType.CREATE)
-  public EnvironmentTask save(EnvironmentTask task, List<EnvironmentTaskOrg> orgList, List<EnvironmentTaskTag> locationList) {
+  public EnvironmentTask save(EnvironmentTask task, List<EnvironmentTaskOrg> orgList) {
     Assert.notNull(task, "任务信息为空！");
     Assert.notEmpty(orgList, "检测机构为空！");
     String taskCode = orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ENVIRONMENT_TASK_CODE);
     //保存任务对应检测机构
     orgList.forEach(org -> org.setTaskCode(taskCode));
     environmentTaskOrgService.saveBatch(orgList);
-    //保存任务对应地点
-    if (CollectionUtils.isEmpty(locationList)) {
-      locationList = new ArrayList<>();
-    }
-    locationList.add(new EnvironmentTaskTag().setLocationName("无地点要求"));
-    locationList.forEach(location -> location.setTaskCode(taskCode));
-    environmentTaskTagService.saveBatch(locationList);
     //保存任务
     task.setTaskCode(taskCode);
     task.setTaskStatus(TaskStatus.INIT.status());
@@ -102,7 +93,7 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
   @Override
   @Transactional(rollbackFor = {Exception.class})
   @AutoFill(AutoFillType.UPDATE)
-  public EnvironmentTask update(EnvironmentTask task, List<EnvironmentTaskOrg> orgList, List<EnvironmentTaskTag> locationList) {
+  public EnvironmentTask update(EnvironmentTask task, List<EnvironmentTaskOrg> orgList) {
     Assert.hasLength(task.getTaskCode(), "任务编码为空！");
     Assert.notEmpty(orgList, "检测机构为空！");
     EnvironmentTask queryTask = new EnvironmentTask();
@@ -124,12 +115,6 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
       setCreateInfo(org);
     });
     environmentTaskOrgService.saveBatch(orgList);
-    //保存检测地点
-    locationList.forEach(location -> {
-      location.setTaskCode(task.getTaskCode());
-      setCreateInfo(location);
-    });
-    environmentTaskTagService.saveBatch(locationList);
     return task;
   }
 
