@@ -20,17 +20,15 @@ public interface EnvironmentTaskService extends BaseService<EnvironmentTask,Long
    * 保存人员检测任务
    * @param task 任务主要信息
    * @param orgList 任务检测机构
-   * @param locationList 任务地点
    */
-  EnvironmentTask save(@Validated(Create.class) EnvironmentTask task, @Validated(Create.class) List<EnvironmentTaskOrg> orgList, @Validated(Create.class) List<EnvironmentTaskTag> locationList);
+  EnvironmentTask save(@Validated(Create.class) EnvironmentTask task, @Validated(Create.class) List<EnvironmentTaskOrg> orgList);
 
   /**
    * 更新人员检测任务
    * @param task 任务主要信息
    * @param orgList 任务检测机构
-   * @param locationList 任务地点
    */
-  EnvironmentTask update(EnvironmentTask task, List<EnvironmentTaskOrg> orgList, List<EnvironmentTaskTag> locationList);
+  EnvironmentTask update(EnvironmentTask task, List<EnvironmentTaskOrg> orgList);
 
   /**
    * 检测任务添加检测人员

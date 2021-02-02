@@ -44,7 +44,7 @@ public class EnvironmentTaskController extends BaseController {
   @ApiOperation("环境监测任务保存")
   @PostMapping("/save")
   public AlsaceResult<EnvironmentTask> save(@RequestBody EnvironmentTaskVo param) {
-    return success(environmentTaskService.save(param.getTask(), param.getOrgList(), param.getTagList()));
+    return success(environmentTaskService.save(param.getTask(), param.getOrgList()));
   }
 
   @ApiOperation("环境监测任务分页查询")
@@ -57,7 +57,7 @@ public class EnvironmentTaskController extends BaseController {
   @ApiOperation("环境监测任务更新")
   @PostMapping("/update")
   public AlsaceResult<EnvironmentTask> update(@RequestBody EnvironmentTaskVo param) {
-    EnvironmentTask domain = environmentTaskService.update(param.getTask(), param.getOrgList(), param.getTagList());
+    EnvironmentTask domain = environmentTaskService.update(param.getTask(), param.getOrgList());
     return success(domain);
   }
 

@@ -12,15 +12,18 @@ import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailResult;
+import com.alsace.exchange.service.detection.domain.EnvironmentTaskTag;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.excel.EnvironmentTaskDetailVerifyService;
 import com.alsace.exchange.service.detection.repositories.EnvironmentTaskDetailRepository;
 import com.alsace.exchange.service.detection.repositories.EnvironmentTaskDetailResultRepository;
+import com.alsace.exchange.service.detection.repositories.EnvironmentTaskTagRepository;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskDetailService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
@@ -32,7 +35,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<EnvironmentTaskDetail> implements EnvironmentTaskDetailService {
@@ -45,6 +50,8 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
   private EnvironmentTaskDetailVerifyService environmentTaskDetailVerifyService;
   @Resource
   private OrderNoGenerator orderNoGenerator;
+  @Resource
+  private EnvironmentTaskTagRepository environmentTaskTagRepository;
 
   @Override
   protected JpaRepository<EnvironmentTaskDetail, Long> getJpaRepository() {
@@ -114,6 +121,12 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
         }
         throw new AlsaceException(sb.toString());
       }
+      //查询出任务下所有的标签
+      EnvironmentTaskTag queryTag = new EnvironmentTaskTag();
+      queryTag.setTaskCode(taskCode).setDeleted(false);
+      List<EnvironmentTaskTag> taskTags = environmentTaskTagRepository.findAll(Example.of(queryTag));
+      Map<String,EnvironmentTaskTag> tagMap = new HashMap<>();
+      taskTags.forEach(tag->tagMap.put(tag.getLocationName(),tag));
       List<EnvironmentTaskDetail> environmentTaskDetails = new ArrayList<>();
       importResult.getList().forEach(environmentTaskDetailImport -> {
         EnvironmentTaskDetail environmentTaskDetail = new EnvironmentTaskDetail();
@@ -126,6 +139,17 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
         environmentTaskDetail.setCreatedDate(new Date());
         environmentTaskDetail.setDeleted(false);
         environmentTaskDetail.setDetailStatus(TaskDetailStatus.INIT.status());
+        //设置标签
+        if(!tagMap.containsKey(environmentTaskDetailImport.getTagName())){
+          //如果在任务下不存在，保存并放到map里
+          EnvironmentTaskTag tag = new EnvironmentTaskTag();
+          tag.setTaskCode(taskCode).setLocationName(environmentTaskDetailImport.getTagName());
+          setCreateInfo(tag);
+          environmentTaskTagRepository.saveAndFlush(tag);
+          environmentTaskDetail.setTagId(tag.getId());
+        }else {
+          environmentTaskDetail.setTagId(tagMap.get(environmentTaskDetailImport.getTagName()).getId());
+        }
         environmentTaskDetails.add(environmentTaskDetail);
       });
       return environmentTaskDetailRepository.saveAll(environmentTaskDetails);
