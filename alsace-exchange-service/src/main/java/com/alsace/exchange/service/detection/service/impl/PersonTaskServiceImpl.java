@@ -295,6 +295,13 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     param.setDetailCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE));
     param.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
     personTaskDetailService.save(param);
+    //添加试管信息
+    List<PersonTaskDetailResult> resultList = param.getDetailResultList();
+    resultList.forEach(result ->
+        result.setDetailCode(param.getDetailCode())
+            .setTaskCode(param.getTaskCode())
+            .setResultStatus(TaskDetailResultStatus.INIT.status()));
+    personTaskDetailService.saveResult(resultList);
   }
 
   @Override
