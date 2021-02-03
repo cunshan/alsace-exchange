@@ -147,4 +147,8 @@ public class PersonTaskDetail extends BaseEntity {
   @ApiModelProperty(value = "任务结束时间", required = true)
   @Transient
   private Date endDate;
+
+  @ApiModelProperty(value = "试管编号")
+  @Transient
+  private String testTubeNo;
 }

@@ -31,12 +31,13 @@
             R.positive,
             R.test_tube_no testTubeNo,
             R.result_status resultStatus,
-            T.task_name taskName
+            T.task_name taskName,
+            D.form_code formCode
         FROM biz_person_task T
         inner join biz_person_task_detail D on D.task_code=T.task_code
         left join biz_person_task_detail_result R
-        on D.detail_code = R.detail_code
-        WHERE 1=1
+        on (D.detail_code = R.detail_code AND  R.deleted=0)
+        WHERE D.deleted=0
         <if test="param.taskCode !=null and param.taskCode !=''">
             and T.task_code = #{param.taskCode}
         </if>
@@ -106,12 +107,13 @@
         R.positive,
         R.test_tube_no testTubeNo,
         R.result_status resultStatus,
-        T.task_name taskName
+        T.task_name taskName,
+        D.form_code formCode
         FROM biz_person_task T
         inner join biz_person_task_detail D on D.task_code=T.task_code
         left join biz_person_task_detail_result R
-        on D.detail_code = R.detail_code
-        WHERE 1=1
+        on (D.detail_code = R.detail_code AND  R.deleted=0)
+        WHERE D.deleted=0
         <if test="param.taskCode !=null and param.taskCode !=''">
             and T.task_code = #{param.taskCode}
         </if>

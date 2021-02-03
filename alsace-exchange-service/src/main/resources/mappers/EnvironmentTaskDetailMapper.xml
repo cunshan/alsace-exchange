@@ -5,38 +5,31 @@
 <mapper namespace="com.alsace.exchange.service.detection.mapper.EnvironmentTaskDetailMapper">
     <select id="findResultPage" resultType="com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail">
         SELECT
-            D.address,
-            D.birthday,
-            D.city,
-            D.company_code companyCode,
-            D.company_name companyName,
-            D.detail_code detailCode,
-            D.tax_no taxNo,
-            D.form_code formCode,
-            D.gender,
-            D.id_card_no idCardNo,
-            D.job,
-            D.location_id locationId,
-            D.nation,
-            D.org_code orgCode,
-            D.person_name personName,
-            D.region,
-            D.task_code taskCode,
-            D.tel,
-            D.working,
-            D.detail_status detailStatus,
-            R.detail_code detailCode,
-            R.detail_type detailType,
-            R.pictures,
-            R.positive,
-            R.test_tube_no testTubeNo,
-            R.result_status resultStatus,
-            T.task_name taskName
-        FROM biz_person_task T
-        inner join biz_person_task_detail D on D.task_code=T.task_code
-        left join biz_person_task_detail_result R
-        on D.detail_code = R.detail_code
-        WHERE 1=1
+        D.address,
+        D.city,
+        D.company_code companyCode,
+        D.company_name companyName,
+        D.detail_code detailCode,
+        D.tax_code taxCode,
+        D.form_code formCode,
+        D.tag_id tagId,
+        D.tag_name tagName,
+        D.org_code orgCode,
+        D.task_code taskCode,
+        D.tel,
+        D.detail_status detailStatus,
+        R.detail_code detailCode,
+        R.detail_type detailType,
+        R.pictures,
+        R.positive,
+        R.test_tube_no testTubeNo,
+        R.result_status resultStatus,
+        T.task_name taskName
+        FROM biz_environment_task T
+        inner join biz_environment_task_detail D on D.task_code=T.task_code
+        left join biz_environment_task_detail_result R
+        on (D.detail_code = R.detail_code and R.deleted=0)
+        WHERE D.deleted=0
         <if test="param.taskCode !=null and param.taskCode !=''">
             and T.task_code = #{param.taskCode}
         </if>
@@ -54,11 +47,6 @@
         <if test="param.endDate !=null">
             <![CDATA[
             and T.end_date >= #{param.endDate}
-            ]]>
-        </if>
-        <if test="param.idCardNo !=null and param.idCardNo !=''">
-            <![CDATA[
-            and T.id_card_no >= #{param.idCardNo}
             ]]>
         </if>
         <choose>
@@ -78,27 +66,17 @@
     <select id="findResults" resultType="com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailImport">
         SELECT
         D.address,
-        D.birthday,
         D.city,
         D.company_code companyCode,
         D.company_name companyName,
         D.detail_code detailCode,
-        D.tax_no taxNo,
+        D.tax_code taxCode,
         D.form_code formCode,
-        case  D.gender
-        when 1 then '女'
-        when 0 then '男'
-        end gender,
-        D.id_card_no idCardNo,
-        D.job,
-        D.location_id locationId,
-        D.nation,
+        D.tag_id tagId,
+        D.tag_name tagName,
         D.org_code orgCode,
-        D.person_name personName,
-        D.region,
         D.task_code taskCode,
         D.tel,
-        D.working,
         D.detail_status detailStatus,
         R.detail_code detailCode,
         R.detail_type detailType,
@@ -107,11 +85,11 @@
         R.test_tube_no testTubeNo,
         R.result_status resultStatus,
         T.task_name taskName
-        FROM biz_person_task T
-        inner join biz_person_task_detail D on D.task_code=T.task_code
-        left join biz_person_task_detail_result R
-        on D.detail_code = R.detail_code
-        WHERE 1=1
+        FROM biz_environment_task T
+        inner join biz_environment_task_detail D on D.task_code=T.task_code
+        left join biz_environment_task_detail_result R
+        on (D.detail_code = R.detail_code and R.deleted=0)
+        WHERE D.deleted=0
         <if test="param.taskCode !=null and param.taskCode !=''">
             and T.task_code = #{param.taskCode}
         </if>
@@ -129,11 +107,6 @@
         <if test="param.endDate !=null">
             <![CDATA[
             and T.end_date >= #{param.endDate}
-            ]]>
-        </if>
-        <if test="param.idCardNo !=null and param.idCardNo !=''">
-            <![CDATA[
-            and T.id_card_no >= #{param.idCardNo}
             ]]>
         </if>
         <choose>

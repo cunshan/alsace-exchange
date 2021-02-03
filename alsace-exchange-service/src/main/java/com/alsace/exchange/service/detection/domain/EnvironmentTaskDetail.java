@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -101,6 +102,26 @@ public class EnvironmentTaskDetail extends BaseEntity {
   @ApiModelProperty(value = "标签名称")
   @Column(columnDefinition = "varchar(255) comment '标签名称'")
   private String tagName;
+
+  @ApiModelProperty(value = "试管编号")
+  @Transient
+  private String testTubeNo;
+
+  @ApiModelProperty(value = "任务名称")
+  @Transient
+  private String taskName;
+
+  @ApiModelProperty(value = "任务状态 10：已创建 20：待下发 30：已下发 40：待开始 50：进行中 60：已完成 70：取消", required = true)
+  @Transient
+  private Integer taskStatus;
+
+  @ApiModelProperty(value = "任务开始时间",required = true)
+  @Transient
+  private Date startDate;
+
+  @ApiModelProperty(value = "任务结束时间", required = true)
+  @Transient
+  private Date endDate;
 
   @Transient
   private List<EnvironmentTaskDetailResult> detailResultList;
