@@ -147,20 +147,18 @@ public class PersonTaskDetailController extends BaseController {
 
   @ApiOperation("人员检测结果PDF导出")
   @RequestMapping("/resultPdf")
-  public void resultPdf(HttpServletResponse response,@ApiParam(name = "任务编码", value = "taskCode", required = true) @RequestParam("taskCode") String taskCode){
+  public void resultPdf(HttpServletResponse response,@RequestBody PersonTaskDetail param){
     try{
-      ByteArrayOutputStream outputStream=personTaskDetailService.convertReceivePdf(taskCode);
+      ByteArrayOutputStream outputStream=personTaskDetailService.convertReceivePdf(param);
       response.setContentType(response.getContentType());
       LocalDateTime time=LocalDateTime.now();
       DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
       String pdfName="人员检测结果"+time.format(pattern)+".pdf";
       response.setHeader("Content-Disposition","attachment; filename=" + URLEncoder.encode( pdfName, "UTF-8"));
       byte[] bytes = outputStream.toByteArray();
-      BufferedOutputStream bos = null;
-      bos = new BufferedOutputStream(response.getOutputStream());
+      BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
       bos.write(bytes);
       bos.close();
-
     } catch (DocumentException e) {
       e.printStackTrace();
     } catch (IOException e) {

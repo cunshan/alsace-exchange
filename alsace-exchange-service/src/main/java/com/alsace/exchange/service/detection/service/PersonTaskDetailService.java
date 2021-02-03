@@ -63,9 +63,9 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
 
     /**
      * 导出PDF
-     * @param taskCode 任务编号
+     * @param param 查询条件
      * @Author: wayne
      * @Date: 2021/2/1
      */
-    ByteArrayOutputStream convertReceivePdf(String taskCode) throws IOException, DocumentException;
+    ByteArrayOutputStream convertReceivePdf(PersonTaskDetail param) throws IOException, DocumentException;
 }

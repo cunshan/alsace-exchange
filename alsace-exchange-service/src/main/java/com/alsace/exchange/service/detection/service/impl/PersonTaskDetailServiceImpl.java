@@ -208,7 +208,7 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   }
 
   @Override
-  public ByteArrayOutputStream convertReceivePdf(String taskCode) throws IOException, DocumentException {
+  public ByteArrayOutputStream convertReceivePdf(PersonTaskDetail param) throws IOException, DocumentException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     //设值字体样式
     BaseFont bf = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
@@ -223,12 +223,10 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
     //版本(默认1.4)
     writer.setPdfVersion(PdfWriter.PDF_VERSION_1_2);
     PdfPTable table = new PdfPTable(5);
-    table.setTotalWidth(new float[]{100, 100, 100, 100, 100});
+    table.setTotalWidth(new float[]{80, 100, 100, 100, 50});
     //添加PDF标题内容
     PdfUtils.addPdfTitle(table, fontBold,"检测结果导出");
-    PersonTaskDetail personTaskDetail =new PersonTaskDetail();
-    personTaskDetail.setTaskCode(taskCode);
-    List<PersonTaskDetailImport> details = this.findResults(personTaskDetail);
+    List<PersonTaskDetailImport> details = this.findResults(param);
     //添加导出信息
     PdfUtils.addPdfTable(table, fontBold, font2, details);
     //打开文档

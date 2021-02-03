@@ -5,14 +5,21 @@ import cn.hutool.core.date.DateUtil;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,9 +48,24 @@ public class PdfUtils {
         details.forEach(detail -> {
             table.addCell(PdfUtils.getPDFCell(detail.getPersonName(), font2, false));
             table.addCell(PdfUtils.getPDFCell(detail.getIdCardNo(), font2, false));
-            table.addCell(PdfUtils.getPDFCell(detail.getPersonName(), font2, false));
+            PdfPCell cell = new PdfPCell();
+            if(StringUtils.isNotBlank(detail.getTestTubeNo())) {
+                try {
+                    //条形码
+                    BufferedImage image = GoogleBarCodeUtils.insertWords(GoogleBarCodeUtils.getBarCode(detail.getTestTubeNo()), detail.getTestTubeNo());
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    ImageIO.write(image, "png", bos);
+                    Image codeImg = Image.getInstance(bos.toByteArray());
+                    codeImg.scaleAbsolute(90, 15);
+                    cell = new PdfPCell(codeImg);
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                } catch (IOException | BadElementException e) {
+                    e.printStackTrace();
+                }
+            }
+            table.addCell(cell);
             table.addCell(PdfUtils.getPDFCell(detail.getIdCardNo(), font2, false));
-            table.addCell(PdfUtils.getPDFCell(detail.getPersonName(), font2, false));
+            table.addCell(PdfUtils.getPDFCell(detail.getPositive(), font2, false));
         });
     }
 
