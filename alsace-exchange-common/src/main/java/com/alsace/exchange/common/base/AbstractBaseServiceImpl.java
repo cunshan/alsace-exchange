@@ -103,9 +103,7 @@ public abstract class AbstractBaseServiceImpl<T extends BaseEntity> implements B
 
   @Override
   public PageResult<T> findPage(PageParam<T> param) {
-    if (param.getParam() == null) {
-      throw new AlsaceException("参数对象为空！");
-    }
+    Assert.notNull(param.getParam(),"参数对象为空！");
     param.getParam().setDeleted(false);
     Page<T> userPage = getJpaRepository().findAll(Example.of(param.getParam()), AlsacePageHelper.page(param));
     return new PageResult<>(userPage);

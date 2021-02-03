@@ -64,7 +64,7 @@ public class PersonTaskDetailController extends BaseController {
     personTaskDetail.setIdCardNo(param.getIdCardNo());
     personTaskDetail.setDeleted(false);
     personTaskDetail =personTaskDetailService.findOne(personTaskDetail);
-    Assert.notNull(personTaskDetail, "身份证号："+param.getIdCardNo()+"已经存在，请检查后重新导入！");
+    Assert.isNull(personTaskDetail, "身份证号："+param.getIdCardNo()+"已经存在，请检查后重新录入！");
     String detailCode =orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE);
     param.setDetailCode(detailCode);
     param.setDetailStatus(TaskDetailStatus.INIT.status());
@@ -151,7 +151,10 @@ public class PersonTaskDetailController extends BaseController {
     try{
       ByteArrayOutputStream outputStream=personTaskDetailService.convertReceivePdf(taskCode);
       response.setContentType(response.getContentType());
-      response.setHeader("Content-Disposition","attachment; filename=" + URLEncoder.encode( "测试.pdf", "UTF-8"));
+      LocalDateTime time=LocalDateTime.now();
+      DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      String pdfName="人员检测结果"+time.format(pattern)+".pdf";
+      response.setHeader("Content-Disposition","attachment; filename=" + URLEncoder.encode( pdfName, "UTF-8"));
       byte[] bytes = outputStream.toByteArray();
       BufferedOutputStream bos = null;
       bos = new BufferedOutputStream(response.getOutputStream());

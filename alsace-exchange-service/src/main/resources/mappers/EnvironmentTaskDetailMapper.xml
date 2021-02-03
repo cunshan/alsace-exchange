@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alsace.exchange.service.detection.mapper.EnvironmentTaskDetailMapper">
+    <select id="findResultPage" resultType="com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail">
+        SELECT
+            D.address,
+            D.birthday,
+            D.city,
+            D.company_code companyCode,
+            D.company_name companyName,
+            D.detail_code detailCode,
+            D.tax_no taxNo,
+            D.form_code formCode,
+            D.gender,
+            D.id_card_no idCardNo,
+            D.job,
+            D.location_id locationId,
+            D.nation,
+            D.org_code orgCode,
+            D.person_name personName,
+            D.region,
+            D.task_code taskCode,
+            D.tel,
+            D.working,
+            D.detail_status detailStatus,
+            R.detail_code detailCode,
+            R.detail_type detailType,
+            R.pictures,
+            R.positive,
+            R.test_tube_no testTubeNo,
+            R.result_status resultStatus,
+            T.task_name taskName
+        FROM biz_person_task T
+        inner join biz_person_task_detail D on D.task_code=T.task_code
+        left join biz_person_task_detail_result R
+        on D.detail_code = R.detail_code
+        WHERE 1=1
+        <if test="param.taskCode !=null and param.taskCode !=''">
+            and T.task_code = #{param.taskCode}
+        </if>
+        <if test="param.taskName !=null and param.taskName !=''">
+            and T.task_name like concat('%',#{param.taskName},'%')
+        </if>
+        <if test="param.taskStatus !=null">
+            and T.task_status = #{param.taskStatus}
+        </if>
+        <if test="param.startDate !=null">
+            <![CDATA[
+            and T.start_date <= #{param.startDate}
+            ]]>
+        </if>
+        <if test="param.endDate !=null">
+            <![CDATA[
+            and T.end_date >= #{param.endDate}
+            ]]>
+        </if>
+        <if test="param.idCardNo !=null and param.idCardNo !=''">
+            <![CDATA[
+            and T.id_card_no >= #{param.idCardNo}
+            ]]>
+        </if>
+        <choose>
+            <when test="param.userDataList!=null and !param.userDataList.isEmpty()">
+                and exists (select 1 from biz_person_task_org o where o.task_code=T.task_code and o.org_code in
+                <foreach collection="param.userDataList" item="method" open="(" separator="," close=")">
+                    #{method.code}
+                </foreach>)
+            </when>
+          <otherwise>
+              and T.created_by = #{param.userDataAccount}
+          </otherwise>
+        </choose>
+    </select>
+
+
+    <select id="findResults" resultType="com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailImport">
+        SELECT
+        D.address,
+        D.birthday,
+        D.city,
+        D.company_code companyCode,
+        D.company_name companyName,
+        D.detail_code detailCode,
+        D.tax_no taxNo,
+        D.form_code formCode,
+        case  D.gender
+        when 1 then '女'
+        when 0 then '男'
+        end gender,
+        D.id_card_no idCardNo,
+        D.job,
+        D.location_id locationId,
+        D.nation,
+        D.org_code orgCode,
+        D.person_name personName,
+        D.region,
+        D.task_code taskCode,
+        D.tel,
+        D.working,
+        D.detail_status detailStatus,
+        R.detail_code detailCode,
+        R.detail_type detailType,
+        R.pictures,
+        R.positive,
+        R.test_tube_no testTubeNo,
+        R.result_status resultStatus,
+        T.task_name taskName
+        FROM biz_person_task T
+        inner join biz_person_task_detail D on D.task_code=T.task_code
+        left join biz_person_task_detail_result R
+        on D.detail_code = R.detail_code
+        WHERE 1=1
+        <if test="param.taskCode !=null and param.taskCode !=''">
+            and T.task_code = #{param.taskCode}
+        </if>
+        <if test="param.taskName !=null and param.taskName !=''">
+            and T.task_name like concat('%',#{param.taskName},'%')
+        </if>
+        <if test="param.taskStatus !=null">
+            and T.task_status = #{param.taskStatus}
+        </if>
+        <if test="param.startDate !=null">
+            <![CDATA[
+            and T.start_date <= #{param.startDate}
+            ]]>
+        </if>
+        <if test="param.endDate !=null">
+            <![CDATA[
+            and T.end_date >= #{param.endDate}
+            ]]>
+        </if>
+        <if test="param.idCardNo !=null and param.idCardNo !=''">
+            <![CDATA[
+            and T.id_card_no >= #{param.idCardNo}
+            ]]>
+        </if>
+        <choose>
+            <when test="param.userDataList!=null and !param.userDataList.isEmpty()">
+                and exists (select 1 from biz_person_task_org o where o.task_code=T.task_code and o.org_code in
+                <foreach collection="param.userDataList" item="method" open="(" separator="," close=")">
+                    #{method.code}
+                </foreach>)
+            </when>
+            <otherwise>
+                and T.created_by = #{param.userDataAccount}
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

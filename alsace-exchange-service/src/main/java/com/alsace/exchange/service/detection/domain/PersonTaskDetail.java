@@ -87,19 +87,16 @@ public class PersonTaskDetail extends BaseEntity {
   @NotBlank(groups = {Create.class}, message = "电话为空！")
   private String tel;
 
-  @ApiModelProperty(value = "企业名称", required = true)
+  @ApiModelProperty(value = "企业名称")
   @Column(columnDefinition = "varchar(128) comment '企业名称'")
-  @NotBlank(groups = {Create.class}, message = "企业名称为空！")
   private String companyName;
 
-  @ApiModelProperty(value = "企业编码", required = true)
+  @ApiModelProperty(value = "企业编码")
   @Column(columnDefinition = "varchar(128) comment '企业编码'")
-  @NotBlank(groups = {Create.class}, message = "企业编码为空！")
   private String companyCode;
 
   @ApiModelProperty(value = "企业税号", required = true)
   @Column(columnDefinition = "varchar(128) comment '企业税号'")
-  @NotBlank(groups = {Create.class}, message = "企业税号！")
   private String taxNo;
 
   @ApiModelProperty(value = "在职状态", required = true)

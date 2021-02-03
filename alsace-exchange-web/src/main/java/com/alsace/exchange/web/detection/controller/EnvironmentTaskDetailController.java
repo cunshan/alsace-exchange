@@ -9,12 +9,14 @@ import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.constants.Constants;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailImport;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskDetailService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
 import com.alsace.exchange.web.utils.ExportUtil;
 import com.google.common.collect.Lists;
+import com.itextpdf.text.DocumentException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,9 +30,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Api(tags = "环境监测任务明细",value = "environmentTaskDetail")
@@ -77,7 +83,7 @@ public class EnvironmentTaskDetailController extends BaseController {
   @RequestMapping("/downTemplate")
   public void downTemplate(HttpServletResponse response)  {
     List<PersonTaskDetailImport> list = Lists.newArrayList();
-    Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("被检测环境信息导入模板", "被检测人员"), EnvironmentTaskDetailImport.class, list);
+    Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("被检测环境信息导入模板", "被检测环境信息"), EnvironmentTaskDetailImport.class, list);
     try(OutputStream out = response.getOutputStream()) {
       response.setContentType("application/ms-excel;charset=UTF-8");
       response.setHeader("Content-Disposition", "attachment;filename="
@@ -107,4 +113,52 @@ public class EnvironmentTaskDetailController extends BaseController {
     }
   }
 
+
+  @ApiOperation("人员检测结果分页查询")
+  @PostMapping("/resultPage")
+  public  AlsaceResult<PageResult<EnvironmentTaskDetail>> resultPage(@RequestBody PageParam<EnvironmentTaskDetail> param){
+    PageResult<EnvironmentTaskDetail> page = environmentTaskDetailService.findResultPage(param);
+    return success(page);
+  }
+
+  @ApiOperation("环境检测结果导出")
+  @RequestMapping("/resultExport")
+  public void resultExport(HttpServletResponse response,@RequestBody EnvironmentTaskDetail param){
+    List<EnvironmentTaskDetailImport> list = environmentTaskDetailService.findResults(param);
+    Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("人员检测结果", "人员检测结果"), PersonTaskDetailImport.class, list);
+    LocalDateTime time=LocalDateTime.now();
+    DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String excelName="环境检测结果"+time.format(pattern)+".xls";
+    try(OutputStream out = response.getOutputStream()) {
+      response.setContentType("application/ms-excel;charset=UTF-8");
+      response.setHeader("Content-Disposition", "attachment;filename="
+              .concat(String.valueOf(URLEncoder.encode(excelName, "UTF-8"))));
+      workBook.write(out);
+    } catch(Exception e) {
+      error("101", Constants.SYSTEM_ERROR);
+    }
+  }
+
+  @ApiOperation("环境检测结果PDF导出")
+  @RequestMapping("/resultPdf")
+  public void resultPdf(HttpServletResponse response,@ApiParam(name = "任务编码", value = "taskCode", required = true) @RequestParam("taskCode") String taskCode){
+    try{
+      ByteArrayOutputStream outputStream=environmentTaskDetailService.convertReceivePdf(taskCode);
+      response.setContentType(response.getContentType());
+      LocalDateTime time=LocalDateTime.now();
+      DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      String pdfName="环境检测结果"+time.format(pattern)+".pdf";
+      response.setHeader("Content-Disposition","attachment; filename=" + URLEncoder.encode( pdfName, "UTF-8"));
+      byte[] bytes = outputStream.toByteArray();
+      BufferedOutputStream bos = null;
+      bos = new BufferedOutputStream(response.getOutputStream());
+      bos.write(bytes);
+      bos.close();
+
+    } catch (DocumentException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }

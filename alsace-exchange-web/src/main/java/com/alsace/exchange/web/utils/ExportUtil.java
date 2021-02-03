@@ -224,7 +224,7 @@ public class ExportUtil {
                 Field field = fields[i];
                 field.setAccessible(true);
                 Excel excel = field.getAnnotation(Excel.class);
-                if (null != excel && "true".equals(excel.isImportField())) {
+                if (null != excel) {
                     fieldList.add(excel.name());
                 }
             }

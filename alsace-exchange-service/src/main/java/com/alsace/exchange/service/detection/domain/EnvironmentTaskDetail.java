@@ -1,5 +1,6 @@
 package com.alsace.exchange.service.detection.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.alsace.exchange.common.base.BaseEntity;
 import com.alsace.exchange.common.validate.groups.Create;
 import io.swagger.annotations.ApiModel;
@@ -94,12 +95,14 @@ public class EnvironmentTaskDetail extends BaseEntity {
   @Column(columnDefinition = "int(2) not null default 10 comment '明细状态 10:创建 20:已提交'")
   private Integer detailStatus;
 
+  /**
+   * 标签名称 用于导入  数据库加上字段吧 展示不用关联了
+   */
+  @ApiModelProperty(value = "标签名称")
+  @Column(columnDefinition = "varchar(255) comment '标签名称'")
+  private String tagName;
+
   @Transient
   private List<EnvironmentTaskDetailResult> detailResultList;
-  /**
-   * 标签名称 用于导入
-   */
-  @Transient
-  private String tagName;
 
 }

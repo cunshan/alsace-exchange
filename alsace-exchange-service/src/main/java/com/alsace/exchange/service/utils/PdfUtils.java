@@ -2,6 +2,8 @@ package com.alsace.exchange.service.utils;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
+import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
@@ -43,6 +45,21 @@ public class PdfUtils {
             table.addCell(PdfUtils.getPDFCell(detail.getIdCardNo(), font2, false));
             table.addCell(PdfUtils.getPDFCell(detail.getPersonName(), font2, false));
         });
+    }
+
+    public static void addEnvPdfTable(PdfPTable table, Font fontBold, Font font2, List<EnvironmentTaskDetailImport> details) {
+        table.addCell(PdfUtils.getPDFCell("姓名", fontBold, true));
+        table.addCell(PdfUtils.getPDFCell("身份证", fontBold, true));
+        table.addCell(PdfUtils.getPDFCell("采样管码", fontBold, true));
+        table.addCell(PdfUtils.getPDFCell("检测时间", fontBold, true));
+        table.addCell(PdfUtils.getPDFCell("检测结果", fontBold, true));
+//        details.forEach(detail -> {
+//            table.addCell(PdfUtils.getPDFCell(detail.get, font2, false));
+//            table.addCell(PdfUtils.getPDFCell(detail.getIdCardNo(), font2, false));
+//            table.addCell(PdfUtils.getPDFCell(detail.getPersonName(), font2, false));
+//            table.addCell(PdfUtils.getPDFCell(detail.getIdCardNo(), font2, false));
+//            table.addCell(PdfUtils.getPDFCell(detail.getPersonName(), font2, false));
+//        });
     }
 
 

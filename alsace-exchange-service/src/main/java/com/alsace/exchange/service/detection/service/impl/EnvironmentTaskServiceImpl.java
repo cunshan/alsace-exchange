@@ -2,18 +2,21 @@ package com.alsace.exchange.service.detection.service.impl;
 
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
+import com.alsace.exchange.common.base.AlsaceOrderBy;
+import com.alsace.exchange.common.base.AlsacePageHelper;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.enums.AutoFillType;
+import com.alsace.exchange.common.enums.OrderByEnum;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.AlsaceBeanUtils;
+import com.alsace.exchange.common.utils.JpaHelper;
 import com.alsace.exchange.service.detection.domain.EnvironmentTask;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailResult;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskForm;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskOperator;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskOrg;
-import com.alsace.exchange.service.detection.domain.EnvironmentTaskTag;
 import com.alsace.exchange.service.detection.emums.EnvironmentTaskDetailResultType;
 import com.alsace.exchange.service.detection.emums.TaskDetailResultStatus;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
@@ -31,6 +34,8 @@ import com.alsace.exchange.service.utils.OrderNoGenerator;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
@@ -40,8 +45,11 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotEmpty;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<EnvironmentTask> implements EnvironmentTaskService {
@@ -72,6 +80,20 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
   @Override
   protected JpaSpecificationExecutor<EnvironmentTask> getJpaSpecificationExecutor() {
     return this.environmentTaskRepository;
+  }
+
+  @Override
+  public PageResult<EnvironmentTask> findPage(PageParam<EnvironmentTask> param) {
+    Assert.notNull(param.getParam(),"参数对象为空！");
+    Set<String> likeSet = new HashSet<>();
+    likeSet.add("taskName");
+    likeSet.add("taskDesc");
+    Specification<EnvironmentTask> specs = JpaHelper.buildConditions(param.getParam(),likeSet,new AlsaceOrderBy(OrderByEnum.DESC, Arrays.asList("createdDate","modifiedDate")));
+    param.getParam().setDeleted(false);
+    Page<EnvironmentTask> userPage = getJpaSpecificationExecutor().findAll(specs, AlsacePageHelper.page(param));
+    return new PageResult<>(userPage);
+
+
   }
 
   @Override
