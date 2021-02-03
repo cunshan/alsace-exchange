@@ -7,10 +7,7 @@ import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.common.constants.Constants;
-import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
-import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailImport;
-import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
-import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
+import com.alsace.exchange.service.detection.domain.*;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskDetailService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
@@ -21,6 +18,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +35,9 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Api(tags = "环境监测任务明细",value = "environmentTaskDetail")
 @RestController
@@ -73,10 +73,7 @@ public class EnvironmentTaskDetailController extends BaseController {
   @ApiOperation("环境检测任务明细保存")
   @PostMapping("/save")
   public AlsaceResult<EnvironmentTaskDetail> save(@RequestBody EnvironmentTaskDetail param) {
-    String detailCode =orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ENVIRONMENT_TASK_DETAIL_CODE);
-    param.setDetailCode(detailCode);
-    param.setDetailStatus(TaskDetailStatus.INIT.status());
-    return success(environmentTaskDetailService.save(param));
+    return success(environmentTaskDetailService.saveDetail(param));
   }
 
   @ApiOperation("被检测环境信息导入模板下载")
@@ -114,7 +111,7 @@ public class EnvironmentTaskDetailController extends BaseController {
   }
 
 
-  @ApiOperation("人员检测结果分页查询")
+  @ApiOperation("环境检测结果分页查询")
   @PostMapping("/resultPage")
   public  AlsaceResult<PageResult<EnvironmentTaskDetail>> resultPage(@RequestBody PageParam<EnvironmentTaskDetail> param){
     PageResult<EnvironmentTaskDetail> page = environmentTaskDetailService.findResultPage(param);

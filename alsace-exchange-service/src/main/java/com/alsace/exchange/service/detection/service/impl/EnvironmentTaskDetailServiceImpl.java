@@ -243,4 +243,32 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
     doc.close();
     return out;
   }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public EnvironmentTaskDetail saveDetail(EnvironmentTaskDetail param) {
+    //查询出任务下所有的标签
+    EnvironmentTaskTag queryTag = new EnvironmentTaskTag();
+    queryTag.setTaskCode(param.getTaskCode()).setDeleted(false);
+    List<EnvironmentTaskTag> taskTags = environmentTaskTagRepository.findAll(Example.of(queryTag));
+    Map<String,EnvironmentTaskTag> tagMap = new HashMap<>();
+    taskTags.forEach(tag->tagMap.put(tag.getLocationName(),tag));
+    //设置标签
+    if(!tagMap.containsKey(param.getTagName())){
+      //如果在任务下不存在，保存并放到map里
+      EnvironmentTaskTag tag = new EnvironmentTaskTag();
+      tag.setTaskCode(param.getTaskCode()).setLocationName(param.getTagName());
+      setCreateInfo(tag);
+      environmentTaskTagRepository.saveAndFlush(tag);
+      param.setTagId(tag.getId());
+    }else {
+      param.setTagId(tagMap.get(param.getTagName()).getId());
+    }
+    String detailCode =orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.ENVIRONMENT_TASK_DETAIL_CODE);
+    param.setDetailCode(detailCode);
+    param.setDetailStatus(TaskDetailStatus.INIT.status());
+    param.setId(IdUtils.id());
+    param.setDeleted(false);
+    return environmentTaskDetailRepository.save(param);
+  }
 }
