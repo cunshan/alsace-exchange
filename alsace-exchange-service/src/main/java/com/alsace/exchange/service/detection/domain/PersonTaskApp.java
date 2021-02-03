@@ -1,11 +1,18 @@
 package com.alsace.exchange.service.detection.domain;
 
+import com.alsace.exchange.common.base.CodeName;
+import com.alsace.exchange.common.utils.JsonUtils;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @Accessors(chain = true)
@@ -32,10 +39,16 @@ public class PersonTaskApp implements Serializable {
   private Date endDate;
 
   @ApiModelProperty(value = "检测类型 1 全民检测  2 非全民检测")
-  private Integer detectionType;
+  private String detectionType;
 
   @ApiModelProperty(value = "检测项目 存储为以下格式[{\"code\":\"1\",\"name\":\"核酸检测\"}]")
   private String detectionMethod;
+
+  @ApiModelProperty(value = "检测项目")
+  private List<PersonTaskDetectionMethod> detectionMethodList;
+
+  @ApiModelProperty(value = "检测项目")
+  private JsonObject detectionMethodMap;
 
   @ApiModelProperty(value = "混管设置")
   private String mixedMode;
@@ -46,4 +59,8 @@ public class PersonTaskApp implements Serializable {
   @ApiModelProperty(value = "地点名称")
   private String locationName;
 
+  public List<CodeName> getDetectionMethodList(){
+    return JsonUtils.fromJson(this.getDetectionMethod(), new TypeToken<List<CodeName>>() {
+    }.getType());
+  }
 }
