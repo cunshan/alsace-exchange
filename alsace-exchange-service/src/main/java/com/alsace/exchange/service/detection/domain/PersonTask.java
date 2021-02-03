@@ -70,8 +70,8 @@ public class PersonTask extends BaseEntity {
   @NotNull(groups = {Create.class}, message = "检测类型为空！")
   private Integer detectionType;
 
-  @ApiModelProperty(value = "检测项目 1:核酸检测 2:抗体检测", required = true,notes = "存储为json字符串，例如：[{\"code\":\"1\",\"name\":\"核酸检测\"}]")
-  @Column(columnDefinition = "varchar(255) not null comment '检测项目 1:核酸检测 2:抗体检测'")
+  @ApiModelProperty(value = "检测项目", required = true,notes = "存储为json字符串，例如：[{\"code\":\"1\",\"name\":\"核酸检测\"}]")
+  @Column(columnDefinition = "varchar(255) not null comment '检测项目'")
   @NotBlank(groups = {Create.class}, message = "检测项目为空！")
   private String detectionMethod;
 
