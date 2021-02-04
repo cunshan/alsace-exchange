@@ -17,6 +17,7 @@ import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailResult;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskForm;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskOperator;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskOrg;
+import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import com.alsace.exchange.service.detection.emums.EnvironmentTaskDetailResultType;
 import com.alsace.exchange.service.detection.emums.TaskDetailResultStatus;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
@@ -260,10 +261,10 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
   }
 
   @Override
-  public PageResult<EnvironmentTask> findEnvironmentTaskApp(PageParam pageParam) {
+  public PageResult<EnvironmentTask> findEnvironmentTaskApp(PageParam<EnvironmentTask> param) {
     String loginAccount = getLoginAccount();
-    PageInfo<EnvironmentTask> pageInfo = PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize())
-        .doSelectPageInfo(() -> environmentTaskMapper.selectAppTaskList(loginAccount));
+    PageInfo<EnvironmentTask> pageInfo = PageHelper.startPage(param.getPageNum(), param.getPageSize())
+        .doSelectPageInfo(() -> environmentTaskMapper.selectAppTaskList(loginAccount,param.getParam()));
     return new PageResult<>(pageInfo);
   }
 

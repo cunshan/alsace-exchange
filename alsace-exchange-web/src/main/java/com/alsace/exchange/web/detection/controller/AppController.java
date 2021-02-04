@@ -53,8 +53,8 @@ public class AppController extends BaseController {
   @ApiOperation(value = "人员检测任务列表查询")
   @PostMapping("/person/page")
   @Log(value = "人员检测任务列表查询",moduleName = "APP")
-  public AlsaceResult<PageResult<PersonTaskApp>> personTaskPage(PageParam pageParam) {
-    return success(personTaskService.findPersonTaskApp(pageParam));
+  public AlsaceResult<PageResult<PersonTaskApp>> personTaskPage(@RequestBody PageParam<PersonTaskApp> param) {
+    return success(personTaskService.findPersonTaskApp(param));
   }
 
   @ApiOperation(value = "开始人员检测任务")
@@ -118,8 +118,8 @@ public class AppController extends BaseController {
   @ApiOperation(value = "环境检测任务列表查询")
   @PostMapping("/env/page")
   @Log(value = "环境检测任务列表查询",moduleName = "APP")
-  public AlsaceResult<PageResult<EnvironmentTask>> envTaskPage(PageParam pageParam) {
-    return success(environmentTaskService.findEnvironmentTaskApp(pageParam));
+  public AlsaceResult<PageResult<EnvironmentTask>> envTaskPage(@RequestBody PageParam<EnvironmentTask> param) {
+    return success(environmentTaskService.findEnvironmentTaskApp(param));
   }
 
   @ApiOperation(value = "开始环境检测任务")

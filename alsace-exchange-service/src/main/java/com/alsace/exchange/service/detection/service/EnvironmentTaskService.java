@@ -10,6 +10,7 @@ import com.alsace.exchange.service.detection.domain.EnvironmentTaskForm;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskTag;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskOperator;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskOrg;
+import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public interface EnvironmentTaskService extends BaseService<EnvironmentTask,Long
   /**
    * APP获取登录人任务
    */
-  PageResult<EnvironmentTask> findEnvironmentTaskApp(PageParam pageParam);
+  PageResult<EnvironmentTask> findEnvironmentTaskApp(PageParam<EnvironmentTask> param);
 
   /**
    * 下发人员检测任务

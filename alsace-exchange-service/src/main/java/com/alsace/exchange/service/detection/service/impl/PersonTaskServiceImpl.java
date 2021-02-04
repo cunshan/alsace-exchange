@@ -323,10 +323,10 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
   }
 
   @Override
-  public PageResult<PersonTaskApp> findPersonTaskApp(PageParam pageParam) {
+  public PageResult<PersonTaskApp> findPersonTaskApp(PageParam<PersonTaskApp> param) {
     String loginAccount = getLoginAccount();
-    PageInfo<PersonTaskApp> pageInfo = PageHelper.startPage(pageParam.getPageNum(), pageParam.getPageSize())
-        .doSelectPageInfo(() -> personTaskMapper.selectAppTaskList(loginAccount));
+    PageInfo<PersonTaskApp> pageInfo = PageHelper.startPage(param.getPageNum(), param.getPageSize())
+        .doSelectPageInfo(() -> personTaskMapper.selectAppTaskList(loginAccount,param.getParam()));
     return new PageResult<>(pageInfo);
   }
 

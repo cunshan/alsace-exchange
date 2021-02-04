@@ -12,7 +12,7 @@ import java.util.List;
 public interface PersonTaskMapper {
 
 
-  List<PersonTaskApp> selectAppTaskList(@Param("loginAccount") String loginAccount);
+  List<PersonTaskApp> selectAppTaskList(@Param("loginAccount") String loginAccount,@Param("param")PersonTaskApp param);
 
 
   List<PersonTask> findPage(@Param("param") PersonTask param);

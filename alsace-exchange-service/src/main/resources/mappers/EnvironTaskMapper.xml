@@ -56,5 +56,14 @@
             from biz_environment_task t left join biz_environment_task_tag l on t.task_code = l.task_code and l.deleted='0'
             where t.deleted='0'
               and exists (select 1 from biz_environment_task_operator o where o.login_account=#{loginAccount} and o.task_code = t.task_code and l.id = o.tag_id)
+        <if test="param.taskCode !=null and param.taskCode !=''">
+            and t.task_code = #{param.taskCode}
+        </if>
+        <if test="param.taskName !=null and param.taskName !=''">
+            and t.task_name like concat('%',#{param.taskName},'%')
+        </if>
+        <if test="param.taskStatus !=null and param.taskStatus !=''">
+            and t.task_status = #{param.taskStatus}
+        </if>
     </select>
 </mapper>
