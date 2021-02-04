@@ -150,9 +150,9 @@ public class AppController extends BaseController {
   }
 
 
-  @ApiOperation(value = "APP人员检测任务明细分页查询")
+  @ApiOperation(value = "APP环境检测任务明细分页查询")
   @PostMapping("/env/form/page")
-  @Log(value = "APP人员检测任务明细分页查询",moduleName = "APP")
+  @Log(value = "APP环境检测任务明细分页查询",moduleName = "APP")
   public AlsaceResult<EnvironmentTaskDetailPageVo> envPage(@RequestBody PageParam<EnvironmentTaskDetailPageVo> param) {
     Assert.notNull(param.getParam(), "查询参数为空！");
     EnvironmentTaskDetailPageVo paramVo = param.getParam();
@@ -171,9 +171,9 @@ public class AppController extends BaseController {
     return success(resVo);
   }
 
-  @ApiOperation(value = "人员检测任务表单提交")
+  @ApiOperation(value = "环境检测任务表单提交")
   @PostMapping("/env/form/submit")
-  @Log(value = "人员检测任务表单提交",moduleName = "APP")
+  @Log(value = "环境检测任务表单提交",moduleName = "APP")
   public AlsaceResult<EnvironmentTaskForm> envSubmitForm(@RequestBody List<String> formCodeList) {
     environmentTaskFormService.submitForm(formCodeList);
     return success("提交成功", null);
