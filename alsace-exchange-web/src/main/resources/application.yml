@@ -22,7 +22,7 @@ spring:
   application:
     name: alsace-exchange-web
   profiles:
-    active: dev
+    active: @env@
   jackson:
     time-zone: GMT+8
     generator:
