@@ -18,11 +18,14 @@ import com.alsace.exchange.service.detection.service.PersonTaskDetailService;
 import com.alsace.exchange.service.detection.service.PersonTaskFormService;
 import com.alsace.exchange.service.detection.service.PersonTaskService;
 import com.alsace.exchange.web.config.log.annontation.Log;
+import com.alsace.exchange.web.detection.vo.EnvironmentTaskDetailPageParamVo;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskDetailPageVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailPageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.util.Assert;
+import org.apache.shiro.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -153,17 +156,15 @@ public class AppController extends BaseController {
   @ApiOperation(value = "APP环境检测任务明细分页查询")
   @PostMapping("/env/form/page")
   @Log(value = "APP环境检测任务明细分页查询",moduleName = "APP")
-  public AlsaceResult<EnvironmentTaskDetailPageVo> envPage(@RequestBody PageParam<EnvironmentTaskDetailPageVo> param) {
+  public AlsaceResult<EnvironmentTaskDetailPageVo> envPage(@RequestBody PageParam<EnvironmentTaskDetailPageParamVo> param) {
     Assert.notNull(param.getParam(), "查询参数为空！");
-    EnvironmentTaskDetailPageVo paramVo = param.getParam();
+    EnvironmentTaskDetailPageParamVo paramVo = param.getParam();
     Assert.hasLength(paramVo.getTaskCode(), "任务编码不能为空！");
     PageParam<EnvironmentTaskDetail> detailPage = new PageParam<>();
     detailPage.setPageNum(param.getPageNum()).setPageSize(param.getPageSize());
     EnvironmentTaskDetail queryParam = new EnvironmentTaskDetail();
     queryParam.setTaskCode(paramVo.getTaskCode());
-    queryParam.setFormCode(paramVo.getFormCode());
     queryParam.setDeleted(false);
-    queryParam.setCreatedBy(super.loginInfoProvider.loginAccount());
     detailPage.setParam(queryParam);
     PageResult<EnvironmentTaskDetail> page = environmentTaskDetailService.findPage(detailPage);
     EnvironmentTaskDetailPageVo resVo = new EnvironmentTaskDetailPageVo();
