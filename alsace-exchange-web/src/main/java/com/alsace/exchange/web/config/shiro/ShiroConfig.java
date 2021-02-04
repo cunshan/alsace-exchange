@@ -43,7 +43,10 @@ public class ShiroConfig {
     chainDefinition.addPathDefinition("/login", "anon,jwt[allowed]");
     chainDefinition.addPathDefinition("/app/send-check/**", "anon,jwt[permissive]");
     chainDefinition.addPathDefinition("/app/login", "anon,jwt[permissive]");
-//    chainDefinition.addPathDefinition("/**/downTemplate","anon,jwt[permissive]");
+    chainDefinition.addPathDefinition("/detection/org/downTemplate","anon,jwt[permissive]");
+    chainDefinition.addPathDefinition("/env-task/detail/downTemplate","anon,jwt[permissive]");
+    chainDefinition.addPathDefinition("/person-task/detail/downTemplate","anon,jwt[permissive]");
+    chainDefinition.addPathDefinition("/user/downTemplate","anon,jwt[permissive]");
 
     // SWAGGER2过滤【START】
     chainDefinition.addPathDefinition("/swagger-ui/**", "anon,jwt[permissive]");
