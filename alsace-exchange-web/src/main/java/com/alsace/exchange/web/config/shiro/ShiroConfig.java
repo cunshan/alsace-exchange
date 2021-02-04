@@ -46,7 +46,7 @@ public class ShiroConfig {
     chainDefinition.addPathDefinition("/detection/org/downTemplate","anon,jwt[permissive]");
     chainDefinition.addPathDefinition("/env-task/detail/downTemplate","anon,jwt[permissive]");
     chainDefinition.addPathDefinition("/person-task/detail/downTemplate","anon,jwt[permissive]");
-    chainDefinition.addPathDefinition("/user/downTemplate","anon,jwt[permissive]");
+    chainDefinition.addPathDefinition("/user /downTemplate","anon,jwt[permissive]");
 
     // SWAGGER2过滤【START】
     chainDefinition.addPathDefinition("/swagger-ui/**", "anon,jwt[permissive]");
