@@ -222,6 +222,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     PersonTask taskParam = new PersonTask();
     taskParam.setTaskCode(taskCode).setDeleted(false);
     PersonTask task = this.findOne(taskParam);
+    Assert.notNull(task,"任务不存在！");
     if (!TaskStatus.READY.status().equals(task.getTaskStatus()) && !TaskStatus.PROCESSING.status().equals(task.getTaskStatus())) {
       throw new AlsaceException(String.format("任务状态为%s，不能开始任务！", TaskStatus.getDesc(task.getTaskStatus())));
     }
