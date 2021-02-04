@@ -24,4 +24,12 @@ public interface PersonTaskDetailMapper {
      * @Date: 2021/1/30
      */
     List<PersonTaskDetailImport> findResults(@Param("param") PersonTaskDetail param);
+
+    /**
+     * 查询人员表单信息分页
+     * @param param 查询条件
+     * @Author: wayne
+     * @Date: 2021/2/1
+     */
+    List<PersonTaskDetailImport> findFromPage(@Param("param")PersonTaskDetail param);
 }

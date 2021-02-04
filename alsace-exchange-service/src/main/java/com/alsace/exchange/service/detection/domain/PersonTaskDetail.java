@@ -151,4 +151,5 @@ public class PersonTaskDetail extends BaseEntity {
   @ApiModelProperty(value = "试管编号")
   @Transient
   private String testTubeNo;
+
 }

@@ -68,4 +68,12 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
      * @Date: 2021/2/1
      */
     ByteArrayOutputStream convertReceivePdf(PersonTaskDetail param) throws IOException, DocumentException;
+
+    /**
+     * 查询人员表单信息分页
+     * @param detailPage 查询条件
+     * @Author: wayne
+     * @Date: 2021/2/1
+     */
+    PageResult<PersonTaskDetail> findFromPage(PageParam<PersonTaskDetail> detailPage);
 }

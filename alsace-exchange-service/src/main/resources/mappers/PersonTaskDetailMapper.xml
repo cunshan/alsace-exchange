@@ -150,4 +150,73 @@
             </otherwise>
         </choose>
     </select>
+
+    <select id="findFromPage" resultType="com.alsace.exchange.service.detection.domain.PersonTaskDetailImport">
+        SELECT D.address,
+        D.birthday,
+        D.city,
+        D.company_code  companyCode,
+        D.company_name  companyName,
+        D.detail_code   detailCode,
+        D.tax_no        taxNo,
+        D.form_code     formCode,
+        case D.gender
+        when 1 then '女'
+        when 0 then '男'
+        end         gender,
+        D.id_card_no    idCardNo,
+        D.job,
+        D.location_id   locationId,
+        D.nation,
+        D.org_code      orgCode,
+        D.person_name   personName,
+        D.region,
+        D.task_code     taskCode,
+        D.tel,
+        D.working,
+        D.detail_status detailStatus,
+        T.task_name     taskName,
+        D.form_code     formCode
+        FROM biz_person_task T,
+        biz_person_task_detail D,
+        biz_person_task_form F
+        where D.task_code = T.task_code
+        and T.task_code = F.task_code
+        and D.form_code = F.form_code
+        and D.deleted = 0
+        <if test="param.taskCode !=null and param.taskCode !=''">
+            and T.task_code = #{param.taskCode}
+        </if>
+        <if test="param.taskName !=null and param.taskName !=''">
+            and T.task_name like concat('%',#{param.taskName},'%')
+        </if>
+        <if test="param.taskStatus !=null">
+            and T.task_status = #{param.taskStatus}
+        </if>
+        <if test="param.startDate !=null">
+            <![CDATA[
+            and T.start_date <= #{param.startDate}
+            ]]>
+        </if>
+        <if test="param.endDate !=null">
+            <![CDATA[
+            and T.end_date >= #{param.endDate}
+            ]]>
+        </if>
+        <if test="param.idCardNo !=null and param.idCardNo !=''">
+            <![CDATA[
+            and D.id_card_no = #{param.idCardNo}
+            ]]>
+        </if>
+        <if test="param.formCode !=null and param.formCode !=''">
+            <![CDATA[
+            and F.form_code = #{param.formCode}
+            ]]>
+        </if>
+        <if test="param.userDataAccount !=null and param.userDataAccount !=''">
+            <![CDATA[
+              and F.created_by = #{param.userDataAccount}
+            ]]>
+        </if>
+    </select>
 </mapper>

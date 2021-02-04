@@ -98,9 +98,8 @@ public class AppController extends BaseController {
     queryParam.setTaskCode(paramVo.getTaskCode());
     queryParam.setFormCode(paramVo.getFormCode());
     queryParam.setDeleted(false);
-    queryParam.setCreatedBy(super.loginInfoProvider.loginAccount());
     detailPage.setParam(queryParam);
-    PageResult<PersonTaskDetail> page = personTaskDetailService.findPage(detailPage);
+    PageResult<PersonTaskDetail> page = personTaskDetailService.findFromPage(detailPage);
     PersonTaskDetailPageVo resVo = new PersonTaskDetailPageVo();
     resVo.setDetailList(page.getRecords()).setTaskCode(paramVo.getTaskCode()).setFormCode(paramVo.getFormCode());
     return success(resVo);

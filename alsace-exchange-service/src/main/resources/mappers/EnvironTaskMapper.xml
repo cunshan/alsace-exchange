@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alsace.exchange.service.detection.mapper.EnvironmentTaskMapper">
+    <select id="findPage" resultType="com.alsace.exchange.service.detection.domain.EnvironmentTask">
+        select t.created_by as createdBy, t.created_date as createdDate, t.deleted as deleted,
+            t.end_date as endDate, t.id as id,
+            t.modified_by as modifiedBy, t.modified_date as modifiedDate,
+            t.remarks as remarks, t.start_date as startDate, t.task_code as taskCode,
+            t.task_desc as taskDesc, t.task_name as taskName, t.task_status as taskStatus,
+            (select count(1) from biz_environment_task_detail d where t.task_code=d.task_code) sumDetail,
+            (select count(1) from biz_environment_task_detail d where t.task_code=d.task_code and detail_status=20) sumSubmit
+        from biz_environment_task t
+        where t.deleted = false
+
+        <if test="param.taskCode !=null and param.taskCode !=''">
+            and t.task_code = #{param.taskCode}
+        </if>
+        <if test="param.taskName !=null and param.taskName !=''">
+            and t.task_name like concat('%',#{param.taskName},'%')
+        </if>
+        <if test="param.taskStatus !=null">
+            and t.task_status = #{param.taskStatus}
+        </if>
+        <if test="param.startDate !=null">
+            <![CDATA[
+            and t.start_date <= #{param.startDate}
+            ]]>
+        </if>
+        <if test="param.endDate !=null">
+            <![CDATA[
+            and t.end_date >= #{param.endDate}
+            ]]>
+        </if>
+        <choose>
+            <when test="param.userDataList!=null and !param.userDataList.isEmpty()">
+                and exists (select 1 from biz_environment_task_org o where o.task_code=t.task_code and o.org_code in
+                <foreach collection="param.userDataList" item="method" open="(" separator="," close=")">
+                    #{method.code}
+                </foreach>
+                )
+
+            </when>
+          <otherwise>
+              and t.created_by = #{param.userDataAccount}
+          </otherwise>
+        </choose>
+        order by t.created_date desc,t.modified_date desc
+    </select>
+
+    <select id="selectAppTaskList" resultType="com.alsace.exchange.service.detection.domain.EnvironmentTask">
+        select t.task_code as taskCode,t.task_name as taskName,t.task_desc as taskDesc,
+               t.task_status as taskStatus,t.start_date as startDate,t.end_date as endDate,
+               l.id as locationId,l.location_name as locationName
+            from biz_environment_task t left join biz_environment_task_tag l on t.task_code = l.task_code and l.deleted='0'
+            where t.deleted='0'
+              and exists (select 1 from biz_environment_task_operator o where o.login_account=#{loginAccount} and o.task_code = t.task_code and l.id = o.tag_id)
+    </select>
+</mapper>

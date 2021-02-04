@@ -237,4 +237,15 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
     doc.close();
     return out;
   }
+
+  @Override
+  public PageResult<PersonTaskDetail> findFromPage(PageParam<PersonTaskDetail> detailPage) {
+    PersonTaskDetail personTaskDetail = detailPage.getParam();
+    String loginAccount = getLoginAccount();
+    personTaskDetail.setUserDataAccount(loginAccount);
+    PageInfo<PersonTaskDetail> pageInfo =
+            PageHelper.startPage(detailPage.getPageNum(),detailPage.getPageSize())
+                    .doSelectPageInfo(()->personTaskDetailMapper.findFromPage(personTaskDetail));
+    return new PageResult<>(pageInfo);
+  }
 }

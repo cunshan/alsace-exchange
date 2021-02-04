@@ -3,9 +3,9 @@ spring:
   # 数据源配置
   #============
   datasource:
-    url: jdbc:mysql://127.0.0.1:3307/alsace?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://1139.129.97.168:33060/alsace?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
     password: root
-    username: root
+    username: alsace-mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
@@ -19,9 +19,9 @@ spring:
   # redis配置
   #==========
   redis:
-    host: 127.0.0.1
-#    password:
-    port: 6379
+    host: 139.129.97.168
+    password: alsace-redis
+    port: 63790
 #================
 # 日志配置
 #================
