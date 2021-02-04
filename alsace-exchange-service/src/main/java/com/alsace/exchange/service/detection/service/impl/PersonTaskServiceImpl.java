@@ -43,10 +43,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -332,7 +330,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void assign(@Validated @NotEmpty(message = "任务编码列表为空！") List<String> taskCodeList) {
+  public void assign(List<String> taskCodeList) {
     List<PersonTask> taskList = personTaskRepository.findAll(
         (root, query, builder) -> query.where(builder.in(root.get("taskCode")).value(taskCodeList), builder.equal(root.get("deleted"), false)).getRestriction());
     taskList.forEach(task -> {

@@ -6,13 +6,10 @@ import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
-import com.alsace.exchange.service.sys.domain.User;
 import com.itextpdf.text.DocumentException;
 
-import javax.validation.constraints.NotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Long> {

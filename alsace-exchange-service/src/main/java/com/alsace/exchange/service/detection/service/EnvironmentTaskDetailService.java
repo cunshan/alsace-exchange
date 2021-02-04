@@ -3,7 +3,9 @@ package com.alsace.exchange.service.detection.service;
 import com.alsace.exchange.common.base.BaseService;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
-import com.alsace.exchange.service.detection.domain.*;
+import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
+import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailImport;
+import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetailResult;
 import com.itextpdf.text.DocumentException;
 
 import java.io.ByteArrayOutputStream;

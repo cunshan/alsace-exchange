@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class PersonTaskVo implements Serializable {
   private static final long serialVersionUID = 5482783309755426528L;
 
   @ApiModelProperty(value = "任务主要信息")
+  @Valid
   private PersonTask task;
 
   @ApiModelProperty(value = "检测地点列表")

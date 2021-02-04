@@ -7,10 +7,8 @@ import com.alsace.exchange.common.validate.groups.Create;
 import com.alsace.exchange.service.detection.domain.EnvironmentTask;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskForm;
-import com.alsace.exchange.service.detection.domain.EnvironmentTaskTag;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskOperator;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskOrg;
-import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;

@@ -18,7 +18,6 @@ import com.alsace.exchange.service.detection.excel.DetectionOrgVerifyService;
 import com.alsace.exchange.service.detection.repositories.DetectionOrgRepository;
 import com.alsace.exchange.service.detection.service.DetectionOrgService;
 import com.alsace.exchange.service.utils.OrderNoGenerator;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;

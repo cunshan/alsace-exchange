@@ -3,7 +3,6 @@ package com.alsace.exchange.service.detection.service;
 import com.alsace.exchange.common.base.BaseService;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
-import com.alsace.exchange.common.validate.groups.Create;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
@@ -11,8 +10,8 @@ import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOperator;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
-import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 public interface PersonTaskService extends BaseService<PersonTask,Long> {
@@ -23,7 +22,7 @@ public interface PersonTaskService extends BaseService<PersonTask,Long> {
    * @param orgList 任务检测机构
    * @param locationList 任务地点
    */
-  PersonTask save(@Validated(Create.class) PersonTask task, @Validated(Create.class) List<PersonTaskOrg> orgList, @Validated(Create.class) List<PersonTaskLocation> locationList);
+  PersonTask save(PersonTask task, List<PersonTaskOrg> orgList, List<PersonTaskLocation> locationList);
 
   /**
    * 更新人员检测任务
@@ -67,7 +66,7 @@ public interface PersonTaskService extends BaseService<PersonTask,Long> {
   /**
    * 下发人员检测任务
    */
-  void assign(List<String> taskCodeList);
+  void assign(@NotEmpty(message = "任务编码列表为空！") List<String> taskCodeList);
 
   /**
    * 批量更新任务结果

@@ -3,6 +3,7 @@ package com.alsace.exchange.service.detection.domain;
 import com.alsace.exchange.common.base.BaseEntity;
 import com.alsace.exchange.common.utils.JsonUtils;
 import com.alsace.exchange.common.validate.groups.Create;
+import com.alsace.exchange.common.validate.groups.Update;
 import com.google.gson.reflect.TypeToken;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -52,7 +53,6 @@ public class PersonTask extends BaseEntity {
 
   @ApiModelProperty(value = "任务状态 10：已创建 20：待下发 30：已下发 40：待开始 50：进行中 60：已完成 70：取消", required = true)
   @Column(columnDefinition = "int(2) not null comment '任务状态 10：已创建 20：待下发 30：已下发 40：待开始 50：进行中 60：已完成 70：取消'")
-  @NotBlank(groups = {Create.class}, message = "任务状态!")
   private Integer taskStatus;
 
   @ApiModelProperty(value = "任务开始时间",required = true)

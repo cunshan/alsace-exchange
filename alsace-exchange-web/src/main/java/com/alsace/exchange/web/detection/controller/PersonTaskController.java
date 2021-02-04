@@ -4,6 +4,7 @@ import com.alsace.exchange.common.base.AlsaceResult;
 import com.alsace.exchange.common.base.BaseController;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
+import com.alsace.exchange.common.validate.groups.Create;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskLocation;
 import com.alsace.exchange.service.detection.domain.PersonTaskOrg;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Api(tags = "人员检测任务", value = "personTask")
@@ -50,7 +52,7 @@ public class PersonTaskController extends BaseController {
 
   @ApiOperation("人员检测任务保存")
   @PostMapping("/save")
-  public AlsaceResult<PersonTask> save(@RequestBody PersonTaskVo param) {
+  public AlsaceResult<PersonTask> save(@RequestBody @Validated(Create.class) PersonTaskVo param) {
     return success(personTaskService.save(param.getTask(), param.getOrgList(), param.getLocationList()));
   }
 
@@ -91,7 +93,7 @@ public class PersonTaskController extends BaseController {
 
   @ApiOperation("下发人员检测任务")
   @PostMapping("/assign")
-  public AlsaceResult<String> assign(@RequestBody List<String> taskCodeList) {
+  public AlsaceResult<String> assign(@RequestBody @NotEmpty(message = "任务编码为空！") List<String> taskCodeList) {
     personTaskService.assign(taskCodeList);
     return success("下发成功！");
   }
