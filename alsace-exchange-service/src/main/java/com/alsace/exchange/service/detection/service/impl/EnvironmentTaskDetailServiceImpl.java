@@ -49,6 +49,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -212,7 +214,7 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
   }
 
   @Override
-  public ByteArrayOutputStream convertReceivePdf(String taskCode) throws IOException, DocumentException {
+  public ByteArrayOutputStream convertReceivePdf(EnvironmentTaskDetail param) throws IOException, DocumentException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     //设值字体样式
     BaseFont bf = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
@@ -221,18 +223,18 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
     // 页面大小
     Rectangle tRectangle = new Rectangle(PageSize.A4);
     // 定义文档
-    Document doc = new Document(tRectangle, 20, 20, 20, 20);
+    Document doc = new Document(tRectangle, 15, 15, 15, 15);
     // 书写器
     PdfWriter writer = PdfWriter.getInstance(doc, out);
     //版本(默认1.4)
     writer.setPdfVersion(PdfWriter.PDF_VERSION_1_2);
     PdfPTable table = new PdfPTable(5);
-    table.setTotalWidth(new float[]{100, 100, 100, 100, 100});
+    table.setTotalWidth(new float[]{80, 100, 100, 100, 50});
     //添加PDF标题内容
-    PdfUtils.addPdfTitle(table, fontBold,"检测结果导出");
-    EnvironmentTaskDetail EnvironmentTaskDetail =new EnvironmentTaskDetail();
-    EnvironmentTaskDetail.setTaskCode(taskCode);
-    List<EnvironmentTaskDetailImport> details = this.findResults(EnvironmentTaskDetail);
+    LocalDateTime dateTime = LocalDateTime.now();
+    DateTimeFormatter dt= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    PdfUtils.addPdfTitle(table, fontBold,"环境检测报告   "+dt.format(dateTime));
+    List<EnvironmentTaskDetailImport> details = this.findResults(param);
     //添加导出信息
     PdfUtils.addEnvPdfTable(table, fontBold, font2, details);
     //打开文档

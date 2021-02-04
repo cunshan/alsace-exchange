@@ -122,10 +122,10 @@ public class EnvironmentTaskDetailController extends BaseController {
   @RequestMapping("/resultExport")
   public void resultExport(HttpServletResponse response,@RequestBody EnvironmentTaskDetail param){
     List<EnvironmentTaskDetailImport> list = environmentTaskDetailService.findResults(param);
-    Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("人员检测结果", "人员检测结果"), PersonTaskDetailImport.class, list);
+    Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("环境检测报告", "环境检测报告"), EnvironmentTaskDetailImport.class, list);
     LocalDateTime time=LocalDateTime.now();
     DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    String excelName="环境检测结果"+time.format(pattern)+".xls";
+    String excelName="环境检测报告"+time.format(pattern)+".xls";
     try(OutputStream out = response.getOutputStream()) {
       response.setContentType("application/ms-excel;charset=UTF-8");
       response.setHeader("Content-Disposition", "attachment;filename="
@@ -138,13 +138,13 @@ public class EnvironmentTaskDetailController extends BaseController {
 
   @ApiOperation("环境检测结果PDF导出")
   @RequestMapping("/resultPdf")
-  public void resultPdf(HttpServletResponse response,@ApiParam(name = "任务编码", value = "taskCode", required = true) @RequestParam("taskCode") String taskCode){
+  public void resultPdf(HttpServletResponse response,@RequestBody EnvironmentTaskDetail param){
     try{
-      ByteArrayOutputStream outputStream=environmentTaskDetailService.convertReceivePdf(taskCode);
+      ByteArrayOutputStream outputStream=environmentTaskDetailService.convertReceivePdf(param);
       response.setContentType(response.getContentType());
       LocalDateTime time=LocalDateTime.now();
       DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-      String pdfName="环境检测结果"+time.format(pattern)+".pdf";
+      String pdfName="环境检测报告"+time.format(pattern)+".pdf";
       response.setHeader("Content-Disposition","attachment; filename=" + URLEncoder.encode( pdfName, "UTF-8"));
       byte[] bytes = outputStream.toByteArray();
       BufferedOutputStream bos = null;

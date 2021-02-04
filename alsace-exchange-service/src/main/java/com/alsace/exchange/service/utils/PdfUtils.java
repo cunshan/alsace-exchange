@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -56,9 +57,10 @@ public class PdfUtils {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     ImageIO.write(image, "png", bos);
                     Image codeImg = Image.getInstance(bos.toByteArray());
-                    codeImg.scaleAbsolute(90, 15);
+                    codeImg.scaleAbsolute(90, 20);
                     cell = new PdfPCell(codeImg);
                     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 } catch (IOException | BadElementException e) {
                     e.printStackTrace();
                 }

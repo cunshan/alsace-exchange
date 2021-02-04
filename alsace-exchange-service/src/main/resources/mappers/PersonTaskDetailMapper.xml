@@ -59,7 +59,12 @@
         </if>
         <if test="param.idCardNo !=null and param.idCardNo !=''">
             <![CDATA[
-            and T.id_card_no >= #{param.idCardNo}
+            and T.id_card_no = #{param.idCardNo}
+            ]]>
+        </if>
+        <if test="param.formCode !=null and param.formCode !=''">
+            <![CDATA[
+            and D.form_code = #{param.formCode}
             ]]>
         </if>
         <choose>
@@ -135,7 +140,12 @@
         </if>
         <if test="param.idCardNo !=null and param.idCardNo !=''">
             <![CDATA[
-            and T.id_card_no >= #{param.idCardNo}
+            and T.id_card_no = #{param.idCardNo}
+            ]]>
+        </if>
+        <if test="param.formCode !=null and param.formCode !=''">
+            <![CDATA[
+            and D.form_code = #{param.formCode}
             ]]>
         </if>
         <choose>
