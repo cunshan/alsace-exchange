@@ -271,4 +271,14 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
     param.setDeleted(false);
     return environmentTaskDetailRepository.save(param);
   }
+
+  @Override
+  public PageResult<EnvironmentTaskDetail> findFormPage(PageParam<EnvironmentTaskDetail> queryDetail, Integer formStatus, String companyNameOrTaxCode) {
+    EnvironmentTaskDetail detail = queryDetail.getParam();
+    detail.setUserDataAccount(getLoginAccount());
+    PageInfo<EnvironmentTaskDetail> pageInfo =
+        PageHelper.startPage(queryDetail.getPageNum(),queryDetail.getPageSize())
+          .doSelectPageInfo(()->environmentTaskDetailMapper.findFormPage(detail,formStatus,companyNameOrTaxCode));
+    return new PageResult<>(pageInfo);
+  }
 }

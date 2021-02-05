@@ -65,5 +65,6 @@
         <if test="param.taskStatus !=null and param.taskStatus !=''">
             and t.task_status = #{param.taskStatus}
         </if>
+        order by t.created_date desc, t.modified_date desc
     </select>
 </mapper>

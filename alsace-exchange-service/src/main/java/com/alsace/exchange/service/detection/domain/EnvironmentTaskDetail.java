@@ -126,4 +126,7 @@ public class EnvironmentTaskDetail extends BaseEntity {
   @Transient
   private List<EnvironmentTaskDetailResult> detailResultList;
 
+  @ApiModelProperty(value = "表单状态 10:进行中 20:已提交")
+  @Transient
+  private Integer formStatus;
 }

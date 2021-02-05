@@ -15,12 +15,7 @@ public class EnvironmentTaskDetailPageVo implements Serializable {
   private static final long serialVersionUID = 1496080653239245711L;
 
   @ApiModelProperty(value = "检测任务号", required = true)
-  @NotBlank(message = "任务号为空！")
   private String taskCode;
-
-  @ApiModelProperty(value = "检测任务表单号", required = true)
-  @NotBlank(message = "检测任务表单号为空！")
-  private String formCode;
 
   @ApiModelProperty(value = "检测明细")
   private List<EnvironmentTaskDetail> detailList;

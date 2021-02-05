@@ -18,14 +18,10 @@ public class EnvironmentTaskDetailPageParamVo implements Serializable {
   @NotBlank(message = "任务号为空！")
   private String taskCode;
 
-  @ApiModelProperty(value = "检测任务表单号", required = true)
-  @NotBlank(message = "检测任务表单号为空！")
-  private String formCode;
-
   @ApiModelProperty(value = "检测状态  10:创建 20:已提交")
   private Integer detailStatus;
 
-  @ApiModelProperty(value = "任务状态 10：进行中 20：已完成")
+  @ApiModelProperty(value = "表单状态 10：进行中 20：已完成")
   private Integer formStatus;
 
   @ApiModelProperty(value = "商户名称或者税号")

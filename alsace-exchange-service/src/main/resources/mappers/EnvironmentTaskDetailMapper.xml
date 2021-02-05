@@ -60,6 +60,7 @@
               and T.created_by = #{param.userDataAccount}
           </otherwise>
         </choose>
+        order by T.created_date desc,t.modified_date desc
     </select>
 
 
@@ -120,5 +121,58 @@
                 and T.created_by = #{param.userDataAccount}
             </otherwise>
         </choose>
+    </select>
+
+    <select id="findFormPage" resultType="com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail">
+       select
+               d.task_code as taskCode,
+               d.address as address,
+               d.category as category,
+               d.charge_person as chargePerson,
+               d.charge_person_id_card as chargePersonIdCard,
+               d.city as city,
+               d.company_code as companyCode,
+               d.company_name as companyName,
+               d.created_by as createdBy,
+               d.created_date as createdDate,
+               d.deleted as deleted,
+               d.detail_code as detailCode,
+               d.detail_status as detailStatus,
+               d.form_code as formCode,
+               d.id as id,
+               d.modified_by as modifiedBy,
+               d.modified_date as modifiedDate,
+               d.org_code as orgCode,
+               d.remarks as remarks,
+               d.scope as scope,
+               d.tag_id as tagId,
+               d.tag_name as tagName,
+               d.tax_code as taxCode,
+               d.tel as tel,
+               t.form_status as formStatus
+        from biz_environment_task_detail d
+        left join  biz_environment_task_form t
+        on t.deleted='0' and t.task_code = #{param.taskCode} and t.created_by = #{param.userDataAccount} and t.form_code = d.form_code
+        where d.task_code=#{param.taskCode}
+
+
+        <if test="param.detailStatus !=null and param.detailStatus !=''">
+            <choose>
+                <when test="10==param.detailStatus">
+                    and (d.detail_status=#{param.detailStatus} or d.detail_status is null)
+                </when>
+                <otherwise>
+                    and d.detail_status=#{param.detailStatus}
+                </otherwise>
+            </choose>
+
+        </if>
+        <if test="companyNameOrTaxCode !=null and companyNameOrTaxCode !=''">
+            <![CDATA[
+            and (d.company_name like CONCAT('%', #{companyNameOrTaxCode},'%') or d.tax_code like CONCAT('%', #{companyNameOrTaxCode},'%'))
+            ]]>
+        </if>
+        order by d.created_date desc,d.modified_date desc
+
     </select>
 </mapper>

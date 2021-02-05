@@ -63,4 +63,9 @@ public interface EnvironmentTaskDetailService extends BaseService<EnvironmentTas
    * @Date: 2021/2/02
    */
   EnvironmentTaskDetail saveDetail(EnvironmentTaskDetail param);
+
+  /**
+   * APP获取任务对应明细分页
+   */
+  PageResult<EnvironmentTaskDetail> findFormPage(PageParam<EnvironmentTaskDetail> queryDetail, Integer formStatus, String companyNameOrTaxCode);
 }

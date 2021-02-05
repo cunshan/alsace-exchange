@@ -20,6 +20,7 @@ import com.alsace.exchange.service.detection.service.PersonTaskService;
 import com.alsace.exchange.web.config.log.annontation.Log;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskDetailPageParamVo;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskDetailPageVo;
+import com.alsace.exchange.web.detection.vo.EnvironmentTaskParam;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailPageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -121,8 +122,12 @@ public class AppController extends BaseController {
   @ApiOperation(value = "环境检测任务列表查询")
   @PostMapping("/env/page")
   @Log(value = "环境检测任务列表查询",moduleName = "APP")
-  public AlsaceResult<PageResult<EnvironmentTask>> envTaskPage(@RequestBody PageParam<EnvironmentTask> param) {
-    return success(environmentTaskService.findEnvironmentTaskApp(param));
+  public AlsaceResult<PageResult<EnvironmentTask>> envTaskPage(@RequestBody PageParam<EnvironmentTaskParam> param) {
+    EnvironmentTask queryTask = new EnvironmentTask();
+    queryTask.setTaskCode(param.getParam().getTaskCode());
+    queryTask.setTaskName(param.getParam().getTaskName());
+    queryTask.setTaskStatus(param.getParam().getTaskStatus());
+    return success(environmentTaskService.findEnvironmentTaskApp(new PageParam<EnvironmentTask>().setParam(queryTask)));
   }
 
   @ApiOperation(value = "开始环境检测任务")
@@ -131,6 +136,7 @@ public class AppController extends BaseController {
   public AlsaceResult<EnvironmentTaskForm> envStartTask(@PathVariable String taskCode) {
     return success(environmentTaskService.startTask(taskCode));
   }
+
 
   @ApiOperation(value = "获取单条环境检测任务明细")
   @PostMapping("/env/detail/get-one")
@@ -156,19 +162,19 @@ public class AppController extends BaseController {
   @ApiOperation(value = "APP环境检测任务明细分页查询")
   @PostMapping("/env/form/page")
   @Log(value = "APP环境检测任务明细分页查询",moduleName = "APP")
-  public AlsaceResult<EnvironmentTaskDetailPageVo> envPage(@RequestBody PageParam<EnvironmentTaskDetailPageParamVo> param) {
+  public AlsaceResult<EnvironmentTaskDetailPageVo> envPage(@RequestBody @Validated PageParam<EnvironmentTaskDetailPageParamVo> param) {
     Assert.notNull(param.getParam(), "查询参数为空！");
     EnvironmentTaskDetailPageParamVo paramVo = param.getParam();
     Assert.hasLength(paramVo.getTaskCode(), "任务编码不能为空！");
-    PageParam<EnvironmentTaskDetail> detailPage = new PageParam<>();
-    detailPage.setPageNum(param.getPageNum()).setPageSize(param.getPageSize());
-    EnvironmentTaskDetail queryParam = new EnvironmentTaskDetail();
-    queryParam.setTaskCode(paramVo.getTaskCode());
-    queryParam.setDeleted(false);
-    detailPage.setParam(queryParam);
-    PageResult<EnvironmentTaskDetail> page = environmentTaskDetailService.findPage(detailPage);
+    //查询检测明细
+    PageParam<EnvironmentTaskDetail> queryDetail = new PageParam<>();
+    EnvironmentTaskDetail query = new EnvironmentTaskDetail();
+    query.setTaskCode(paramVo.getTaskCode());
+    query.setDetailStatus(paramVo.getDetailStatus());
+    queryDetail.setParam(query).setPageNum(param.getPageNum()).setPageSize(param.getPageSize());
+    PageResult<EnvironmentTaskDetail> detailPage = environmentTaskDetailService.findFormPage(queryDetail,paramVo.getFormStatus(),paramVo.getCompanyNameOrTaxCode());
     EnvironmentTaskDetailPageVo resVo = new EnvironmentTaskDetailPageVo();
-    resVo.setDetailList(page.getRecords()).setTaskCode(paramVo.getTaskCode()).setFormCode(paramVo.getFormCode());
+    resVo.setDetailList(detailPage.getRecords()).setTaskCode(paramVo.getTaskCode());
     return success(resVo);
   }
 
