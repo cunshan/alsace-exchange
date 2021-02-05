@@ -229,4 +229,19 @@
             ]]>
         </if>
     </select>
+
+    <select id="findDetailTypeCount" resultType="java.util.Map">
+        select dr.detail_type   sampleCode,
+               dict.value_label sampleName,
+               count(1)         sampleCount
+        from biz_person_task_detail d,
+             biz_person_task_detail_result dr,
+             (select * from sys_dict_data where type_code = 'project') dict
+        where d.detail_code = dr.detail_code
+          and dict.value_code = dr.detail_type
+          and d.form_code = #{formCode}
+          and d.deleted = 0
+          and dr.deleted = 0
+        group by dr.detail_type, dict.value_label
+    </select>
 </mapper>

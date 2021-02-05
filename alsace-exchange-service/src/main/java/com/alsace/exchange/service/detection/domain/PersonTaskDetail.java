@@ -18,6 +18,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -152,4 +153,11 @@ public class PersonTaskDetail extends BaseEntity {
   @Transient
   private String testTubeNo;
 
+  @ApiModelProperty(value = "表单被检测人员数量")
+  @Transient
+  private long personCount;
+
+  @ApiModelProperty(value = "检测类型数量")
+  @Transient
+  private List<Map> fromTypeCount;
 }

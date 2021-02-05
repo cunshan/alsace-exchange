@@ -37,6 +37,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -244,13 +244,22 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   }
 
   @Override
-  public PageResult<PersonTaskDetail> findFromPage(PageParam<PersonTaskDetail> detailPage) {
+  public PageResult<PersonTaskDetailImport> findFromPage(PageParam<PersonTaskDetail> detailPage) {
     PersonTaskDetail personTaskDetail = detailPage.getParam();
     String loginAccount = getLoginAccount();
     personTaskDetail.setUserDataAccount(loginAccount);
-    PageInfo<PersonTaskDetail> pageInfo =
+    PageInfo<PersonTaskDetailImport> pageInfo =
             PageHelper.startPage(detailPage.getPageNum(),detailPage.getPageSize())
                     .doSelectPageInfo(()->personTaskDetailMapper.findFromPage(personTaskDetail));
+    pageInfo.getList().forEach(detail->{
+      //计算每个表单已检测人员数量
+      PersonTaskDetail detailParam = new PersonTaskDetail();
+      detailParam.setFormCode(detail.getFormCode()).setDetailStatus(TaskDetailStatus.SUBMITTED.status()).setDeleted(false);
+      long personCount = personTaskDetailRepository.count(Example.of(detailParam));
+      detail.setPersonCount(personCount);
+      //计算表单中每个类型的提交数量
+      detail.setFromTypeCount(personTaskDetailMapper.findDetailTypeCount(detail.getFormCode()));
+    });
     return new PageResult<>(pageInfo);
   }
 }

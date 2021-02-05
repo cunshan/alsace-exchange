@@ -6,7 +6,11 @@ import cn.afterturn.easypoi.handler.inter.IExcelModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.persistence.Column;
+import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 @Data
 public class PersonTaskDetailImport implements IExcelDataModel, IExcelModel, Serializable {
@@ -76,6 +80,15 @@ public class PersonTaskDetailImport implements IExcelDataModel, IExcelModel, Ser
 
   @ApiModelProperty(value = "检测结果")
   private String positive;
+
+  @ApiModelProperty(value = "表单被检测人员数量")
+  private long personCount;
+
+  @ApiModelProperty(value = "检测类型数量")
+  private List<Map> fromTypeCount;
+
+  @ApiModelProperty(value = "表单编码")
+  private String formCode;
 
   private int rowNum;
   private String errorMsg;

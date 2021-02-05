@@ -10,6 +10,7 @@ import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskForm;
 import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskDetailService;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskFormService;
@@ -103,9 +104,9 @@ public class AppController extends BaseController {
     queryParam.setFormCode(paramVo.getFormCode());
     queryParam.setDeleted(false);
     detailPage.setParam(queryParam);
-    PageResult<PersonTaskDetail> page = personTaskDetailService.findFromPage(detailPage);
+    PageResult<PersonTaskDetailImport> page = personTaskDetailService.findFromPage(detailPage);
     PersonTaskDetailPageVo resVo = new PersonTaskDetailPageVo();
-    resVo.setDetailList(page.getRecords()).setTaskCode(paramVo.getTaskCode()).setFormCode(paramVo.getFormCode());
+    resVo.setDetailImportsList(page.getRecords()).setTaskCode(paramVo.getTaskCode()).setFormCode(paramVo.getFormCode());
     return success(resVo);
   }
 

@@ -72,5 +72,5 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
      * @Author: wayne
      * @Date: 2021/2/1
      */
-    PageResult<PersonTaskDetail> findFromPage(PageParam<PersonTaskDetail> detailPage);
+    PageResult<PersonTaskDetailImport> findFromPage(PageParam<PersonTaskDetail> detailPage);
 }

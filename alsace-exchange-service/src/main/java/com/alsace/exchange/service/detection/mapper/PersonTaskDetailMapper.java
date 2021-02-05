@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface PersonTaskDetailMapper {
@@ -32,4 +33,12 @@ public interface PersonTaskDetailMapper {
      * @Date: 2021/2/1
      */
     List<PersonTaskDetailImport> findFromPage(@Param("param")PersonTaskDetail param);
+
+    /**
+     * 查询表单已提交采样数量 根据类型分组
+     * @param formCode 表单编码
+     * @Author: wayne
+     * @Date: 2021/2/5
+     */
+    List<Map> findDetailTypeCount(@Param("formCode")String formCode);
 }

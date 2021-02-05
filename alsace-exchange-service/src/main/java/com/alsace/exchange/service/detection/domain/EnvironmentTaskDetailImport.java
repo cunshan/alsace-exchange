@@ -58,6 +58,12 @@ public class EnvironmentTaskDetailImport implements IExcelDataModel, IExcelModel
   @Excel(name = "标签名称", isImportField = "true")
   private String tagName;
 
+  @ApiModelProperty(value = "采样编码")
+  private String testTubeNo;
+
+  @ApiModelProperty(value = "检测结果")
+  private String positive;
+
   private int rowNum;
   private String errorMsg;
 }

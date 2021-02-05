@@ -1,6 +1,7 @@
 package com.alsace.exchange.web.detection.vo;
 
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -24,5 +25,8 @@ public class PersonTaskDetailPageVo implements Serializable {
 
   @ApiModelProperty(value = "检测明细")
   private List<PersonTaskDetail> detailList;
+
+  @ApiModelProperty(value = "检测明细")
+  private List<PersonTaskDetailImport> detailImportsList;
 
 }

@@ -72,18 +72,18 @@ public class PdfUtils {
     }
 
     public static void addEnvPdfTable(PdfPTable table, Font fontBold, Font font2, List<EnvironmentTaskDetailImport> details) {
-        table.addCell(PdfUtils.getPDFCell("姓名", fontBold, true));
-        table.addCell(PdfUtils.getPDFCell("身份证", fontBold, true));
+        table.addCell(PdfUtils.getPDFCell("企业名称", fontBold, true));
+        table.addCell(PdfUtils.getPDFCell("税号", fontBold, true));
         table.addCell(PdfUtils.getPDFCell("采样管码", fontBold, true));
         table.addCell(PdfUtils.getPDFCell("检测时间", fontBold, true));
         table.addCell(PdfUtils.getPDFCell("检测结果", fontBold, true));
-//        details.forEach(detail -> {
-//            table.addCell(PdfUtils.getPDFCell(detail.get, font2, false));
-//            table.addCell(PdfUtils.getPDFCell(detail.getIdCardNo(), font2, false));
-//            table.addCell(PdfUtils.getPDFCell(detail.getPersonName(), font2, false));
-//            table.addCell(PdfUtils.getPDFCell(detail.getIdCardNo(), font2, false));
-//            table.addCell(PdfUtils.getPDFCell(detail.getPersonName(), font2, false));
-//        });
+        details.forEach(detail -> {
+            table.addCell(PdfUtils.getPDFCell(detail.getCompanyName(), font2, false));
+            table.addCell(PdfUtils.getPDFCell(detail.getTaxCode(), font2, false));
+            table.addCell(PdfUtils.getPDFCell(detail.getTestTubeNo(), font2, false));
+            table.addCell(PdfUtils.getPDFCell(detail.getPositive(), font2, false));
+            table.addCell(PdfUtils.getPDFCell(detail.getPositive(), font2, false));
+        });
     }
 
 
