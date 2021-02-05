@@ -54,7 +54,7 @@ public interface EnvironmentTaskDetailService extends BaseService<EnvironmentTas
    * @Author: wayne
    * @Date: 2021/2/02
    */
-  ByteArrayOutputStream convertReceivePdf(String taskCode) throws IOException, DocumentException;
+  ByteArrayOutputStream convertReceivePdf(EnvironmentTaskDetail param) throws IOException, DocumentException;
 
   /**
    * 保存明细

@@ -48,6 +48,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -217,7 +220,7 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
     // 页面大小
     Rectangle tRectangle = new Rectangle(PageSize.A4);
     // 定义文档
-    Document doc = new Document(tRectangle, 20, 20, 20, 20);
+    Document doc = new Document(tRectangle, 15, 15, 15, 15);
     // 书写器
     PdfWriter writer = PdfWriter.getInstance(doc, out);
     //版本(默认1.4)
@@ -225,7 +228,9 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
     PdfPTable table = new PdfPTable(5);
     table.setTotalWidth(new float[]{80, 100, 100, 100, 50});
     //添加PDF标题内容
-    PdfUtils.addPdfTitle(table, fontBold,"检测结果导出");
+    LocalDateTime dateTime = LocalDateTime.now();
+    DateTimeFormatter dt= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    PdfUtils.addPdfTitle(table, fontBold,"人员检测报告   "+dt.format(dateTime));
     List<PersonTaskDetailImport> details = this.findResults(param);
     //添加导出信息
     PdfUtils.addPdfTable(table, fontBold, font2, details);

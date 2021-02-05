@@ -129,7 +129,6 @@ public class PersonTaskDetailController extends BaseController {
   @ApiOperation("人员检测结果导出")
   @RequestMapping("/resultExport")
   public void resultExport(HttpServletResponse response,@RequestBody PersonTaskDetail param){
-//    PersonTaskDetail param =new PersonTaskDetail();
     List<PersonTaskDetailImport> list = personTaskDetailService.findResults(param);
     Workbook workBook = ExcelExportUtil.exportExcel(new ExportParams("人员检测结果", "人员检测结果"), PersonTaskDetailImport.class, list);
     LocalDateTime time=LocalDateTime.now();
