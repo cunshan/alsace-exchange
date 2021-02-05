@@ -5,4 +5,5 @@ import com.alsace.exchange.service.sys.domain.OperationLog;
 
 public interface OperationLogService extends BaseService<OperationLog,Long> {
 
+
 }

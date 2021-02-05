@@ -2,6 +2,7 @@ package com.alsace.exchange.service.sys.domain;
 
 import com.alsace.exchange.common.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,84 +28,98 @@ public class OperationLog extends BaseEntity {
    * 登录账号
    */
   @Column(columnDefinition = "varchar(32) comment '登录人账号'")
+  @ApiModelProperty("登录人账号")
   private String loginAccount;
 
   /**
    * 用户名
    */
   @Column(columnDefinition = "varchar(32) comment '登录人姓名'")
+  @ApiModelProperty("登录人姓名")
   private String userName;
 
   /**
    * 用户操作
    */
   @Column(columnDefinition = "varchar(128) comment '用户操作'")
+  @ApiModelProperty("用户操作")
   private String operation;
 
   /**
    * 日志类型
    */
   @Column(columnDefinition = "varchar(32) comment '日志类型'")
+  @ApiModelProperty("日志类型")
   private String logType;
 
   /**
    * 请求方法
    */
   @Column(columnDefinition = "varchar(255) comment '请求方法'")
+  @ApiModelProperty("请求方法")
   private String method;
 
   /**
    * 请求参数
    */
   @Column(columnDefinition = "text comment '请求参数'")
+  @ApiModelProperty("请求参数")
   private String params;
 
   /**
    * 返回结果
    */
   @Column(columnDefinition = "text comment '返回结果'")
+  @ApiModelProperty("返回结果")
   private String result;
 
   /**
    * 执行时长(毫秒)
    */
   @Column(columnDefinition = "bigint(20) comment '执行时长(毫秒)'")
+  @ApiModelProperty("执行时长(毫秒)")
   private Long time;
 
   /**
    * IP地址
    */
   @Column(columnDefinition = "varchar(32) comment 'IP地址'")
+  @ApiModelProperty("IP地址")
   private String ip;
 
   /**
    * 模块名称
    */
   @Column(columnDefinition = "varchar(255) comment '模块名称'")
+  @ApiModelProperty("模块名称")
   private String moduleName;
 
   /**
    * 请求地址
    */
   @Column(columnDefinition = "varchar(255) comment '请求地址'")
+  @ApiModelProperty("请求地址")
   private String requestUrl;
 
   /**
    * 请求方法
    */
   @Column(columnDefinition = "varchar(255) comment '请求方法'")
+  @ApiModelProperty("请求方法")
   private String requestMethod;
 
   /**
    * 浏览器信息
    */
   @Column(columnDefinition = "varchar(64) comment '浏览器信息'")
+  @ApiModelProperty("浏览器信息")
   private String userAgent;
 
   /**
    * 异常信息
    */
   @Column(columnDefinition = "text comment '异常信息'")
+  @ApiModelProperty("异常信息")
   private String exception;
 
 
