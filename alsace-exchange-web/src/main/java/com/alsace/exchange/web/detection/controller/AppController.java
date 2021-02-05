@@ -11,6 +11,7 @@ import com.alsace.exchange.service.detection.domain.EnvironmentTaskForm;
 import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
 import com.alsace.exchange.service.detection.domain.PersonTaskForm;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskDetailService;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskFormService;
@@ -22,11 +23,16 @@ import com.alsace.exchange.web.config.log.annontation.Log;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskDetailPageParamVo;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskDetailPageVo;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskParam;
+import com.alsace.exchange.web.detection.vo.PersonTaskDetailInfoVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailPageVo;
+import com.alsace.exchange.web.detection.vo.PersonTaskDetailResultVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Resource;
 import org.apache.shiro.util.Assert;
-import org.apache.shiro.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,13 +40,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import java.util.List;
-
 @RestController
 @RequestMapping("/app")
 @Api(value = "APP对应接口", tags = "APP对应接口")
 public class AppController extends BaseController {
+
+  private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
   @Resource
   private PersonTaskService personTaskService;
@@ -73,6 +78,7 @@ public class AppController extends BaseController {
   @PostMapping("/person/detail/get-one")
   @Log(value = "获取单条人员检测任务明细",moduleName = "APP")
   public AlsaceResult<PersonTaskDetail> detail(@RequestBody PersonTaskDetail param) {
+
     param.setDeleted(false);
     PersonTaskDetail detail = personTaskDetailService.findOne(param);
     if (detail == null) {
@@ -117,6 +123,31 @@ public class AppController extends BaseController {
     personTaskFormService.submitForm(formCodeList);
     return success("提交成功", null);
   }
+
+  @ApiOperation(value = "人员检测任务按照身份证号查询检测记录")
+  @PostMapping("/person/result/page")
+  @Log(value = "人员检测任务按照身份证号查询检测记录",moduleName = "APP")
+  public AlsaceResult<PersonTaskDetailInfoVo> resultPage(@RequestBody PageParam<String> pageParam) {
+    PageResult<PersonTaskDetail> details = personTaskDetailService.findOwnPage(pageParam);
+    PersonTaskDetailInfoVo res = null;
+    List<PersonTaskDetailResultVo> vos = new ArrayList<>();
+    for (PersonTaskDetail detail : details.getRecords()) {
+      if(res ==null){
+        res =new PersonTaskDetailInfoVo().setPersonName(detail.getPersonName()).setTel(detail.getTel());
+      }
+      //查询对应的检测结果
+      List<PersonTaskDetailResult> results = personTaskDetailService.findResultsByDetailCode(detail.getDetailCode());
+      vos.add(new PersonTaskDetailResultVo(results,detail.getDetectionDate()==null? "":sdf.format(detail.getDetectionDate())));
+    }
+    if(res !=null){
+      res.setResultPage(new PageResult<PersonTaskDetailResultVo>().setRecords(vos).setPageNum(pageParam.getPageNum()).setPageSize(pageParam.getPageSize()));
+    }
+    return success("提交成功", res);
+  }
+
+
+
+
 
   //============ 环境检测 =============
 

@@ -117,6 +117,10 @@ public class PersonTaskDetail extends BaseEntity {
   @Column(columnDefinition = "int(2) not null default 10 comment '明细状态 10:创建 20:已提交'")
   private Integer detailStatus;
 
+  @ApiModelProperty(value = "检测时间")
+  @Column(columnDefinition = "datetime comment '检测时间'")
+  private Date detectionDate;
+
 
   @Transient
   private List<PersonTaskDetailResult> detailResultList;

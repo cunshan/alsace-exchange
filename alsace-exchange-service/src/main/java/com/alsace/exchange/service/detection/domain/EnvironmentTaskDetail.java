@@ -96,6 +96,10 @@ public class EnvironmentTaskDetail extends BaseEntity {
   @Column(columnDefinition = "int(2) not null default 10 comment '明细状态 10:创建 20:已提交'")
   private Integer detailStatus;
 
+  @ApiModelProperty(value = "检测时间")
+  @Column(columnDefinition = "datetime comment '检测时间'")
+  private Date detectionDate;
+
   /**
    * 标签名称 用于导入  数据库加上字段吧 展示不用关联了
    */

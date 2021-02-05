@@ -73,4 +73,14 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
      * @Date: 2021/2/1
      */
     PageResult<PersonTaskDetailImport> findFromPage(PageParam<PersonTaskDetail> detailPage);
+
+  /**
+   * 获取自己的检测记录 身份证对应的检测记录
+   */
+  PageResult<PersonTaskDetail> findOwnPage(PageParam<String> setParam);
+
+  /**
+   * 查询对应的试管结果结果
+   */
+  List<PersonTaskDetailResult> findResultsByDetailCode(String detailCode);
 }

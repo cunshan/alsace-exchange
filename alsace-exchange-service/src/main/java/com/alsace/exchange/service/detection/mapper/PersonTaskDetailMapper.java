@@ -3,6 +3,7 @@ package com.alsace.exchange.service.detection.mapper;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
+import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -41,4 +42,5 @@ public interface PersonTaskDetailMapper {
      * @Date: 2021/2/5
      */
     List<Map> findDetailTypeCount(@Param("formCode")String formCode);
+
 }
