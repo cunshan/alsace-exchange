@@ -13,6 +13,7 @@ import com.alsace.exchange.common.enums.AutoFillType;
 import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.common.utils.AlsaceBeanUtils;
 import com.alsace.exchange.common.utils.IdUtils;
+import com.alsace.exchange.service.detection.domain.PersonDetectionMethodCount;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
@@ -276,6 +277,11 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
     PersonTaskDetailResult queryResult = new PersonTaskDetailResult();
     queryResult.setDetailCode(detailCode).setDeleted(false);
     return this.personTaskDetailResultRepository.findAll(Example.of(queryResult));
+  }
+
+  @Override
+  public List<PersonDetectionMethodCount> findMethodCount(String taskCode, String formCode) {
+    return personTaskDetailMapper.findMethodCount(taskCode,formCode);
   }
 
 }

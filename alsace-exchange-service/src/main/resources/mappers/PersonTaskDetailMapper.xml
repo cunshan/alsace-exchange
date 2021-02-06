@@ -244,4 +244,16 @@
           and dr.deleted = 0
         group by dr.detail_type, dict.value_label
     </select>
+
+    <select id="findMethodCount" resultType="com.alsace.exchange.service.detection.domain.PersonDetectionMethodCount">
+        select
+            r.detail_type as detectionMethod,count(1) as count
+        from biz_person_task_detail t ,biz_person_task_detail_result r
+        where t.detail_code = r.detail_code
+          and t.task_code='P21020100001'
+          and t.form_code='PF210202000001'
+          and t.detail_status='20'
+          and t.deleted='0'
+        group by r.detail_type
+    </select>
 </mapper>

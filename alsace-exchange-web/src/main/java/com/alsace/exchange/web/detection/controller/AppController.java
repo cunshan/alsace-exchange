@@ -8,11 +8,13 @@ import com.alsace.exchange.common.exception.AlsaceException;
 import com.alsace.exchange.service.detection.domain.EnvironmentTask;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskDetail;
 import com.alsace.exchange.service.detection.domain.EnvironmentTaskForm;
+import com.alsace.exchange.service.detection.domain.PersonDetectionMethodCount;
 import com.alsace.exchange.service.detection.domain.PersonTaskApp;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
 import com.alsace.exchange.service.detection.domain.PersonTaskForm;
+import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskDetailService;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskFormService;
 import com.alsace.exchange.service.detection.service.EnvironmentTaskService;
@@ -24,6 +26,7 @@ import com.alsace.exchange.web.detection.vo.EnvironmentTaskDetailPageParamVo;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskDetailPageVo;
 import com.alsace.exchange.web.detection.vo.EnvironmentTaskParam;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailInfoVo;
+import com.alsace.exchange.web.detection.vo.PersonTaskDetailPageDetailVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailPageVo;
 import com.alsace.exchange.web.detection.vo.PersonTaskDetailResultVo;
 import io.swagger.annotations.Api;
@@ -103,16 +106,30 @@ public class AppController extends BaseController {
     Assert.notNull(param.getParam(), "查询参数为空！");
     PersonTaskDetailPageVo paramVo = param.getParam();
     Assert.hasLength(paramVo.getTaskCode(), "任务编码不能为空！");
+    Assert.hasLength(paramVo.getFormCode(),"表单编码不能为空！");
     PageParam<PersonTaskDetail> detailPage = new PageParam<>();
     detailPage.setPageNum(param.getPageNum()).setPageSize(param.getPageSize());
     PersonTaskDetail queryParam = new PersonTaskDetail();
     queryParam.setTaskCode(paramVo.getTaskCode());
     queryParam.setFormCode(paramVo.getFormCode());
     queryParam.setDeleted(false);
+    queryParam.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
     detailPage.setParam(queryParam);
-    PageResult<PersonTaskDetailImport> page = personTaskDetailService.findFromPage(detailPage);
+    PageResult<PersonTaskDetail> page = personTaskDetailService.findPage(detailPage);
+
+    List<PersonTaskDetailPageDetailVo> detailVos = new ArrayList<>();
+    for (PersonTaskDetail record : page.getRecords()) {
+      List<PersonTaskDetailResult> testTubeList = personTaskDetailService.findResultsByDetailCode(record.getDetailCode());
+      detailVos.add(new PersonTaskDetailPageDetailVo().setPersonName(record.getPersonName()).setTestTubeList(testTubeList));
+    }
+
+    //查询表单对应检测项目数量
+    List<PersonDetectionMethodCount> countList = personTaskDetailService.findMethodCount(paramVo.getTaskCode(),paramVo.getFormCode());
     PersonTaskDetailPageVo resVo = new PersonTaskDetailPageVo();
-    resVo.setDetailImportsList(page.getRecords()).setTaskCode(paramVo.getTaskCode()).setFormCode(paramVo.getFormCode());
+    resVo.setDetailList(detailVos).setTaskCode(paramVo.getTaskCode())
+        .setFormCode(paramVo.getFormCode())
+        .setPersonCount(page.getTotalCount())
+        .setMethodList(countList);
     return success(resVo);
   }
 

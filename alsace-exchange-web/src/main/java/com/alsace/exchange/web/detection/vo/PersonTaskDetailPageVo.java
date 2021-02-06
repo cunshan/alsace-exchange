@@ -1,5 +1,6 @@
 package com.alsace.exchange.web.detection.vo;
 
+import com.alsace.exchange.service.detection.domain.PersonDetectionMethodCount;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,10 +24,13 @@ public class PersonTaskDetailPageVo implements Serializable {
   @NotBlank(message = "检测任务表单号为空！")
   private String formCode;
 
-  @ApiModelProperty(value = "检测明细")
-  private List<PersonTaskDetail> detailList;
+  @ApiModelProperty(value = "检测总人数")
+  private long personCount;
+
+  private List<PersonDetectionMethodCount> methodList;
 
   @ApiModelProperty(value = "检测明细")
-  private List<PersonTaskDetailImport> detailImportsList;
+  private List<PersonTaskDetailPageDetailVo> detailList;
+
 
 }

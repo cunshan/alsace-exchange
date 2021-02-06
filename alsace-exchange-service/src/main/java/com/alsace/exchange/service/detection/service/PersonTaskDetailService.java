@@ -3,6 +3,7 @@ package com.alsace.exchange.service.detection.service;
 import com.alsace.exchange.common.base.BaseService;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
+import com.alsace.exchange.service.detection.domain.PersonDetectionMethodCount;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
@@ -84,4 +85,9 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
    * 查询对应的试管结果结果
    */
   List<PersonTaskDetailResult> findResultsByDetailCode(String detailCode);
+
+  /**
+   * 获取检测项目对应样本数
+   */
+  List<PersonDetectionMethodCount> findMethodCount(String taskCode, String formCode);
 }

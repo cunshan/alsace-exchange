@@ -1,5 +1,6 @@
 package com.alsace.exchange.service.detection.mapper;
 
+import com.alsace.exchange.service.detection.domain.PersonDetectionMethodCount;
 import com.alsace.exchange.service.detection.domain.PersonTask;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
@@ -43,4 +44,8 @@ public interface PersonTaskDetailMapper {
      */
     List<Map> findDetailTypeCount(@Param("formCode")String formCode);
 
+  /**
+   * 按照检测项目分组统计
+   */
+  List<PersonDetectionMethodCount> findMethodCount(@Param("taskCode") String taskCode,@Param("formCode") String formCode);
 }
