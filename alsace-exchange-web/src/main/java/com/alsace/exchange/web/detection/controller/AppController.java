@@ -126,7 +126,11 @@ public class AppController extends BaseController {
           .setTestTubeList(testTubeList));
     }
     PageResult<PersonTaskDetailPageDetailVo> pageResult = new PageResult<>();
-    pageResult.setRecords(detailVos).setPageNum(page.getPageNum()).setPageSize(page.getPageSize());
+    pageResult.setRecords(detailVos)
+        .setPageNum(page.getPageNum())
+        .setPageSize(page.getPageSize())
+        .setTotalCount(page.getTotalCount())
+        .setTotalPages(page.getTotalPages());
     //查询表单对应检测项目数量
     List<PersonDetectionMethodCount> countList = personTaskDetailService.findMethodCount(paramVo.getTaskCode(),paramVo.getFormCode());
     PersonTaskDetailPageVo resVo = new PersonTaskDetailPageVo();
