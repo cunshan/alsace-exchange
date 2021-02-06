@@ -179,7 +179,7 @@ public class AppController extends BaseController {
     queryTask.setTaskCode(param.getParam().getTaskCode());
     queryTask.setTaskName(param.getParam().getTaskName());
     queryTask.setTaskStatus(param.getParam().getTaskStatus());
-    return success(environmentTaskService.findEnvironmentTaskApp(new PageParam<EnvironmentTask>().setParam(queryTask)));
+    return success(environmentTaskService.findEnvironmentTaskApp(new PageParam<EnvironmentTask>().setParam(queryTask)).setPageNum(param.getPageNum()).setPageSize(param.getPageSize()));
   }
 
   @ApiOperation(value = "开始环境检测任务")
