@@ -283,6 +283,7 @@ public class PersonTaskServiceImpl extends AbstractBaseServiceImpl<PersonTask> i
     Assert.notNull(dbDetail, "该身份证对应检测明细已经存在！");
     //全民检测 直接添加检测明细
     param.setDetailCode(orderNoGenerator.getOrderNo(OrderNoGenerator.OrderNoType.PERSON_TASK_DETAIL_CODE));
+    param.setDetectionDate(new Date());
     param.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
     personTaskDetailService.save(param);
     //添加试管信息

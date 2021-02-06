@@ -241,6 +241,7 @@ public class EnvironmentTaskServiceImpl extends AbstractBaseServiceImpl<Environm
     Assert.state(TaskDetailStatus.INIT.status().equals(dbDetail.getDetailStatus()), String.format("明细已经提交！[%s]", dbDetail.getDetailCode()));
     //任务明细改成已提交
     dbDetail.setDetailStatus(TaskDetailStatus.SUBMITTED.status());
+    dbDetail.setDetectionDate(new Date());
     this.environmentTaskDetailService.save(dbDetail);
     List<EnvironmentTaskDetailResult> resultList = param.getDetailResultList();
     // 提交检测明细样本要在3条之内
