@@ -120,7 +120,10 @@ public class AppController extends BaseController {
     List<PersonTaskDetailPageDetailVo> detailVos = new ArrayList<>();
     for (PersonTaskDetail record : page.getRecords()) {
       List<PersonTaskDetailResult> testTubeList = personTaskDetailService.findResultsByDetailCode(record.getDetailCode());
-      detailVos.add(new PersonTaskDetailPageDetailVo().setPersonName(record.getPersonName()).setTestTubeList(testTubeList));
+      detailVos.add(new PersonTaskDetailPageDetailVo()
+          .setPersonName(record.getPersonName())
+          .setIdCardNo(record.getIdCardNo())
+          .setTestTubeList(testTubeList));
     }
 
     //查询表单对应检测项目数量

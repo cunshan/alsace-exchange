@@ -27,6 +27,7 @@ public class PersonTaskDetailPageVo implements Serializable {
   @ApiModelProperty(value = "检测总人数")
   private long personCount;
 
+  @ApiModelProperty("检测项目对应统计数")
   private List<PersonDetectionMethodCount> methodList;
 
   @ApiModelProperty(value = "检测明细")
