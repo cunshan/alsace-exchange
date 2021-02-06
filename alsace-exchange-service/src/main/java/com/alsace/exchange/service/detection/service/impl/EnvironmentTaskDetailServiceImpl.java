@@ -93,6 +93,7 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
     EnvironmentTaskDetail dbDetail = this.getOneById(param.getId(), false);
     Assert.notNull(dbDetail, "对应明细不存在！");
     Assert.state(TaskDetailStatus.INIT.status().equals(dbDetail.getDetailStatus()), "对应明细状态已提交，不能修改！");
+    BeanUtils.copyProperties(param,dbDetail);
     return getJpaRepository().saveAndFlush(dbDetail);
   }
 
@@ -282,5 +283,15 @@ public class EnvironmentTaskDetailServiceImpl extends AbstractBaseServiceImpl<En
         PageHelper.startPage(queryDetail.getPageNum(),queryDetail.getPageSize())
           .doSelectPageInfo(()->environmentTaskDetailMapper.findFormPage(detail,formStatus,companyNameOrTaxCode));
     return new PageResult<>(pageInfo);
+  }
+
+  @Override
+  public void updateStatus(EnvironmentTaskDetail param) {
+    Assert.notNull(param.getId(), Constants.ID_NOT_NULL_ERROR);
+    EnvironmentTaskDetail dbDetail = this.getOneById(param.getId(), false);
+    Assert.notNull(dbDetail, "对应明细不存在！");
+    Assert.state(TaskDetailStatus.INIT.status().equals(dbDetail.getDetailStatus()), "对应明细已提交，不能修改！");
+    dbDetail.setDetailStatus(param.getDetailStatus());
+    this.environmentTaskDetailRepository.saveAndFlush(dbDetail);
   }
 }

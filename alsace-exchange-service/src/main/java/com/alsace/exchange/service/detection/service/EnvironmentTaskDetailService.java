@@ -68,4 +68,9 @@ public interface EnvironmentTaskDetailService extends BaseService<EnvironmentTas
    * APP获取任务对应明细分页
    */
   PageResult<EnvironmentTaskDetail> findFormPage(PageParam<EnvironmentTaskDetail> queryDetail, Integer formStatus, String companyNameOrTaxCode);
+
+  /**
+   * 更新状态
+   */
+  void updateStatus(EnvironmentTaskDetail dbDetail);
 }
