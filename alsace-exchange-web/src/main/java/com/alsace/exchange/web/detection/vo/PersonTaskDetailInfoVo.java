@@ -1,11 +1,12 @@
 package com.alsace.exchange.web.detection.vo;
 
-import com.alsace.exchange.common.base.PageResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
@@ -21,6 +22,6 @@ public class PersonTaskDetailInfoVo implements Serializable {
   private String tel;
 
   @ApiModelProperty("试管列表")
-  PageResult<PersonTaskDetailResultVo> resultPage;
+  List<PersonTaskDetailResultVo> resultList;
 
 }

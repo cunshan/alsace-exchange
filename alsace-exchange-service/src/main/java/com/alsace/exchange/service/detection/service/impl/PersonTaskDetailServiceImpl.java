@@ -5,7 +5,6 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.alsace.exchange.common.annontation.AutoFill;
 import com.alsace.exchange.common.base.AbstractBaseServiceImpl;
-import com.alsace.exchange.common.base.AlsacePageHelper;
 import com.alsace.exchange.common.base.CodeName;
 import com.alsace.exchange.common.base.PageParam;
 import com.alsace.exchange.common.base.PageResult;
@@ -17,7 +16,6 @@ import com.alsace.exchange.common.utils.IdUtils;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import com.alsace.exchange.service.detection.domain.PersonTaskDetailResult;
-import com.alsace.exchange.service.detection.emums.TaskDetailResultStatus;
 import com.alsace.exchange.service.detection.emums.TaskDetailStatus;
 import com.alsace.exchange.service.detection.excel.PersonTaskDetailVerifyService;
 import com.alsace.exchange.service.detection.mapper.PersonTaskDetailMapper;
@@ -40,7 +38,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
@@ -267,12 +264,11 @@ public class PersonTaskDetailServiceImpl extends AbstractBaseServiceImpl<PersonT
   }
 
   @Override
-  public PageResult<PersonTaskDetail> findOwnPage(PageParam<String> detailPage) {
-    Assert.hasLength(detailPage.getParam(),"身份证为空！");
+  public List<PersonTaskDetail> findAllByIdCardNo(String idCardNo) {
+    Assert.hasLength(idCardNo,"身份证为空！");
     PersonTaskDetail queryDetail = new PersonTaskDetail();
-    queryDetail.setDetailStatus(TaskDetailStatus.SUBMITTED.status()).setIdCardNo(detailPage.getParam()).setDeleted(false);
-    Page<PersonTaskDetail> page = getJpaRepository().findAll(Example.of(queryDetail), AlsacePageHelper.page(detailPage));
-    return new PageResult<>(page);
+    queryDetail.setDetailStatus(TaskDetailStatus.SUBMITTED.status()).setIdCardNo(idCardNo).setDeleted(false);
+    return getJpaRepository().findAll(Example.of(queryDetail));
   }
 
   @Override

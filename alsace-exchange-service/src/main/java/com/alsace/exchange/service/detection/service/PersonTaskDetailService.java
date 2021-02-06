@@ -76,8 +76,9 @@ public interface PersonTaskDetailService extends BaseService<PersonTaskDetail,Lo
 
   /**
    * 获取自己的检测记录 身份证对应的检测记录
+   * @param setParam
    */
-  PageResult<PersonTaskDetail> findOwnPage(PageParam<String> setParam);
+  List<PersonTaskDetail> findAllByIdCardNo(String setParam);
 
   /**
    * 查询对应的试管结果结果

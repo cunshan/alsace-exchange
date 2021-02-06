@@ -125,13 +125,13 @@ public class AppController extends BaseController {
   }
 
   @ApiOperation(value = "人员检测任务按照身份证号查询检测记录")
-  @PostMapping("/person/result/page")
+  @PostMapping("/person/result/page/{idCardNo}")
   @Log(value = "人员检测任务按照身份证号查询检测记录",moduleName = "APP")
-  public AlsaceResult<PersonTaskDetailInfoVo> resultPage(@RequestBody PageParam<String> pageParam) {
-    PageResult<PersonTaskDetail> details = personTaskDetailService.findOwnPage(pageParam);
+  public AlsaceResult<PersonTaskDetailInfoVo> resultPage(@PathVariable String idCardNo) {
+    List<PersonTaskDetail> details = personTaskDetailService.findAllByIdCardNo(idCardNo);
     PersonTaskDetailInfoVo res = null;
     List<PersonTaskDetailResultVo> vos = new ArrayList<>();
-    for (PersonTaskDetail detail : details.getRecords()) {
+    for (PersonTaskDetail detail : details) {
       if(res ==null){
         res =new PersonTaskDetailInfoVo().setPersonName(detail.getPersonName()).setTel(detail.getTel());
       }
@@ -140,7 +140,7 @@ public class AppController extends BaseController {
       vos.add(new PersonTaskDetailResultVo(results,detail.getDetectionDate()==null? "":sdf.format(detail.getDetectionDate())));
     }
     if(res !=null){
-      res.setResultPage(new PageResult<PersonTaskDetailResultVo>().setRecords(vos).setPageNum(pageParam.getPageNum()).setPageSize(pageParam.getPageSize()));
+      res.setResultList(vos);
     }
     return success("提交成功", res);
   }
