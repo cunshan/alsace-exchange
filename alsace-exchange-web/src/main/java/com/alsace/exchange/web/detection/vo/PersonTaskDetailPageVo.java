@@ -1,8 +1,7 @@
 package com.alsace.exchange.web.detection.vo;
 
+import com.alsace.exchange.common.base.PageResult;
 import com.alsace.exchange.service.detection.domain.PersonDetectionMethodCount;
-import com.alsace.exchange.service.detection.domain.PersonTaskDetail;
-import com.alsace.exchange.service.detection.domain.PersonTaskDetailImport;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -30,8 +29,8 @@ public class PersonTaskDetailPageVo implements Serializable {
   @ApiModelProperty("检测项目对应统计数")
   private List<PersonDetectionMethodCount> methodList;
 
-  @ApiModelProperty(value = "检测明细")
-  private List<PersonTaskDetailPageDetailVo> detailList;
+  @ApiModelProperty(value = "检测明细分页明细")
+  private PageResult<PersonTaskDetailPageDetailVo> detailPage;
 
 
 }

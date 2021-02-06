@@ -125,11 +125,12 @@ public class AppController extends BaseController {
           .setIdCardNo(record.getIdCardNo())
           .setTestTubeList(testTubeList));
     }
-
+    PageResult<PersonTaskDetailPageDetailVo> pageResult = new PageResult<>();
+    pageResult.setRecords(detailVos).setPageNum(page.getPageNum()).setPageSize(page.getPageSize());
     //查询表单对应检测项目数量
     List<PersonDetectionMethodCount> countList = personTaskDetailService.findMethodCount(paramVo.getTaskCode(),paramVo.getFormCode());
     PersonTaskDetailPageVo resVo = new PersonTaskDetailPageVo();
-    resVo.setDetailList(detailVos).setTaskCode(paramVo.getTaskCode())
+    resVo.setDetailPage(pageResult).setTaskCode(paramVo.getTaskCode())
         .setFormCode(paramVo.getFormCode())
         .setPersonCount(page.getTotalCount())
         .setMethodList(countList);
@@ -179,7 +180,11 @@ public class AppController extends BaseController {
     queryTask.setTaskCode(param.getParam().getTaskCode());
     queryTask.setTaskName(param.getParam().getTaskName());
     queryTask.setTaskStatus(param.getParam().getTaskStatus());
-    return success(environmentTaskService.findEnvironmentTaskApp(new PageParam<EnvironmentTask>().setParam(queryTask)).setPageNum(param.getPageNum()).setPageSize(param.getPageSize()));
+    return success(environmentTaskService.findEnvironmentTaskApp(
+        new PageParam<EnvironmentTask>()
+            .setParam(queryTask)
+            .setPageNum(param.getPageNum())
+            .setPageSize(param.getPageSize())));
   }
 
   @ApiOperation(value = "开始环境检测任务")
