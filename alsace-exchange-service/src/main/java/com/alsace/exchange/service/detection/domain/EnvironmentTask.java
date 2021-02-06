@@ -14,6 +14,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -59,5 +60,13 @@ public class EnvironmentTask extends BaseEntity {
   @Column(columnDefinition = "datetime not null comment '任务结束时间'")
   @NotNull(groups = {Create.class}, message = "结束开始时间为空！")
   private Date endDate;
+
+  @ApiModelProperty(value = "标签ID")
+  @Transient
+  private Long tagId;
+
+  @ApiModelProperty(value = "标签名称")
+  @Transient
+  private String tagName;
 
 }
